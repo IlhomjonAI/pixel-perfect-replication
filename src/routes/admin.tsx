@@ -1,3 +1,4 @@
+import { AchievementManager } from "@/components/admin/AchievementManager";
 import { PostManager } from "@/components/admin/PostManager";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 function AdminPage() {
+  const [view, setView] = useState<"posts" | "achievements">("posts");
   const [authenticated, setAuthenticated] = useState(false);
   const onExpired = useCallback(() => setAuthenticated(false), []);
   const [loading, setLoading] = useState(true);
@@ -83,7 +85,28 @@ function AdminPage() {
           </p>
         ) : authenticated ? (
           <div className="mt-6">
-            <PostManager onExpired={onExpired} />
+            <div className="flex flex-wrap gap-3" role="group" aria-label="Boshqaruv bo‘limi">
+              <button
+                className={`btn ${view === "posts" ? "btn-primary" : "btn-outline"}`}
+                aria-pressed={view === "posts"}
+                onClick={() => setView("posts")}
+              >
+                Yangiliklar
+              </button>
+              <button
+                className={`btn ${view === "achievements" ? "btn-primary" : "btn-outline"}`}
+                aria-pressed={view === "achievements"}
+                onClick={() => setView("achievements")}
+              >
+                Yutuqlar
+              </button>
+            </div>
+            <div hidden={view !== "posts"}>
+              <PostManager onExpired={onExpired} />
+            </div>
+            <div hidden={view !== "achievements"}>
+              <AchievementManager onExpired={onExpired} />
+            </div>
             <button className="btn btn-outline mt-6" onClick={logout} disabled={busy}>
               {busy ? "Kutilmoqda…" : "Tizimdan chiqish"}
             </button>

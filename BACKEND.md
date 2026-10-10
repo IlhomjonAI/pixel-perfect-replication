@@ -2,7 +2,7 @@
 
 The existing TanStack Start application serves the website and the API from the
 same Cloudflare Worker. No separate backend, paid service or account token is
-needed for local checks. News now uses D1; achievements, teachers and school-life still use demo data.
+needed for local checks. News and achievements use D1; teachers and school-life still use demo data.
 
 ## Local setup
 
@@ -20,7 +20,7 @@ Open `/api/health` there: expected response is
 `{"data":{"status":"ok","database":"ready"}}`.
 `/api/posts`, `/api/teachers` and `/api/achievements` return empty lists until
 published records are added. This is expected; no demo seed is applied to your
-remote database. News is empty until published posts are added. Other sections retain demo data.
+remote database. News is empty until published posts are added. Teachers and school-life retain demo data.
 
 Local migrations and Worker preview use the same `.wrangler/state` directory.
 Migration commands explicitly select tracked `wrangler.toml`, not the generated
@@ -82,7 +82,7 @@ No remote migration or deployment has been performed in this milestone.
 After replacing the UUID, rebuild before any future deployment. Existing
 frontend and API share the generated Worker build.
 
-Remaining milestones: achievements and teacher management, request handling
+Remaining milestones: teacher management, request handling
 and image uploads.
 
 ## Backend milestone 2 — single-administrator login
@@ -164,3 +164,35 @@ publication transitions, stale edits, missing records and disabled deletes.
 A production Worker smoke check also verified draft exclusion and published
 post rendering on the home, listing and detail pages. No remote database has
 been migrated or seeded by this work.
+
+## Backend milestone 4 — achievements
+
+The admin page has separate News and Achievements controls. Achievement fields
+include student name, class at the time, type, title, subject, stage, result,
+date, optional teacher and optional HTTPS certificate image. Types include
+subject olympiads, STEM, Al-Xorazmiy, IELTS, SAT and national certificates.
+IELTS, SAT and national certificates use the Certificate stage; olympiads use
+competition stages. Draft, publish and archive work like news, with optimistic
+version checks. Switching admin sections preserves unsaved form state.
+
+Apply migration 0005 locally, run `npm run check`, then `npm run worker:local`.
+Use the existing admin password. Create a draft in the Achievements section,
+publish it, check `/yutuqlar` and the home page, then test filters and archive.
+Images continue to use direct HTTPS URLs; uploads have not been added yet.
+
+GET/POST `/api/admin/achievements` and GET/PUT
+`/api/admin/achievements/:id` require a valid admin session. Writes also require
+matching Origin, a bounded JSON body and validated fields. Admin lists use 20
+rows per page. There is no permanent deletion API.
+
+The public achievements page loads 12 results at a time. Year, subject, type
+and stage filtering runs in D1 across all published records before pagination;
+filters do not depend on which cards are already loaded. The filter options
+include only published years and subjects (bounded to 100 unique values each).
+Failed or superseded requests cannot overwrite newer filter results. The home
+page also reads published achievements directly from D1, with no demo fallback.
+
+Tests exercise a 300-record dataset, filters beyond the first page, parameter
+binding, hidden draft metadata, certificate stage validation, publication,
+archiving, stale edits and authorization. Fixture records are isolated local
+test data; nothing has been added to the school's remote database.

@@ -121,7 +121,7 @@ function Home() {
         <SectionHeading
           eyebrow="Yutuqlar"
           title="O‘quvchilarimiz muvaffaqiyatlari"
-          intro="Quyidagi kartalar namuna sifatida berilgan; haqiqiy natijalar tasdiqlangach joylanadi."
+          intro="Fan olimpiadalari va sertifikatlar bo‘yicha e’lon qilingan natijalar."
           action={{ to: "/yutuqlar", label: "Barcha yutuqlar" }}
         />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
