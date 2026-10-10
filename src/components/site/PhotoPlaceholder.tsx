@@ -1,4 +1,4 @@
-import { ImageIcon } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -8,12 +8,13 @@ interface Props {
   label?: string;
   lazy?: boolean;
   compact?: boolean;
+  fit?: "cover" | "contain";
 }
 
 /** Shows a real image when available, otherwise a neutral labelled placeholder. */
-export function PhotoPlaceholder({ src, alt = "", className, label = "Maktab fotosurati uchun joy", lazy = true, compact }: Props) {
+export function PhotoPlaceholder({ src, alt = "", className, label = "Maktab fotosurati uchun joy", lazy = true, compact, fit = "cover" }: Props) {
   if (src) {
-    return <img src={src} alt={alt} loading={lazy ? "lazy" : "eager"} className={cn("h-full w-full object-cover", className)} />;
+    return <img src={src} alt={alt} loading={lazy ? "lazy" : "eager"} className={cn(`h-full w-full object-${fit}`, className)} />;
   }
   return (
     <div role="img" aria-label={label} className={cn("placeholder-pattern flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground", className)}>

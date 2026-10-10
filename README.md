@@ -1,24 +1,45 @@
-# Pixel Perfect Replication
+# Bekobod tuman ixtisoslashtirilgan maktabi — rasmiy veb-sayti
 
-Implement exactly the screenshot and nothing else
+Bekobod tuman ixtisoslashtirilgan maktabining rasmiy veb-sayti. Sayt hozirda namuna ma'lumotlari bilan ishlamoqda — barcha tarkib "Namuna" belgisi bilan ajratilgan va tasdiqlangandan so'ng haqiqiy ma'lumotlar bilan almashtiriladi.
 
-This project was built with [Lovable](https://lovable.dev).
+## Joriy imkoniyatlar (demo)
 
-## Build with Lovable
+- **Bosh sahifa** — maktab taqdimoti, so'nggi yangiliklar, yutuqlar va o'qituvchilar bo'limlari
+- **Maktab haqida** — maktab tarixi, ta'lim yo'nalishlari va rahbariyat uchun joy (to'ldirilmoqda)
+- **Yangiliklar** — yangiliklar, tadbirlar va e'lonlar ro'yxati, qidiruv va turkumlar bo'yicha saralash
+- **Yutuqlar** — o'quvchilar yutuqlari, sertifikatlarni to'liq ko'rish imkoniyati, filtrlash
+- **O'qituvchilar** — o'qituvchilar ro'yxati va shaxsiy profillar
+- **Qabul** — qabul haqida ma'lumot, ariza.piima.uz ga yo'naltirish
+- **Aloqa** — murojaat forması (yuborish funksiyasi hali ulanmagan)
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/5959f470-de75-407d-a5e0-5643807a9d3d).
+## Texnologiyalar
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+- **Frontend:** React 19, TanStack Start (SSR), TanStack Router, Tailwind CSS v4
+- **Build output:** Cloudflare Workers (Nitro orqali avtomatik generatsiya qilinadi)
+- **Shablon:** [Lovable](https://lovable.dev) da yaratilgan
 
-## Development
+## Kelajakdagi reja
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+- **Backend:** Cloudflare Workers + D1 (ma'lumotlar bazasi)
+- **Rasmlar:** Cloudinary orqali boshqariladi
+- Hozircha sayt frontend only — ma'lumotlar `src/data/mock/` papkasidagi namuna ma'lumotlardan olinadi
+
+## Loyiha bilan ishlash
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+### Build va test
+
+```sh
+npm run build       # Production build (Cloudflare Workers output)
+npm run typecheck   # TypeScript tekshiruv
+npm test            # Vitest testlari
+npm run preview     # Build natijasini ko'rish
+```
+
+## Loyihada davom ettirish
+
+Bu loyiha [Lovable](https://lovable.dev) bilan bog'langan. Lovable editorida o'zgartirishlar to'g'ridan-to'g'ri ushbu repozitoriyaga sinxronlanadi.
