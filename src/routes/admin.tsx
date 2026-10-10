@@ -1,3 +1,4 @@
+import { TeacherManager } from "@/components/admin/TeacherManager";
 import { AchievementManager } from "@/components/admin/AchievementManager";
 import { PostManager } from "@/components/admin/PostManager";
 import { createFileRoute } from "@tanstack/react-router";
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 function AdminPage() {
-  const [view, setView] = useState<"posts" | "achievements">("posts");
+  const [view, setView] = useState<"posts" | "achievements" | "teachers">("posts");
   const [authenticated, setAuthenticated] = useState(false);
   const onExpired = useCallback(() => setAuthenticated(false), []);
   const [loading, setLoading] = useState(true);
@@ -100,12 +101,22 @@ function AdminPage() {
               >
                 Yutuqlar
               </button>
+              <button
+                className={`btn ${view === "teachers" ? "btn-primary" : "btn-outline"}`}
+                aria-pressed={view === "teachers"}
+                onClick={() => setView("teachers")}
+              >
+                Ustozlar
+              </button>
             </div>
             <div hidden={view !== "posts"}>
               <PostManager onExpired={onExpired} />
             </div>
             <div hidden={view !== "achievements"}>
               <AchievementManager onExpired={onExpired} />
+            </div>
+            <div hidden={view !== "teachers"}>
+              <TeacherManager onExpired={onExpired} />
             </div>
             <button className="btn btn-outline mt-6" onClick={logout} disabled={busy}>
               {busy ? "Kutilmoqda…" : "Tizimdan chiqish"}

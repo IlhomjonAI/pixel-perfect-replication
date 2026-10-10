@@ -55,9 +55,11 @@ describe("D1 row mappers", () => {
       experience: "10 yil",
       biography: "Tarjimai hol",
       certificates: '["C1","C2"]',
+      certificate_images: '["https://example.test/c1.png"]',
       is_demo: 0,
     });
     expect(teacher.certificates).toEqual(["C1", "C2"]);
+    expect(teacher.certificateImages).toEqual(["https://example.test/c1.png"]);
   });
 
   it("maps school life rows", () => {

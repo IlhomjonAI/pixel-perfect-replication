@@ -27,7 +27,7 @@ export function boundPagination(limit = 20, offset = 0) {
 
 const POST_FIELDS = "slug, title, category, date, excerpt, body, cover_image, gallery, is_demo";
 const TEACHER_FIELDS =
-  "slug, name, photo, subject, qualification, education, experience, biography, certificates, is_demo";
+  "slug, name, photo, subject, qualification, education, experience, biography, certificates, certificate_images, is_demo";
 const ACHIEVEMENT_FIELDS =
   "id, student_name, class_at_achievement, type, title, subject, stage, result, achievement_date, teacher_name, certificate_image, is_demo";
 

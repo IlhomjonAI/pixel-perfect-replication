@@ -13,7 +13,10 @@ export const Route = createFileRoute("/oqituvchilar/$slug")({
   },
   head: ({ loaderData }) =>
     loaderData
-      ? pageHead(loaderData.name, `${loaderData.name} — ${loaderData.subject} o‘qituvchisi profili.`)
+      ? pageHead(
+          loaderData.name,
+          `${loaderData.name} — ${loaderData.subject} o‘qituvchisi profili.`,
+        )
       : { meta: [{ title: "O‘qituvchi topilmadi" }, { name: "robots", content: "noindex" }] },
   notFoundComponent: TeacherNotFound,
   component: TeacherProfile,
@@ -23,7 +26,9 @@ function TeacherNotFound() {
   return (
     <div className="container-site py-20">
       <EmptyState title="O‘qituvchi topilmadi">
-        <Link to="/oqituvchilar" className="btn btn-primary">O‘qituvchilarga qaytish</Link>
+        <Link to="/oqituvchilar" className="btn btn-primary">
+          O‘qituvchilarga qaytish
+        </Link>
       </EmptyState>
     </div>
   );
@@ -32,15 +37,23 @@ function TeacherNotFound() {
 function TeacherProfile() {
   const t = Route.useLoaderData();
   const rows: [string, string][] = [
-    ["Fan", t.subject], ["Malaka toifasi", t.qualification], ["Ma’lumoti", t.education], ["Ish tajribasi", t.experience],
+    ["Fan", t.subject],
+    ["Malaka toifasi", t.qualification],
+    ["Ma’lumoti", t.education],
+    ["Ish tajribasi", t.experience],
   ];
   return (
     <div className="container-site py-12">
-      <Link to="/oqituvchilar" className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-gold">
+      <Link
+        to="/oqituvchilar"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-gold"
+      >
         <ArrowLeft className="h-4 w-4" aria-hidden /> Barcha o‘qituvchilar
       </Link>
       <div className="mt-8 grid gap-10 md:grid-cols-[minmax(0,320px)_1fr]">
-        <div className="aspect-[4/5] overflow-hidden rounded-2xl"><PhotoPlaceholder src={t.photo} label="O‘qituvchi fotosurati uchun joy" lazy={false} /></div>
+        <div className="aspect-[4/5] overflow-hidden rounded-2xl">
+          <PhotoPlaceholder src={t.photo} label="O‘qituvchi fotosurati uchun joy" lazy={false} />
+        </div>
         <div>
           {t.isDemo && <DemoBadge />}
           <p className="eyebrow mt-3">{t.subject}</p>
@@ -48,16 +61,47 @@ function TeacherProfile() {
           <dl className="card-surface mt-6 divide-y">
             {rows.map(([k, v]) => (
               <div key={k} className="grid gap-1 px-5 py-3 sm:grid-cols-[180px_1fr]">
-                <dt className="text-sm font-semibold text-muted-foreground">{k}</dt><dd>{v}</dd>
+                <dt className="text-sm font-semibold text-muted-foreground">{k}</dt>
+                <dd>{v}</dd>
               </div>
             ))}
           </dl>
           <h2 className="mt-8 text-2xl font-semibold text-primary">Tarjimai hol</h2>
-          <p className="mt-3 text-muted-foreground">{t.biography}</p>
+          <p className="mt-3 whitespace-pre-line text-muted-foreground">{t.biography}</p>
           <h2 className="mt-8 text-2xl font-semibold text-primary">Sertifikatlar</h2>
           {t.certificates.length ? (
-            <ul className="mt-3 list-disc pl-5">{t.certificates.map((c) => <li key={c}>{c}</li>)}</ul>
-          ) : <p className="mt-3 text-muted-foreground">{PENDING}</p>}
+            <ul className="mt-3 list-disc pl-5">
+              {t.certificates.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+          ) : !t.certificateImages?.length ? (
+            <p className="mt-3 text-muted-foreground">{PENDING}</p>
+          ) : null}
+          {!!t.certificateImages?.length && (
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {t.certificateImages.map((url, index) => (
+                <a
+                  key={url + index}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block rounded-xl border p-3"
+                >
+                  <div className="aspect-[4/3]">
+                    <PhotoPlaceholder
+                      src={url}
+                      alt={`${t.name} sertifikati ${index + 1}`}
+                      fit="contain"
+                    />
+                  </div>
+                  <span className="mt-2 block text-sm text-primary">
+                    Sertifikatni ochish {index + 1}
+                  </span>
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import { TeacherCard } from "@/components/site/cards";
 import { EmptyState, PageHeader } from "@/components/site/common";
+import { getTeachersPage } from "@/lib/teacher-api";
 import { getTeachers } from "@/lib/api";
 import { pageHead } from "@/lib/site";
 
@@ -13,35 +14,96 @@ export const Route = createFileRoute("/oqituvchilar/")({
 });
 
 function Teachers() {
-  const teachers = Route.useLoaderData();
+  const initial = Route.useLoaderData();
+  const [teachers, setTeachers] = useState(initial);
+  const [offset, setOffset] = useState(initial.length);
+  const [hasMore, setHasMore] = useState(initial.length === 50);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  async function loadMore() {
+    setLoading(true);
+    setError("");
+    try {
+      const next = await getTeachersPage(50, offset);
+      setTeachers((current) => [
+        ...current,
+        ...next.filter((t) => !current.some((p) => p.slug === t.slug)),
+      ]);
+      setOffset((v) => v + next.length);
+      setHasMore(next.length === 50);
+    } catch {
+      setError("Ustozlar yuklanmadi. Qayta urinib ko‘ring.");
+    } finally {
+      setLoading(false);
+    }
+  }
   const [q, setQ] = useState("");
   const [subject, setSubject] = useState("Barchasi");
   const subjects = ["Barchasi", ...Array.from(new Set(teachers.map((t) => t.subject)))];
-  const list = teachers.filter((t) =>
-    (subject === "Barchasi" || t.subject === subject) &&
-    (t.name + " " + t.subject).toLowerCase().includes(q.trim().toLowerCase()));
+  const list = teachers.filter(
+    (t) =>
+      (subject === "Barchasi" || t.subject === subject) &&
+      (t.name + " " + t.subject).toLowerCase().includes(q.trim().toLowerCase()),
+  );
 
   return (
     <>
-      <PageHeader eyebrow="Jamoa" title="O‘qituvchilar" intro="Barcha profillar namuna. Haqiqiy ma’lumotlar tez orada qo‘shiladi." />
+      <PageHeader
+        eyebrow="Jamoa"
+        title="O‘qituvchilar"
+        intro="Maktabimiz ustozlari, ularning tajribasi va malakasi."
+      />
       <div className="container-site py-12">
         <div className="mb-8 flex flex-col gap-4 sm:flex-row">
           <label className="relative block w-full sm:max-w-sm">
             <span className="sr-only">O‘qituvchini qidirish</span>
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-            <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Ism yoki fan…" className="field pl-9" />
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden
+            />
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Ism yoki fan…"
+              className="field pl-9"
+            />
           </label>
           <label className="block w-full sm:max-w-xs">
             <span className="sr-only">Fan bo‘yicha saralash</span>
             <select value={subject} onChange={(e) => setSubject(e.target.value)} className="field">
-              {subjects.map((s) => <option key={s}>{s}</option>)}
+              {subjects.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
             </select>
           </label>
         </div>
         {list.length ? (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">{list.map((t) => <TeacherCard key={t.slug} t={t} />)}</div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {list.map((t) => (
+              <TeacherCard key={t.slug} t={t} />
+            ))}
+          </div>
         ) : (
-          <EmptyState title="O‘qituvchi topilmadi" description="Qidiruv shartlarini o‘zgartirib ko‘ring." />
+          <EmptyState
+            title="O‘qituvchi topilmadi"
+            description="Qidiruv shartlarini o‘zgartirib ko‘ring."
+          />
+        )}
+        {hasMore && (
+          <div className="mt-8 text-center">
+            <p className="mb-3 text-sm text-muted-foreground">
+              Qidiruv yuklangan profillar orasida ishlaydi.
+            </p>
+            <button className="btn btn-outline" disabled={loading} onClick={loadMore}>
+              {loading ? "Yuklanmoqda…" : "Ko‘proq ustoz"}
+            </button>
+          </div>
+        )}
+        {error && (
+          <p role="alert" className="mt-4 text-destructive">
+            {error}
+          </p>
         )}
       </div>
     </>

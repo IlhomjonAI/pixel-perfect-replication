@@ -37,6 +37,7 @@ export type TeacherRow = {
   experience: string;
   biography: string;
   certificates: string;
+  certificate_images?: string;
   is_demo: number;
 };
 
@@ -111,6 +112,7 @@ export function mapTeacherRow(row: TeacherRow): Teacher {
     experience: row.experience,
     biography: row.biography,
     certificates: parseStringArray(row.certificates),
+    certificateImages: parseStringArray(row.certificate_images ?? "[]"),
     isDemo: row.is_demo === 1,
   };
 }

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { handlePublicApi } from "@/server/public-api";
+import { handleAdminTeachers } from "@/server/admin-teachers";
 import { handleAdminAchievements } from "@/server/admin-achievements";
 import { handleAdminPosts } from "@/server/admin-posts";
 import { handleAdminAuth } from "@/server/admin-auth";
@@ -11,13 +12,15 @@ type CloudflareRequest = Request & {
 const handle = ({ request }: { request: Request }) => {
   const path = new URL(request.url).pathname;
   const handler =
-    path === "/api/admin/achievements" || path.startsWith("/api/admin/achievements/")
-      ? handleAdminAchievements
-      : path === "/api/admin/posts" || path.startsWith("/api/admin/posts/")
-        ? handleAdminPosts
-        : path.startsWith("/api/admin/")
-          ? handleAdminAuth
-          : handlePublicApi;
+    path === "/api/admin/teachers" || path.startsWith("/api/admin/teachers/")
+      ? handleAdminTeachers
+      : path === "/api/admin/achievements" || path.startsWith("/api/admin/achievements/")
+        ? handleAdminAchievements
+        : path === "/api/admin/posts" || path.startsWith("/api/admin/posts/")
+          ? handleAdminPosts
+          : path.startsWith("/api/admin/")
+            ? handleAdminAuth
+            : handlePublicApi;
   return handler(request, (request as CloudflareRequest).runtime?.cloudflare?.env);
 };
 

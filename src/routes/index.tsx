@@ -171,13 +171,16 @@ function Home() {
         <SectionHeading
           eyebrow="Jamoa"
           title="O‘qituvchilarimiz"
-          intro="Namuna profillar. O‘qituvchilar ma’lumotlari tez orada qo‘shiladi."
+          intro="Maktabimizning e’lon qilingan ustozlar profillari."
           action={{ to: "/oqituvchilar", label: "Barcha o‘qituvchilar" }}
         />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {teachers.map((t) => (
             <TeacherCard key={t.slug} t={t} />
           ))}
+          {!teachers.length && (
+            <p className="text-muted-foreground">Ustozlar profillari tez orada qo‘shiladi.</p>
+          )}
         </div>
       </section>
 

@@ -2,7 +2,7 @@
 
 The existing TanStack Start application serves the website and the API from the
 same Cloudflare Worker. No separate backend, paid service or account token is
-needed for local checks. News and achievements use D1; teachers and school-life still use demo data.
+needed for local checks. News, achievements and teachers use D1; school-life still uses demo data.
 
 ## Local setup
 
@@ -20,7 +20,7 @@ Open `/api/health` there: expected response is
 `{"data":{"status":"ok","database":"ready"}}`.
 `/api/posts`, `/api/teachers` and `/api/achievements` return empty lists until
 published records are added. This is expected; no demo seed is applied to your
-remote database. News is empty until published posts are added. Teachers and school-life retain demo data.
+remote database. News is empty until published posts are added. School-life retains demo data.
 
 Local migrations and Worker preview use the same `.wrangler/state` directory.
 Migration commands explicitly select tracked `wrangler.toml`, not the generated
@@ -82,7 +82,7 @@ No remote migration or deployment has been performed in this milestone.
 After replacing the UUID, rebuild before any future deployment. Existing
 frontend and API share the generated Worker build.
 
-Remaining milestones: teacher management, request handling
+Remaining milestones: request handling
 and image uploads.
 
 ## Backend milestone 2 — single-administrator login
@@ -196,3 +196,35 @@ Tests exercise a 300-record dataset, filters beyond the first page, parameter
 binding, hidden draft metadata, certificate stage validation, publication,
 archiving, stale edits and authorization. Fixture records are isolated local
 test data; nothing has been added to the school's remote database.
+
+## Backend milestone 5 — teachers
+
+The admin page includes a Teachers section with create, edit, draft, publish and
+archive. Fields include name, photo URL, subject, qualification, education,
+experience, biography, certificate names and separate certificate image URLs.
+Up to 20 certificate names and 20 image URLs are supported per profile. HTTPS
+image URLs remain optional; uploading local image files is a later milestone.
+
+Apply migration 0006 locally, run `npm run check`, then `npm run worker:local`.
+Keep the existing admin password. Add a draft teacher, confirm it is hidden from
+`/oqituvchilar`, publish and open its detail page, then archive and verify it is
+hidden again. Certificate images can be opened from the public detail page.
+
+GET/POST `/api/admin/teachers` and GET/PUT `/api/admin/teachers/:slug` validate
+admin sessions. Writes require matching Origin, bounded JSON and validated
+fields. Version conflicts return 409; there is no permanent delete endpoint.
+Admin lists have 20 records per page. Public pages use D1 through server
+functions, returning only published profiles. The list initially loads 50
+profiles and can load additional pages. Name/subject search and subject filters
+apply to loaded profiles. The home page reads a bounded published subset.
+
+Migration 0006 preserves existing certificate names and adds an empty image
+array plus version metadata. Teacher types and row mappers preserve backward
+compatibility with old rows and demo fixtures. The production profile renders
+certificate names as text, biography with line breaks, and certificate images
+with full-image links. The public API includes the certificate image array.
+
+Tests verify a 50-profile dataset, publication transitions, certificate mapping,
+invalid URLs and fields, authorization, Origin checks, stale writes and bounded
+requests. Remote migrations and deployment remain separate; no remote database
+has been changed by this milestone.

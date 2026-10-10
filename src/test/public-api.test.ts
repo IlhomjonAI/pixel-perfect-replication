@@ -18,7 +18,14 @@ beforeAll(async () => {
     d1Databases: { DB: "school-api-tests" },
   });
   db = await runtime.getD1Database("DB");
-  for (const file of ["0001_init.sql", "0002_publication.sql"]) {
+  for (const file of [
+    "0001_init.sql",
+    "0002_publication.sql",
+    "0003_admin_auth.sql",
+    "0004_post_versions.sql",
+    "0005_achievement_versions.sql",
+    "0006_teacher_versions.sql",
+  ]) {
     const sql = await readFile(new URL(`../../migrations/${file}`, import.meta.url), "utf8");
     // Execute complete migration statements in real local D1, not a mocked SQL matcher.
     for (const statement of sql
