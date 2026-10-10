@@ -1,5 +1,6 @@
 interface CloudflareBindings {
   DB: D1Database;
+  ADMIN_PASSWORD_HASH?: string;
 }
 
 interface D1PreparedStatement {

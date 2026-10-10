@@ -84,3 +84,42 @@ frontend and API share the generated Worker build.
 
 Next milestone: server-side administrator authentication, then protected
 content editing, request handling and Cloudinary uploads.
+
+## Backend milestone 2 — single-administrator login
+
+The `/admin` page now supports login, session checks and logout. Content editing
+is still the next milestone. There is no public administrator registration.
+
+Stop the running preview with Ctrl+C, apply the auth patch, then run:
+
+```sh
+npm run db:migrate:local
+npm run check
+npm run admin:setup
+npm run worker:local
+```
+
+`admin:setup` generates a random 32-character password and saves only its salted
+PBKDF2-SHA256 hash to ignored `.dev.vars`. Save the printed password privately;
+do not send it to anyone or include it in screenshots. The script refuses to
+overwrite an existing `.dev.vars`. It does not create or alter a remote admin.
+The pre-preview script copies local secrets beside the generated Wrangler
+configuration; both files are ignored by Git. Rebuild normally: the next preview
+copies the secrets again. Open the printed preview URL followed by `/admin`.
+
+Sessions expire after eight hours. Only SHA-256 token hashes are stored in D1;
+HTTP cookies are HttpOnly, SameSite=Strict and Secure on HTTPS. Changing the
+configured password hash invalidates existing sessions. Logout deletes the
+session. POST requests require a matching Origin. Login input is bounded to
+2048 bytes. Atomic D1 counters allow five attempts per IP per 15 minutes and
+50 total attempts per 15 minutes; this also bounds work for the single admin.
+Unexpected failures and absent configuration deny access.
+
+The only admin endpoints are POST `/api/admin/login`, GET `/api/admin/session`
+and POST `/api/admin/logout`. Future content APIs must call `requireAdmin`
+server-side and validate Origin for writes; rendering `/admin` is not itself
+an authorization check. Never put credentials into VITE_* variables.
+
+Remote setup remains a separate step: apply migration 0003 remotely and set
+ADMIN_PASSWORD_HASH with Wrangler secrets against the same Worker configuration.
+Do not deploy the placeholder database ID. The local secret file is not deployed.

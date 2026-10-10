@@ -15,7 +15,9 @@
     "typecheck": "tsc --noEmit",
     "db:migrate:local": "wrangler d1 migrations apply bekobod-maktab-db --local --config wrangler.toml",
     "worker:local": "wrangler dev --config .output/server/wrangler.json --persist-to .wrangler/state",
-    "check": "npm run typecheck && npm test && npm run build"
+    "check": "npm run typecheck && npm test && npm run build",
+    "admin:setup": "node scripts/setup-admin.mjs",
+    "preworker:local": "node scripts/sync-local-secrets.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
