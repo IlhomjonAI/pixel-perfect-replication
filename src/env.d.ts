@@ -1,6 +1,9 @@
 interface CloudflareBindings {
   DB: D1Database;
   ADMIN_PASSWORD_HASH?: string;
+  SUPABASE_URL?: string;
+  SUPABASE_SECRET_KEY?: string;
+  SUPABASE_STORAGE_BUCKET?: string;
 }
 
 interface D1PreparedStatement {

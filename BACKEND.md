@@ -271,3 +271,82 @@ Tests verify validation, required consent, concurrency, idempotent retry,
 authorization, Origin checks, quotas, status filtering, stale edits and limits.
 All fixtures are isolated local data. No remote migration or real notification
 has been performed.
+
+## Backend milestone 7 — computer image uploads with Supabase Storage
+
+News covers and galleries, achievement certificates, teacher photos and teacher
+certificate images now have file pickers. Existing HTTPS URL fields still work.
+Choose JPG, PNG or WebP files up to 5 MiB each. Uploading fills the corresponding
+URL field; save the post, achievement or profile to attach it. Uploading alone
+does not publish content. Successful files are retained when a later file fails.
+
+Images are stored in your own Supabase Storage account. The existing Cloudflare
+D1 content database and admin authentication remain in use. D1 stores only image
+metadata and URLs. The Supabase Free plan currently includes 1 GB file storage
+and limited bandwidth; inactive projects can pause. Monitor your account usage.
+The application does not change plans or buy additional resources.
+
+### Configure your Supabase project
+
+1. In Storage, create a **public** bucket named `school-images`.
+2. Restrict its allowed MIME types to `image/jpeg`, `image/png`, `image/webp` and
+   maximum file size to 5 MiB. Do not add public upload, update or delete policies.
+3. Copy the Project URL from the Connect dialog. In Settings > API Keys create or
+   copy a server **Secret key** starting with `sb_secret_` (not a publishable key).
+4. Keep the existing admin configuration and run:
+
+```sh
+npm run db:migrate:local
+npm run images:setup
+npm run check
+npm run worker:local
+```
+
+The setup script prompts for Project URL, bucket name (default `school-images`)
+and the Secret key. Secret input is hidden. It writes to the ignored root
+`.dev.vars`, preserves the admin password hash and replaces obsolete Cloudinary
+settings. Restart the worker after configuration changes; its start script copies
+these secrets into the generated server directory. Never commit `.dev.vars`,
+send the key to someone else, or put it in a VITE variable. A future deployment
+needs these values configured as server secrets separately; local setup does not
+configure or deploy a remote worker. No Supabase SDK dependency is required.
+
+Public buckets make image delivery URLs public, including images attached to
+drafts. Upload only images intended for public viewing. Anonymous users can read
+public image URLs but cannot upload through this application's protected API.
+A public bucket does not by itself allow anonymous writes; keep those policies
+absent. The server key provides privileged storage access only after admin auth.
+
+POST `/api/admin/uploads` requires a valid admin session and matching Origin.
+It accepts one bounded multipart file, checks MIME type, byte header and image
+dimensions, then sends its binary bytes to the Supabase Storage REST API. Secret
+keys use the `apikey` header and are never returned to the browser. Uploads have
+random paths with real image extensions, refuse overwrite and reject redirects.
+The public delivery URL is constructed from the validated project, bucket and
+object path. The provider response must confirm that same object path.
+
+Limits are 5 MiB per file, 20,000 pixels per dimension, 100 million pixels total,
+30 attempts per minute and 1,000 per day across the admin account. Supabase plan
+limits still apply. Header parsing determines metadata; it is not a full image
+decoder or image optimization service. Migration 0008 adds metadata and quota
+tables without changing existing content. It is unchanged from the earlier
+Cloudinary patch, so users who applied it do not need a replacement migration.
+
+This milestone does not automatically delete images. Cancelled edits, replaced
+images and uploads whose metadata save fails can leave unused assets. Review
+these manually in Supabase Storage before deleting; an asset might be used in
+more than one record. Older stored Cloudinary URLs are not rewritten.
+
+Tests use isolated local D1 data and a mocked Supabase upload service. They verify
+authentication, Origin checks, type/size validation, image dimension parsing,
+server credential headers, restricted project URLs, provider errors, quotas and
+asset metadata persistence. A real project upload still needs to be checked
+after you configure credentials. No remote database migration, bucket creation
+or deployment has been performed by the code changes.
+
+References:
+
+- https://supabase.com/docs/guides/storage/uploads/standard-uploads
+- https://supabase.com/docs/guides/storage/buckets/fundamentals
+- https://supabase.com/docs/guides/getting-started/api-keys
+- https://supabase.com/pricing

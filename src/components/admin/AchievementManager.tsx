@@ -1,3 +1,4 @@
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "@tanstack/react-router";
 import {
@@ -37,6 +38,7 @@ export function AchievementManager({ onExpired }: { onExpired: () => void }) {
   const [more, setMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [editing, setEditing] = useState<string | null>(null);
@@ -151,13 +153,17 @@ export function AchievementManager({ onExpired }: { onExpired: () => void }) {
       <section aria-label="Yutuqlar ro‘yxati">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-2xl font-semibold text-primary">Yutuqlar</h2>
-          <button className="btn btn-outline" disabled={busy} onClick={() => open(null)}>
+          <button
+            className="btn btn-outline"
+            disabled={busy || uploading}
+            onClick={() => open(null)}
+          >
             Yangi yutuq
           </button>
         </div>
         <button
           className="mt-3 text-sm underline"
-          disabled={busy || loading}
+          disabled={busy || uploading || loading}
           onClick={() => {
             setError("");
             void load(offset);
@@ -174,7 +180,7 @@ export function AchievementManager({ onExpired }: { onExpired: () => void }) {
             {items.map((item) => (
               <li key={item.id}>
                 <button
-                  disabled={busy}
+                  disabled={busy || uploading}
                   onClick={() => open(item)}
                   className={`w-full rounded-xl border p-4 text-left ${editing === item.id ? "border-primary bg-muted" : "bg-background"}`}
                 >
@@ -197,14 +203,14 @@ export function AchievementManager({ onExpired }: { onExpired: () => void }) {
         <div className="mt-4 flex gap-3">
           <button
             className="btn btn-outline"
-            disabled={loading || busy || offset === 0}
+            disabled={loading || busy || uploading || offset === 0}
             onClick={() => void load(Math.max(0, offset - 20))}
           >
             Oldingi
           </button>
           <button
             className="btn btn-outline"
-            disabled={loading || busy || !more}
+            disabled={loading || busy || uploading || !more}
             onClick={() => void load(offset + 20)}
           >
             Keyingi
@@ -216,7 +222,7 @@ export function AchievementManager({ onExpired }: { onExpired: () => void }) {
           {editing ? "Yutuqni tahrirlash" : "Yangi yutuq"}
         </h2>
         <form onSubmit={save} className="mt-5 space-y-4">
-          <fieldset disabled={busy} className="space-y-4">
+          <fieldset disabled={busy || uploading} className="space-y-4">
             {textFields.map(([key, label, max]) => (
               <label className="block" key={key}>
                 {label}
@@ -291,6 +297,12 @@ export function AchievementManager({ onExpired }: { onExpired: () => void }) {
                 onChange={(e) => change("teacherName", e.target.value || null)}
               />
             </label>
+            <ImageUploader
+              label="Sertifikat rasmini kompyuterdan yuklash"
+              onExpired={onExpired}
+              onBusyChange={setUploading}
+              onUploaded={(urls) => change("certificateImage", urls[0] ?? null)}
+            />
             <label className="block">
               Sertifikat rasmi havolasi (ixtiyoriy)
               <input

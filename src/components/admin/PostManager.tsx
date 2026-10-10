@@ -1,3 +1,4 @@
+import { ImageUploader } from "@/components/admin/ImageUploader";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { type AdminPost, type PostInput, postInput } from "@/lib/post-editor";
@@ -20,6 +21,7 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
   const [more, setMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [editing, setEditing] = useState<string | null>(null);
@@ -145,13 +147,17 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
       <section aria-label="Yangiliklar ro‘yxati">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-2xl font-semibold text-primary">Yangiliklar</h2>
-          <button className="btn btn-outline" disabled={busy} onClick={() => open(null)}>
+          <button
+            className="btn btn-outline"
+            disabled={busy || uploading}
+            onClick={() => open(null)}
+          >
             Yangi post
           </button>
         </div>
         <button
           className="mt-3 text-sm underline"
-          disabled={busy || loading}
+          disabled={busy || uploading || loading}
           onClick={() => {
             setError("");
             void load(offset);
@@ -168,7 +174,7 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
             {posts.map((p) => (
               <li key={p.slug}>
                 <button
-                  disabled={busy}
+                  disabled={busy || uploading}
                   onClick={() => open(p)}
                   className={`w-full rounded-xl border p-4 text-left ${editing === p.slug ? "border-primary bg-muted" : "bg-background"}`}
                 >
@@ -188,14 +194,14 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
         <div className="mt-4 flex gap-3">
           <button
             className="btn btn-outline"
-            disabled={loading || busy || offset === 0}
+            disabled={loading || busy || uploading || offset === 0}
             onClick={() => void load(Math.max(0, offset - 20))}
           >
             Oldingi
           </button>
           <button
             className="btn btn-outline"
-            disabled={loading || busy || !more}
+            disabled={loading || busy || uploading || !more}
             onClick={() => void load(offset + 20)}
           >
             Keyingi
@@ -207,7 +213,7 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
           {editing ? "Postni tahrirlash" : "Yangi post"}
         </h2>
         <form onSubmit={save} className="mt-5 space-y-4">
-          <fieldset disabled={busy} className="space-y-4">
+          <fieldset disabled={busy || uploading} className="space-y-4">
             <label className="block">
               Sarlavha
               <input
@@ -271,6 +277,12 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
                 Abzaslar orasida bo‘sh qator qoldiring.
               </span>
             </label>
+            <ImageUploader
+              label="Muqova rasmini kompyuterdan yuklash"
+              onExpired={onExpired}
+              onBusyChange={setUploading}
+              onUploaded={(urls) => change("coverImage", urls[0] ?? null)}
+            />
             <label className="block">
               Muqova rasmi havolasi
               <input
@@ -281,6 +293,17 @@ export function PostManager({ onExpired }: { onExpired: () => void }) {
                 onChange={(e) => change("coverImage", e.target.value || null)}
               />
             </label>
+            <ImageUploader
+              label="Galereya rasmlarini yuklash"
+              maxFiles={Math.max(0, 10 - gallery.split("\n").filter((v) => v.trim()).length)}
+              onExpired={onExpired}
+              onBusyChange={setUploading}
+              onUploaded={(urls) => {
+                setGallery((current) => [current.trim(), ...urls].filter(Boolean).join("\n"));
+                setDirty(true);
+                setNotice("");
+              }}
+            />
             <label className="block">
               Galereya rasmlari
               <textarea
