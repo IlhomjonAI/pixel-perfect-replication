@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Award, FileImage } from "lucide-react";
+import { Award } from "lucide-react";
 import type { Achievement, Post, Teacher } from "@/data/types";
 import { formatDate } from "@/lib/site";
 import { DemoBadge } from "./common";
@@ -60,5 +60,3 @@ export function TeacherCard({ t }: { t: Teacher }) {
     </Link>
   );
 }
-
-export { FileImage };
