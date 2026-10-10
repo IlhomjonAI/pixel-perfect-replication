@@ -18,6 +18,12 @@ Bekobod tuman ixtisoslashtirilgan maktabining rasmiy veb-sayti. Sayt hozirda nam
 - **Build output:** Cloudflare Workers (Nitro orqali avtomatik generatsiya qilinadi)
 - **Shablon:** [Lovable](https://lovable.dev) da yaratilgan
 
+## Backend holati
+
+D1 migrationlar va ommaviy o‘qish API’lari qo‘shilgan. Frontend hali mock
+ma’lumotlardan foydalanadi. Admin kirishi va haqiqiy murojaat yuborish keyingi
+bosqichda yaratiladi. Mahalliy baza va API tekshiruvi: [BACKEND.md](BACKEND.md).
+
 ## Kelajakdagi reja
 
 - **Backend:** Cloudflare Workers + D1 (ma'lumotlar bazasi)
