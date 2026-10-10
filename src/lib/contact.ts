@@ -18,11 +18,14 @@ function isValidPhone(input: string): boolean {
 
 export function validateContact(f: ContactForm): ContactErrors {
   const e: ContactErrors = {};
-  if (f.name.trim().length < 2) e.name = "Ismingizni kiriting.";
+  if (f.name.trim().length < 2 || f.name.trim().length > 150) e.name = "Ismingizni kiriting.";
   const c = f.contact.trim();
-  if (!EMAIL.test(c) && !isValidPhone(c)) e.contact = "To‘g‘ri elektron pochta yoki telefon raqamini kiriting.";
-  if (!["Savol", "Taklif", "Hamkorlik", "Boshqa"].includes(f.type)) e.type = "Murojaat turini tanlang.";
-  if (f.message.trim().length < 10) e.message = "Xabar kamida 10 ta belgidan iborat bo‘lsin.";
+  if (c.length > 254 || (!EMAIL.test(c) && !isValidPhone(c)))
+    e.contact = "To‘g‘ri elektron pochta yoki telefon raqamini kiriting.";
+  if (!["Savol", "Taklif", "Hamkorlik", "Boshqa"].includes(f.type))
+    e.type = "Murojaat turini tanlang.";
+  if (f.message.trim().length < 10 || f.message.trim().length > 5000)
+    e.message = "Xabar kamida 10 ta belgidan iborat bo‘lsin.";
   if (!f.consent) e.consent = "Davom etish uchun roziligingizni tasdiqlang.";
   return e;
 }

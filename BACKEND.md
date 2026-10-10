@@ -41,7 +41,7 @@ never attempt a remote migration with it.
 List requests accept `limit` (1–50, default 20) and `offset` (0–100000,
 default 0). Responses use `{data, pagination}`; detail responses use `{data}`.
 Errors use `{error:{code,message}}`. Unsupported writes receive 405.
-Contact messages have no public read or write endpoint.
+Contact messages have no public read endpoint. Milestone 6 below adds submission.
 
 All existing rows default to draft after migration 0002. Queries filter
 publication status, bind parameters and select public fields explicitly.
@@ -228,3 +228,46 @@ Tests verify a 50-profile dataset, publication transitions, certificate mapping,
 invalid URLs and fields, authorization, Origin checks, stale writes and bounded
 requests. Remote migrations and deployment remain separate; no remote database
 has been changed by this milestone.
+
+## Backend milestone 6 — contact requests
+
+The `/aloqa` form now saves real requests to D1 and confirms receipt only after
+success. Fields include name, email or phone, request type, message and required
+consent. Receipt does not mean a reply has been sent. No email or Telegram
+notifications are sent in this milestone.
+
+Apply migration 0007 locally, run `npm run check`, then `npm run worker:local`.
+Use the existing local password. Send a sample request through `/aloqa`, open
+`/admin` → Requests, read it and change its status to In progress or Resolved.
+Filter the list by status and refresh to confirm persistence.
+
+POST `/api/contact` accepts bounded validated JSON, requires matching Origin
+and gives a generic receipt with no personal details. GET and other methods are
+rejected. Requests have random client UUIDs; a unique index makes retries and
+concurrent repeats idempotent. Consent timestamp is recorded. The frontend
+retains the UUID when retrying a failed submission, disables inputs while
+sending and resets the form only after success.
+
+Atomic D1 counters limit new requests to three per IP per 15 minutes and 100
+across the site per hour. IPs are salted with the existing secret hash before
+being stored as short-lived quota buckets; raw IPs are not written to D1. Old
+quota buckets are cleaned up opportunistically. These limits bound submission
+frequency; they are not a substitute for edge protection or CAPTCHA if abuse
+occurs. A later deployment can add Turnstile without changing the stored data.
+
+Admin-only GET `/api/admin/messages` lists 20 requests per page with status
+filtering and counts. GET `/api/admin/messages/:id` reads a request; PATCH
+updates only status and requires Origin, a session and the current version.
+Stale updates receive 409. There is no public read or delete endpoint. Message
+text is rendered as text, with line breaks preserved. This milestone does not
+add permanent deletion or a retention schedule.
+
+Migration 0007 preserves existing messages, adding request IDs and version
+metadata plus separate quota storage. Admin credentials must be configured for
+submission to work; the existing `.dev.vars` already supplies the required
+secret during local preview. Never publish it.
+
+Tests verify validation, required consent, concurrency, idempotent retry,
+authorization, Origin checks, quotas, status filtering, stale edits and limits.
+All fixtures are isolated local data. No remote migration or real notification
+has been performed.

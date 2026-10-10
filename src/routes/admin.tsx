@@ -1,3 +1,4 @@
+import { MessageManager } from "@/components/admin/MessageManager";
 import { TeacherManager } from "@/components/admin/TeacherManager";
 import { AchievementManager } from "@/components/admin/AchievementManager";
 import { PostManager } from "@/components/admin/PostManager";
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 function AdminPage() {
-  const [view, setView] = useState<"posts" | "achievements" | "teachers">("posts");
+  const [view, setView] = useState<"posts" | "achievements" | "teachers" | "messages">("posts");
   const [authenticated, setAuthenticated] = useState(false);
   const onExpired = useCallback(() => setAuthenticated(false), []);
   const [loading, setLoading] = useState(true);
@@ -108,6 +109,13 @@ function AdminPage() {
               >
                 Ustozlar
               </button>
+              <button
+                className={`btn ${view === "messages" ? "btn-primary" : "btn-outline"}`}
+                aria-pressed={view === "messages"}
+                onClick={() => setView("messages")}
+              >
+                Murojaatlar
+              </button>
             </div>
             <div hidden={view !== "posts"}>
               <PostManager onExpired={onExpired} />
@@ -117,6 +125,9 @@ function AdminPage() {
             </div>
             <div hidden={view !== "teachers"}>
               <TeacherManager onExpired={onExpired} />
+            </div>
+            <div hidden={view !== "messages"}>
+              <MessageManager onExpired={onExpired} />
             </div>
             <button className="btn btn-outline mt-6" onClick={logout} disabled={busy}>
               {busy ? "Kutilmoqda…" : "Tizimdan chiqish"}
