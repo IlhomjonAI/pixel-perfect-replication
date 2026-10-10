@@ -1,5 +1,6 @@
+import { PostManager } from "@/components/admin/PostManager";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [{ title: "Admin | Bekobod maktabi" }, { name: "robots", content: "noindex, nofollow" }],
@@ -8,6 +9,7 @@ export const Route = createFileRoute("/admin")({
 });
 function AdminPage() {
   const [authenticated, setAuthenticated] = useState(false);
+  const onExpired = useCallback(() => setAuthenticated(false), []);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [password, setPassword] = useState("");
@@ -70,7 +72,9 @@ function AdminPage() {
   }
   return (
     <section className="container-site py-16">
-      <div className="mx-auto max-w-md rounded-2xl border bg-card p-8 shadow-sm">
+      <div
+        className={`mx-auto ${authenticated ? "max-w-6xl" : "max-w-md"} rounded-2xl border bg-card p-8 shadow-sm`}
+      >
         <p className="eyebrow">Maktab boshqaruvi</p>
         <h1 className="mt-3 text-3xl font-semibold text-primary">Admin panel</h1>
         {loading ? (
@@ -79,9 +83,7 @@ function AdminPage() {
           </p>
         ) : authenticated ? (
           <div className="mt-6">
-            <p className="text-muted-foreground">
-              Tizimga kirdingiz. Kontent boshqaruvi keyingi bosqichda qo‘shiladi.
-            </p>
+            <PostManager onExpired={onExpired} />
             <button className="btn btn-outline mt-6" onClick={logout} disabled={busy}>
               {busy ? "Kutilmoqda…" : "Tizimdan chiqish"}
             </button>

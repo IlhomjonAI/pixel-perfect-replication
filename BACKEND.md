@@ -2,7 +2,7 @@
 
 The existing TanStack Start application serves the website and the API from the
 same Cloudflare Worker. No separate backend, paid service or account token is
-needed for local checks. Frontend pages still deliberately use mock data.
+needed for local checks. News now uses D1; achievements, teachers and school-life still use demo data.
 
 ## Local setup
 
@@ -20,7 +20,7 @@ Open `/api/health` there: expected response is
 `{"data":{"status":"ok","database":"ready"}}`.
 `/api/posts`, `/api/teachers` and `/api/achievements` return empty lists until
 published records are added. This is expected; no demo seed is applied to your
-remote database. The normal website continues showing its existing demo data.
+remote database. News is empty until published posts are added. Other sections retain demo data.
 
 Local migrations and Worker preview use the same `.wrangler/state` directory.
 Migration commands explicitly select tracked `wrangler.toml`, not the generated
@@ -45,7 +45,7 @@ Contact messages have no public read or write endpoint.
 
 All existing rows default to draft after migration 0002. Queries filter
 publication status, bind parameters and select public fields explicitly.
-This milestone has no admin login or publishing UI yet.
+Later milestones below add admin login and post publishing.
 
 ## Verification
 
@@ -82,13 +82,12 @@ No remote migration or deployment has been performed in this milestone.
 After replacing the UUID, rebuild before any future deployment. Existing
 frontend and API share the generated Worker build.
 
-Next milestone: server-side administrator authentication, then protected
-content editing, request handling and Cloudinary uploads.
+Remaining milestones: achievements and teacher management, request handling
+and image uploads.
 
 ## Backend milestone 2 — single-administrator login
 
-The `/admin` page now supports login, session checks and logout. Content editing
-is still the next milestone. There is no public administrator registration.
+The `/admin` page now supports login, session checks and logout. Post editing is available in milestone 3 below. There is no public administrator registration.
 
 Stop the running preview with Ctrl+C, apply the auth patch, then run:
 
@@ -123,3 +122,45 @@ an authorization check. Never put credentials into VITE_* variables.
 Remote setup remains a separate step: apply migration 0003 remotely and set
 ADMIN_PASSWORD_HASH with Wrangler secrets against the same Worker configuration.
 Do not deploy the placeholder database ID. The local secret file is not deployed.
+
+## Backend milestone 3 — news publishing
+
+The authenticated `/admin` page lists every post, including drafts and archives,
+and creates or updates a post. Fields include title, category, date, excerpt,
+paragraphs, optional HTTPS cover URL, up to ten gallery URLs, and publication
+status. Only published posts appear on the home page, news listing and detail
+pages. There is no demo fallback for news, so an empty database produces an
+honest empty state. Images are URL-based in this milestone; file upload follows.
+
+Apply migration 0004 locally and verify before preview:
+
+```sh
+npm run db:migrate:local
+npm run check
+npm run worker:local
+```
+
+Keep the existing local password and `.dev.vars`; do not run `admin:setup` again.
+Create a test draft, save it, confirm that it is absent from `/yangiliklar`,
+then change its status to published and save. Open its card and confirm its
+paragraphs. Archive the post to hide it without permanently deleting it.
+
+GET `/api/admin/posts` returns 20 posts with offset pagination and hasMore.
+POST creates a generated immutable slug; GET and PUT `/api/admin/posts/:slug`
+read and update. Every endpoint validates the session server-side, writes also
+validate Origin, and JSON bodies have a streamed 32 KB maximum. Zod rejects
+unknown fields, invalid calendar dates, unsupported categories and unsafe URLs.
+Updates atomically require the current version; stale edits receive 409 and
+must reload the post. No destructive delete endpoint is exposed.
+
+Public news uses TanStack server functions, which read the request's D1 binding
+for both SSR and browser navigation. Use the Worker preview for database-backed
+pages; the plain Vite development server has no D1 binding. The news list starts
+with 50 records and supports loading additional pages; search and category
+filters apply to loaded records. Admin lists support next/previous navigation.
+
+Automated tests cover authentication, Origin rejection, validation, body limits,
+publication transitions, stale edits, missing records and disabled deletes.
+A production Worker smoke check also verified draft exclusion and published
+post rendering on the home, listing and detail pages. No remote database has
+been migrated or seeded by this work.
