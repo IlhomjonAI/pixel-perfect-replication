@@ -5,6 +5,7 @@ import { AchievementManager } from "@/components/admin/AchievementManager";
 import { PostManager } from "@/components/admin/PostManager";
 import { AdminCard, AdminLoading } from "@/components/admin/admin-ui";
 import { Eyebrow } from "@/components/site/common";
+import { Logo } from "@/components/site/Logo";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 
@@ -95,11 +96,14 @@ function AdminPage() {
 
   return (
     <section className="container-site py-14 md:py-20">
-      <div className="mx-auto mb-8 max-w-6xl">
-        <Eyebrow>Maktab boshqaruvi</Eyebrow>
-        <h1 className="mt-3 text-[clamp(1.9rem,4vw,2.75rem)] font-medium text-primary">
-          Admin panel
-        </h1>
+      <div className="mx-auto mb-8 flex max-w-6xl items-center gap-4">
+        <Logo className="h-12 w-12" />
+        <div>
+          <Eyebrow>Maktab boshqaruvi</Eyebrow>
+          <h1 className="mt-2 text-[clamp(1.9rem,4vw,2.75rem)] font-medium text-primary">
+            Admin panel
+          </h1>
+        </div>
       </div>
 
       <AdminCard className={authenticated ? "mx-auto max-w-6xl" : "mx-auto max-w-md"}>

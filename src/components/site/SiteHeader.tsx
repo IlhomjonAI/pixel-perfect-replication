@@ -10,7 +10,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Emblem } from "./Emblem";
+import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
@@ -74,7 +74,7 @@ export function SiteHeader() {
           className="flex min-w-0 items-center gap-3"
           aria-label={SCHOOL_NAME + " — bosh sahifa"}
         >
-          <Emblem className="h-10 w-10 shrink-0" />
+          <Logo className="h-11 w-11 md:h-12 md:w-12" backing={overlay} />
           <span
             className={cn(
               "line-clamp-2 min-w-0 max-w-[16rem] text-sm font-semibold leading-snug transition-colors sm:text-base",

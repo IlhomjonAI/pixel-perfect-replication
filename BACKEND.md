@@ -401,9 +401,81 @@ with navigation and original links. Certificates also offer full-image links.
 News and teacher lists update when loader data changes, show result counts,
 provide filter reset and distinguish empty data from no search matches.
 
+"Load more" pagination is race-safe: a generation counter invalidates any
+in-flight page when the initial loader data or page size changes, so a stale
+response can never append rows to or advance the offset of a freshly reset
+list. Duplicate concurrent requests are prevented, pages are de-duplicated and
+the offset advances by the raw server page length. The admin JSON client parses
+the response body only after handling 401, so session expiry works with empty
+or non-JSON bodies and unexpected server errors show a clear Uzbek message
+instead of raw output.
+
 Unused mock data modules were removed after checking imports. Root downloaded
-`bekobod-*.patch` delivery files are ignored. Source, migrations, tests and
-package lockfiles remain versioned; build output, dependencies, Wrangler local
-data and credentials remain ignored. Nothing in this change deploys the site
-or makes unverified school facts official. Address, contact details, school
-history, leadership and admissions content still require confirmed information.
+`bekobod-*.patch` and any root `*.patch` delivery files are ignored. Source,
+migrations, tests and package lockfiles remain versioned; build output,
+dependencies, Wrangler local data and credentials remain ignored. Nothing in
+this change deploys the site or makes unverified school facts official.
+Address, contact details, school history, leadership and admissions content
+still require confirmed information.
+
+## Frontend structure, branding and hero media
+
+Public pages live under `src/routes/` and share small components:
+
+- `src/components/site/` — `Logo`, `Emblem` (fallback mark), `Hero`, `PageHero`,
+  `HeroBackdrop`, `SiteHeader`, `SiteFooter`, `NewsFeed`, `cards`,
+  `filters`, `common` (section headings, empty/loading/pending states),
+  `PhotoPlaceholder`, `PhotoGallery`, `Lightbox`, `CertificateModal`,
+  `SchoolLifeCard`.
+- `src/components/admin/` — `admin-ui` primitives and manager components, using
+  the `use-admin-api` JSON client.
+- `src/lib/` — `site` (school name, nav, helpers), `brand` (logo + hero media
+  configuration), `news-api`/`teacher-api`/`achievement-api`/`school-life-api`
+  (feature APIs), `d1-binding`, `pagination`, `paging` (race-safe "load more"),
+  `contact`, `post-editor` and friends (admin editing rules).
+
+### Logo
+
+One shared `Logo` component is used in the header, homepage hero, footer, admin
+page and favicon. The official emblem path is configured in `src/lib/brand.ts`
+(`BRAND.logo`), currently `public/brand/school-logo.svg`. The file is a vector
+tracing of the supplied school logo (navy on transparent) that replaced the
+temporary corner cap badge; if it fails to load the built-in SVG `Emblem`
+remains the automatic fallback. The component keeps the logo's original
+proportions with `object-contain`, and can show a light backing on dark
+surfaces.
+
+### Hero media
+
+The homepage hero reads `BRAND.hero` from `src/lib/brand.ts`. The configuration
+is optional and typed: `image` (background photograph), `poster` (poster frame
+/ still fallback), `video` (short, muted, looping background clip) and `focal`
+(responsive crop anchor). No verified school photo or video has been supplied
+yet, so the hero currently renders its graphic backdrop. Add real asset paths
+to enable the media — news images or another school's building must not be
+used.
+
+When a clip is configured the hero only mounts the `<video>` on a desktop-width
+viewport, when the connection is not in data-saving mode and when the user has
+not requested reduced motion; otherwise it stays on the poster/photo or
+graphic fallback. It is muted and `playsInline`, exposes an accessible
+pause/play control and recovers gracefully from autoplay rejection and media
+errors.
+
+### Local start and verification
+
+```sh
+npm ci
+npm run db:migrate:local
+npm run build
+npm run worker:local
+```
+
+Open http://localhost:8787. Smoke checks: `GET /api/health` returns
+`{"data":{"status":"ok","database":"ready"}}`; every public route returns 200
+from the built Worker. The full gate is:
+
+```sh
+npm run check   # typecheck + `npm test` + production build
+npm run lint    # eslint (0 errors; formatting via npm run format)
+```

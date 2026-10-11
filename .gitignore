@@ -40,4 +40,5 @@ dist-ssr
 
 # Downloaded local delivery patches (archived under patches/, not runtime code)
 /bekobod-*.patch
+/*.patch
 /patches/

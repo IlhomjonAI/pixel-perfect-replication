@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Send } from "lucide-react";
 import { ARIZA_URL, NAV, SCHOOL_NAME, SCHOOL_TAGLINE, TELEGRAM_URL } from "@/lib/site";
-import { Emblem } from "./Emblem";
+import { Logo } from "./Logo";
 
 export function SiteFooter() {
   return (
@@ -10,7 +10,7 @@ export function SiteFooter() {
       <div className="container-site grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr] md:py-16">
         <div>
           <Link to="/" className="flex max-w-sm items-center gap-3">
-            <Emblem className="h-12 w-12 shrink-0" />
+            <Logo className="h-14 w-14" backing />
             <p className="font-display text-xl font-medium leading-snug text-on-navy">
               {SCHOOL_NAME}
             </p>

@@ -3,7 +3,7 @@ import { ArrowRight, Send } from "lucide-react";
 import { useState } from "react";
 import { AchievementCard, TeacherCard } from "@/components/site/cards";
 import { CertificateModal } from "@/components/site/CertificateModal";
-import { EmptyState, Eyebrow, PendingBlock, SectionHeading } from "@/components/site/common";
+import { EmptyState, Eyebrow, SectionHeading } from "@/components/site/common";
 import { Hero } from "@/components/site/Hero";
 import { NewsFeed } from "@/components/site/NewsFeed";
 import { SchoolLifeCard } from "@/components/site/SchoolLifeCard";
@@ -12,7 +12,7 @@ import { getAchievementsPage } from "@/lib/achievement-api";
 import { getPostsPage } from "@/lib/news-api";
 import { getSchoolLifePage } from "@/lib/school-life-api";
 import { getTeachersPage } from "@/lib/teacher-api";
-import { pageHead, PENDING, SCHOOL_NAME, TELEGRAM_URL } from "@/lib/site";
+import { NAV, pageHead, SCHOOL_NAME, TELEGRAM_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -32,16 +32,15 @@ export const Route = createFileRoute("/")({
 function Home() {
   const { posts, achievements, life, teachers } = Route.useLoaderData();
   const [cert, setCert] = useState<Achievement | null>(null);
-  const heroPost = posts.find((post) => post.coverImage) ?? null;
 
   return (
     <>
-      <Hero
-        image={heroPost?.coverImage ?? null}
-        sourcePost={heroPost ? { slug: heroPost.slug, title: heroPost.title } : null}
-      />
+      <Hero />
 
-      <section id="yangiliklar" className="home-section scroll-mt-24">
+      <section
+        id="yangiliklar"
+        className="home-section scroll-mt-[calc(var(--site-header-h)+1.25rem)]"
+      >
         <div className="container-site">
           <SectionHeading
             eyebrow="Maktab kundaligi"
@@ -83,11 +82,30 @@ function Home() {
               />
             </Link>
           </div>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <PendingBlock title="Maktab tarixi" />
-            <PendingBlock title="Moddiy baza" />
-            <PendingBlock title="Ta’lim profili" />
-            <PendingBlock title="Aloqa ma’lumotlari">{PENDING}.</PendingBlock>
+          <div className="card-surface p-6 md:p-7">
+            <h3 className="font-display text-xl text-primary">Sayt bo‘limlari</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Maktab hayoti, yutuqlar va qabul jarayoni haqida kerakli bo‘limni tanlang.
+            </p>
+            <ul className="mt-5 grid gap-1 sm:grid-cols-2">
+              {NAV.filter((n) => n.to !== "/").map((n) => (
+                <li key={n.to}>
+                  <Link
+                    to={n.to}
+                    className="group flex min-h-11 items-center justify-between gap-2 rounded-lg px-3 text-sm font-semibold text-forest transition-colors hover:bg-secondary hover:text-primary"
+                  >
+                    {n.label}
+                    <ArrowRight
+                      className="h-4 w-4 shrink-0 text-gold-ink transition-transform group-hover:translate-x-0.5"
+                      aria-hidden
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-5 border-t pt-4 text-xs leading-relaxed text-muted-foreground">
+              Maktab tarixi, moddiy baza va boshqa tafsilotlar tasdiqlangach shu yerda to‘ldiriladi.
+            </p>
           </div>
         </div>
       </section>

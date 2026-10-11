@@ -140,7 +140,7 @@
     opacity: 0.55;
   }
   main {
-    scroll-margin-top: 6rem;
+    scroll-margin-top: calc(var(--site-header-h) + 1rem);
   }
   h1,
   h2,

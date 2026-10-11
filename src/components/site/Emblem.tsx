@@ -1,8 +1,8 @@
 /**
- * Temporary school identity mark. It is a placeholder emblem (not an official
- * seal) and is intentionally kept so the site has a consistent identity until a
- * confirmed asset is provided. Colours resolve from the theme so it reads on
- * both light and dark backgrounds.
+ * Built-in school identity mark used as the fallback for `Logo` while the
+ * official asset (`BRAND.logo`) is unavailable or fails to load. It is a
+ * placeholder emblem, not the official seal. Colours resolve from the theme so
+ * it reads on both light and dark backgrounds.
  */
 export function Emblem({ className = "h-10 w-10" }: { className?: string }) {
   return (
