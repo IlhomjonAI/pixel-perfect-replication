@@ -1,25 +1,39 @@
 import { Link } from "@tanstack/react-router";
-import { Send } from "lucide-react";
-import { ARIZA_URL, NAV, PENDING, SCHOOL_NAME, TELEGRAM_URL } from "@/lib/site";
+import { ArrowRight, Send } from "lucide-react";
+import { ARIZA_URL, NAV, SCHOOL_NAME, TELEGRAM_URL } from "@/lib/site";
 import { Emblem } from "./Emblem";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-navy-deep text-on-navy">
-      <div className="container-site grid gap-10 py-14 md:grid-cols-3">
+    <footer className="bg-navy-deep text-on-navy">
+      <div className="container-site grid gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr] md:py-16">
         <div>
-          <div className="flex items-center gap-3">
-            <Emblem className="h-11 w-11" />
-            <p className="font-display text-lg font-semibold">{SCHOOL_NAME}</p>
-          </div>
-          <p className="mt-4 text-sm text-on-navy-muted">Bilim, izlanish va yutuqlar maskani.</p>
+          <Link to="/" className="flex max-w-sm items-center gap-3">
+            <Emblem className="h-12 w-12 shrink-0" />
+            <p className="font-display text-xl font-medium leading-snug">{SCHOOL_NAME}</p>
+          </Link>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-on-navy-muted">
+            Bilimga qiziqish, har kungi izlanish va yangi yutuqlar — maktab hayotimizning bir qismi.
+          </p>
+          <a
+            href={TELEGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold"
+          >
+            <Send className="h-4 w-4" aria-hidden /> Telegram kanal{" "}
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </a>
         </div>
         <nav aria-label="Pastki menyu">
-          <p className="eyebrow">Bo‘limlar</p>
-          <ul className="mt-4 grid grid-cols-2 gap-2 text-sm">
-            {[...NAV, { to: "/aloqa", label: "Aloqa" } as const].map((n) => (
+          <p className="eyebrow">Maktabni kashf eting</p>
+          <ul className="mt-4 grid grid-cols-2 gap-x-5 gap-y-1 text-sm">
+            {NAV.map((n) => (
               <li key={n.to}>
-                <Link to={n.to} className="text-on-navy-muted hover:text-gold">
+                <Link
+                  to={n.to}
+                  className="inline-flex min-h-10 items-center text-on-navy-muted hover:text-gold"
+                >
                   {n.label}
                 </Link>
               </li>
@@ -27,46 +41,28 @@ export function SiteFooter() {
           </ul>
         </nav>
         <div>
-          <p className="eyebrow">Aloqa</p>
-          <dl className="mt-4 space-y-2 text-sm">
-            <div>
-              <dt className="inline text-on-navy-muted">Manzil: </dt>
-              <dd className="inline">{PENDING}</dd>
-            </div>
-            <div>
-              <dt className="inline text-on-navy-muted">Telefon: </dt>
-              <dd className="inline">{PENDING}</dd>
-            </div>
-            <div>
-              <dt className="inline text-on-navy-muted">Elektron pochta: </dt>
-              <dd className="inline">{PENDING}</dd>
-            </div>
-          </dl>
-          <div className="mt-5 flex flex-wrap gap-3">
-            <a
-              href={TELEGRAM_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-gold py-2 text-sm"
-            >
-              <Send className="h-4 w-4" aria-hidden /> Telegram kanal
-            </a>
-            <a
-              href={ARIZA_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ghost-navy py-2 text-sm"
-            >
-              ariza.piima.uz
-            </a>
-          </div>
+          <p className="eyebrow">Savol va takliflar</p>
+          <p className="mt-5 text-sm leading-relaxed text-on-navy-muted">
+            Maktab ma’muriyatiga savolingizni yoki taklifingizni yuboring.
+          </p>
+          <Link to="/aloqa" className="btn btn-ghost-navy mt-5 text-sm">
+            Murojaat yuborish <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+          <a
+            href={ARIZA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 flex min-h-10 items-center gap-2 text-xs text-on-navy-muted hover:text-gold"
+          >
+            Qabul portali: ariza.piima.uz <ArrowRight className="h-3 w-3" aria-hidden />
+          </a>
         </div>
       </div>
       <div className="border-t border-on-navy/10">
-        <p className="container-site py-5 text-xs text-on-navy-muted">
-          © {SCHOOL_NAME}. Maktab yangiliklari va rasmiy e’lonlarini Telegram kanalimizda kuzatib
-          boring.
-        </p>
+        <div className="container-site flex flex-col gap-2 py-5 text-xs text-on-navy-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>© {SCHOOL_NAME}</p>
+          <p>Bilim, izlanish va yutuqlar sari.</p>
+        </div>
       </div>
     </footer>
   );

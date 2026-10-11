@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Award } from "lucide-react";
+import { ArrowUpRight, Award } from "lucide-react";
 import type { Achievement, Post, Teacher } from "@/data/types";
 import { formatDate } from "@/lib/site";
 import { DemoBadge } from "./common";
@@ -12,8 +12,12 @@ export function PostCard({ post }: { post: Post }) {
       params={{ slug: post.slug }}
       className="card-surface card-interactive group flex flex-col overflow-hidden"
     >
-      <div className="relative aspect-square overflow-hidden">
-        <PhotoPlaceholder src={post.coverImage} alt={post.title} />
+      <div className="relative aspect-[4/3] overflow-hidden">
+        <PhotoPlaceholder
+          src={post.coverImage}
+          alt={post.title}
+          className="transition-transform duration-300 group-hover:scale-[1.025]"
+        />
         <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
           {post.category}
         </span>
@@ -26,7 +30,12 @@ export function PostCard({ post }: { post: Post }) {
         <h3 className="mt-2 text-lg font-semibold leading-snug text-primary group-hover:underline group-hover:decoration-gold group-hover:underline-offset-4">
           {post.title}
         </h3>
-        <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
+        <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+          {post.excerpt}
+        </p>
+        <span className="mt-5 flex items-center justify-between border-t pt-4 text-xs font-semibold text-primary">
+          Batafsil o‘qish <ArrowUpRight className="h-4 w-4" aria-hidden />
+        </span>
       </div>
     </Link>
   );
@@ -52,6 +61,7 @@ export function AchievementCard({
           src={a.certificateImage}
           label="Sertifikat surati uchun joy"
           alt={a.title}
+          fit="contain"
         />
         {a.isDemo && <DemoBadge className="absolute right-3 top-3" />}
       </button>

@@ -43,7 +43,7 @@
 }
 
 :root {
-  --radius: 0.75rem;
+  --radius: 0.625rem;
   --background: oklch(0.985 0.008 85);
   --foreground: oklch(0.24 0.05 262);
   --card: oklch(1 0.004 85);
@@ -163,11 +163,8 @@
 
 @utility placeholder-pattern {
   background-color: var(--placeholder);
-  background-image: repeating-linear-gradient(
-    135deg,
-    transparent 0 14px,
-    var(--placeholder-line) 14px 15px
-  );
+  background-image: radial-gradient(var(--placeholder-line) 1px, transparent 1px);
+  background-size: 18px 18px;
 }
 
 @utility btn {
@@ -175,7 +172,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 999px;
+  border-radius: 0.625rem;
+  min-height: 2.75rem;
   padding: 0.75rem 1.4rem;
   font-weight: 600;
   font-size: 0.95rem;
@@ -235,5 +233,31 @@
 @layer base {
   .text-on-navy .eyebrow {
     color: var(--gold);
+  }
+}
+
+@utility home-section {
+  padding-block: 3.5rem;
+  @media (min-width: 768px) {
+    padding-block: 5rem;
+  }
+}
+
+@layer components {
+  .home-hero {
+    background-image: radial-gradient(
+      ellipse at 85% 20%,
+      oklch(0.44 0.065 262 / 0.4),
+      transparent 60%
+    );
+  }
+  .hero-story {
+    box-shadow: 0 24px 48px -24px oklch(0.1 0.03 262 / 0.7);
+  }
+  .academic-art {
+    background-image: linear-gradient(145deg, oklch(0.32 0.07 262), var(--navy-deep));
+  }
+  .contact-banner {
+    border-left: 3px solid var(--gold);
   }
 }

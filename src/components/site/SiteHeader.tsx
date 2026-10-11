@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Menu, Send } from "lucide-react";
 import { useEffect, useState } from "react";
-import { NAV, SCHOOL_NAME } from "@/lib/site";
+import { NAV, SCHOOL_NAME, TELEGRAM_URL } from "@/lib/site";
 import {
   Sheet,
   SheetContent,
@@ -26,10 +26,23 @@ export function SiteHeader() {
   }, []);
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+      <div className="border-b bg-primary text-on-navy">
+        <div className="container-site flex min-h-8 items-center justify-between gap-4 py-1 text-[11px] sm:text-xs">
+          <p>Bilim. Izlanish. Kelajak.</p>
+          <a
+            href={TELEGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 py-1 text-on-navy-muted hover:text-on-navy"
+          >
+            <Send className="h-3 w-3" aria-hidden /> Telegram kanal
+          </a>
+        </div>
+      </div>
       <div className="container-site flex min-h-18 items-center justify-between gap-4 py-3">
         <Link
           to="/"
-          className="flex min-w-0 max-w-xs items-center gap-3"
+          className="flex min-w-0 max-w-[17rem] items-center gap-3"
           aria-label={SCHOOL_NAME + " — bosh sahifa"}
         >
           <Emblem className="h-10 w-10 shrink-0" />
@@ -43,14 +56,14 @@ export function SiteHeader() {
               key={n.to}
               to={n.to}
               activeOptions={{ exact: n.to === "/" }}
-              className="rounded-full px-2 py-3 text-[13px] font-semibold text-muted-foreground transition-colors hover:text-primary data-[status=active]:bg-secondary data-[status=active]:text-primary"
+              className="rounded-lg px-2 py-3 text-[13px] font-semibold text-muted-foreground transition-colors hover:text-primary data-[status=active]:bg-secondary data-[status=active]:text-primary"
             >
               {n.label}
             </Link>
           ))}
           <Link to="/aloqa" className="btn btn-primary ml-3 px-4 py-2.5 text-sm">
             <Send className="h-4 w-4" aria-hidden />
-            Aloqa
+            Murojaat
           </Link>
         </nav>
         <Sheet open={open} onOpenChange={setOpen}>
