@@ -14,8 +14,8 @@ export const NAV = [
 
 const MONTHS = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
 export function formatDate(iso: string) {
-  const [y, m, d] = iso.split("-").map(Number);
-  return `${d}-${MONTHS[m - 1]}, ${y}`;
+  const [y = 0, m = 1, d = 1] = iso.split("-").map(Number);
+  return `${d}-${MONTHS[m - 1] ?? ""}, ${y}`;
 }
 
 export function pageHead(title: string, description: string) {
