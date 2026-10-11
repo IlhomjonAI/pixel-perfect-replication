@@ -1,25 +1,33 @@
-/** Published school content uses Cloudflare D1. */
-import { getAchievementsPage } from "@/lib/achievement-api";
-import { getPostsPage, getDatabasePost } from "@/lib/news-api";
-import { getTeachersPage, getDatabaseTeacher } from "@/lib/teacher-api";
-import { getSchoolLifePage } from "@/lib/school-life-api";
+/**
+ * Data-access layer. Today it reads typed mock data; later each function can
+ * call the Cloudflare Workers API (backed by D1 / Cloudinary) without any
+ * change to pages or components.
+ */
+import { mockAchievements } from "@/data/mock/achievements";
+import { mockPosts } from "@/data/mock/posts";
+import { mockSchoolLife, mockTeachers } from "@/data/mock/teachers";
 import type { Achievement, Post, SchoolLifeItem, Teacher } from "@/data/types";
 
-export async function getPosts(limit = 50): Promise<Post[]> {
-  return getPostsPage(limit);
+const byDateDesc = <T extends { date?: string; achievementDate?: string }>(a: T, b: T) =>
+  (b.date ?? b.achievementDate ?? "").localeCompare(a.date ?? a.achievementDate ?? "");
+
+export async function getPosts(limit?: number): Promise<Post[]> {
+  const list = [...mockPosts].sort(byDateDesc);
+  return limit ? list.slice(0, limit) : list;
 }
 export async function getPost(slug: string): Promise<Post | null> {
-  return getDatabasePost(slug);
+  return mockPosts.find((p) => p.slug === slug) ?? null;
 }
-export async function getAchievements(limit = 12): Promise<Achievement[]> {
-  return (await getAchievementsPage({ limit })).items;
+export async function getAchievements(limit?: number): Promise<Achievement[]> {
+  const list = [...mockAchievements].sort(byDateDesc);
+  return limit ? list.slice(0, limit) : list;
 }
-export async function getTeachers(limit = 50): Promise<Teacher[]> {
-  return getTeachersPage(limit);
+export async function getTeachers(limit?: number): Promise<Teacher[]> {
+  return limit ? mockTeachers.slice(0, limit) : mockTeachers;
 }
 export async function getTeacher(slug: string): Promise<Teacher | null> {
-  return getDatabaseTeacher(slug);
+  return mockTeachers.find((t) => t.slug === slug) ?? null;
 }
-export async function getSchoolLife(limit = 20): Promise<SchoolLifeItem[]> {
-  return getSchoolLifePage(limit);
+export async function getSchoolLife(): Promise<SchoolLifeItem[]> {
+  return mockSchoolLife;
 }

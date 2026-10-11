@@ -11,14 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
-    "db:migrate:local": "wrangler d1 migrations apply bekobod-maktab-db --local --config wrangler.toml",
-    "worker:local": "wrangler dev --config .output/server/wrangler.json --persist-to .wrangler/state",
-    "check": "npm run typecheck && npm test && npm run build",
-    "admin:setup": "node scripts/setup-admin.mjs",
-    "preworker:local": "node scripts/sync-local-secrets.mjs",
-    "images:setup": "node scripts/setup-image-storage.mjs"
+    "test:watch": "vitest"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -93,13 +86,11 @@
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
     "jsdom": "^20.0.3",
-    "miniflare": "^4.20260730.0",
     "nitro": "3.0.260603-beta",
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "8.1.5",
-    "vitest": "^4.1.10",
-    "wrangler": "^4.149.0"
+    "vitest": "^4.1.10"
   }
 }

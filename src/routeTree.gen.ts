@@ -10,13 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AloqaRouteImport } from './routes/aloqa'
 import { Route as MaktabRouteImport } from './routes/maktab'
-import { Route as MaktabHayotiRouteImport } from './routes/maktab-hayoti'
 import { Route as QabulRouteImport } from './routes/qabul'
 import { Route as YutuqlarRouteImport } from './routes/yutuqlar'
-import { Route as ApiSplatRouteImport } from './routes/api.$'
 import { Route as OqituvchilarIndexRouteImport } from './routes/oqituvchilar.index'
 import { Route as OqituvchilarSlugRouteImport } from './routes/oqituvchilar.$slug'
 import { Route as YangiliklarIndexRouteImport } from './routes/yangiliklar.index'
@@ -25,11 +22,6 @@ import { Route as YangiliklarSlugRouteImport } from './routes/yangiliklar.$slug'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AloqaRoute = AloqaRouteImport.update({
@@ -42,11 +34,6 @@ const MaktabRoute = MaktabRouteImport.update({
   path: '/maktab',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MaktabHayotiRoute = MaktabHayotiRouteImport.update({
-  id: '/maktab-hayoti',
-  path: '/maktab-hayoti',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const QabulRoute = QabulRouteImport.update({
   id: '/qabul',
   path: '/qabul',
@@ -55,11 +42,6 @@ const QabulRoute = QabulRouteImport.update({
 const YutuqlarRoute = YutuqlarRouteImport.update({
   id: '/yutuqlar',
   path: '/yutuqlar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSplatRoute = ApiSplatRouteImport.update({
-  id: '/api/$',
-  path: '/api/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OqituvchilarIndexRoute = OqituvchilarIndexRouteImport.update({
@@ -85,13 +67,10 @@ const YangiliklarSlugRoute = YangiliklarSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/aloqa': typeof AloqaRoute
   '/maktab': typeof MaktabRoute
-  '/maktab-hayoti': typeof MaktabHayotiRoute
   '/qabul': typeof QabulRoute
   '/yutuqlar': typeof YutuqlarRoute
-  '/api/$': typeof ApiSplatRoute
   '/oqituvchilar/$slug': typeof OqituvchilarSlugRoute
   '/yangiliklar/$slug': typeof YangiliklarSlugRoute
   '/oqituvchilar/': typeof OqituvchilarIndexRoute
@@ -99,13 +78,10 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/aloqa': typeof AloqaRoute
   '/maktab': typeof MaktabRoute
-  '/maktab-hayoti': typeof MaktabHayotiRoute
   '/qabul': typeof QabulRoute
   '/yutuqlar': typeof YutuqlarRoute
-  '/api/$': typeof ApiSplatRoute
   '/oqituvchilar/$slug': typeof OqituvchilarSlugRoute
   '/yangiliklar/$slug': typeof YangiliklarSlugRoute
   '/oqituvchilar': typeof OqituvchilarIndexRoute
@@ -114,13 +90,10 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/aloqa': typeof AloqaRoute
   '/maktab': typeof MaktabRoute
-  '/maktab-hayoti': typeof MaktabHayotiRoute
   '/qabul': typeof QabulRoute
   '/yutuqlar': typeof YutuqlarRoute
-  '/api/$': typeof ApiSplatRoute
   '/oqituvchilar/$slug': typeof OqituvchilarSlugRoute
   '/yangiliklar/$slug': typeof YangiliklarSlugRoute
   '/oqituvchilar/': typeof OqituvchilarIndexRoute
@@ -130,13 +103,10 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/aloqa'
     | '/maktab'
-    | '/maktab-hayoti'
     | '/qabul'
     | '/yutuqlar'
-    | '/api/$'
     | '/oqituvchilar/$slug'
     | '/yangiliklar/$slug'
     | '/oqituvchilar/'
@@ -144,13 +114,10 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/aloqa'
     | '/maktab'
-    | '/maktab-hayoti'
     | '/qabul'
     | '/yutuqlar'
-    | '/api/$'
     | '/oqituvchilar/$slug'
     | '/yangiliklar/$slug'
     | '/oqituvchilar'
@@ -158,13 +125,10 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/aloqa'
     | '/maktab'
-    | '/maktab-hayoti'
     | '/qabul'
     | '/yutuqlar'
-    | '/api/$'
     | '/oqituvchilar/$slug'
     | '/yangiliklar/$slug'
     | '/oqituvchilar/'
@@ -173,13 +137,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
   AloqaRoute: typeof AloqaRoute
   MaktabRoute: typeof MaktabRoute
-  MaktabHayotiRoute: typeof MaktabHayotiRoute
   QabulRoute: typeof QabulRoute
   YutuqlarRoute: typeof YutuqlarRoute
-  ApiSplatRoute: typeof ApiSplatRoute
   OqituvchilarSlugRoute: typeof OqituvchilarSlugRoute
   YangiliklarSlugRoute: typeof YangiliklarSlugRoute
   OqituvchilarIndexRoute: typeof OqituvchilarIndexRoute
@@ -193,13 +154,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/aloqa': {
@@ -216,13 +170,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MaktabRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/maktab-hayoti': {
-      id: '/maktab-hayoti'
-      path: '/maktab-hayoti'
-      fullPath: '/maktab-hayoti'
-      preLoaderRoute: typeof MaktabHayotiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/qabul': {
       id: '/qabul'
       path: '/qabul'
@@ -235,13 +182,6 @@ declare module '@tanstack/react-router' {
       path: '/yutuqlar'
       fullPath: '/yutuqlar'
       preLoaderRoute: typeof YutuqlarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/$': {
-      id: '/api/$'
-      path: '/api/$'
-      fullPath: '/api/$'
-      preLoaderRoute: typeof ApiSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/oqituvchilar/': {
@@ -277,13 +217,10 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
   AloqaRoute: AloqaRoute,
   MaktabRoute: MaktabRoute,
-  MaktabHayotiRoute: MaktabHayotiRoute,
   QabulRoute: QabulRoute,
   YutuqlarRoute: YutuqlarRoute,
-  ApiSplatRoute: ApiSplatRoute,
   OqituvchilarSlugRoute: OqituvchilarSlugRoute,
   YangiliklarSlugRoute: YangiliklarSlugRoute,
   OqituvchilarIndexRoute: OqituvchilarIndexRoute,

@@ -1,3 +1,0 @@
-ALTER TABLE teachers ADD COLUMN version INTEGER NOT NULL DEFAULT 0;
-ALTER TABLE teachers ADD COLUMN updated_at TEXT;
-ALTER TABLE teachers ADD COLUMN certificate_images TEXT NOT NULL DEFAULT '[]';

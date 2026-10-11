@@ -1,29 +1,26 @@
-import { SchoolLifeCard } from "@/components/site/SchoolLifeCard";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Cpu, FlaskConical, Languages, Lightbulb } from "lucide-react";
 import { useState } from "react";
 import { AchievementCard, PostCard, TeacherCard } from "@/components/site/cards";
 import { CertificateModal } from "@/components/site/CertificateModal";
-import { SectionHeading } from "@/components/site/common";
+import { DemoBadge, SectionHeading } from "@/components/site/common";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
 import type { Achievement } from "@/data/types";
 import { getAchievements, getPosts, getSchoolLife, getTeachers } from "@/lib/api";
 import { pageHead, SCHOOL_NAME } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
-  head: () =>
-    pageHead(
-      "Bosh sahifa",
-      "Bekobod tuman ixtisoslashtirilgan maktabining ta’lim muhiti, maktab hayoti va o‘quvchilar yutuqlari bilan tanishing.",
-    ),
+  head: () => pageHead("Bosh sahifa", "Bekobod tuman ixtisoslashtirilgan maktabining ta’lim muhiti, maktab hayoti va o‘quvchilar yutuqlari bilan tanishing."),
   loader: async () => ({
     posts: await getPosts(6),
     achievements: await getAchievements(4),
-    life: await getSchoolLife(4),
+    life: await getSchoolLife(),
     teachers: await getTeachers(3),
   }),
   component: Home,
 });
+
+const lifeIcons = { stem: FlaskConical, robot: Cpu, eng: Languages, proj: Lightbulb } as const;
 
 function Home() {
   const { posts, achievements, life, teachers } = Route.useLoaderData();
@@ -40,16 +37,11 @@ function Home() {
               Bilim, izlanish va <span className="italic text-gold">yutuqlar</span> maskani
             </h1>
             <p className="mt-6 max-w-xl text-lg text-on-navy-muted">
-              Bekobod tuman ixtisoslashtirilgan maktabining ta’lim muhiti, maktab hayoti va
-              o‘quvchilar yutuqlari bilan tanishing.
+              Bekobod tuman ixtisoslashtirilgan maktabining ta’lim muhiti, maktab hayoti va o‘quvchilar yutuqlari bilan tanishing.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link to="/maktab" className="btn btn-gold">
-                Maktab haqida <ArrowRight className="h-4 w-4" aria-hidden />
-              </Link>
-              <Link to="/yutuqlar" className="btn btn-ghost-navy">
-                Yutuqlarimiz
-              </Link>
+              <Link to="/maktab" className="btn btn-gold">Maktab haqida <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+              <Link to="/yutuqlar" className="btn btn-ghost-navy">Yutuqlarimiz</Link>
             </div>
           </div>
           <div className="relative">
@@ -59,10 +51,7 @@ function Home() {
             <div className="absolute -bottom-5 left-5 hidden aspect-square w-32 overflow-hidden rounded-xl border-4 border-primary sm:block">
               <PhotoPlaceholder compact lazy={false} />
             </div>
-            <div
-              className="absolute -right-2 -top-2 hidden h-20 w-20 rounded-full border border-gold md:block"
-              aria-hidden
-            />
+            <div className="absolute -right-2 -top-2 hidden h-20 w-20 rounded-full border border-gold md:block" aria-hidden />
           </div>
         </div>
       </section>
@@ -74,23 +63,13 @@ function Home() {
         </div>
         <div className="order-1 md:order-2">
           <p className="eyebrow">Maktab haqida</p>
-          <h2 className="mt-2 text-3xl font-semibold text-primary md:text-4xl">
-            Har bir o‘quvchining salohiyatini ochish uchun
-          </h2>
+          <h2 className="mt-2 text-3xl font-semibold text-primary md:text-4xl">Har bir o‘quvchining salohiyatini ochish uchun</h2>
           <p className="mt-5 text-muted-foreground">
-            Bu sahifada maktabimizning ta’lim yo‘nalishlari, kundalik hayoti va o‘quvchilarimizning
-            muvaffaqiyatlari haqida ma’lumot beriladi. Maktabning batafsil tarixi, imkoniyatlari va
-            dasturlari tasdiqlangandan so‘ng qo‘shiladi.
+            Bu sahifada maktabimizning ta’lim yo‘nalishlari, kundalik hayoti va o‘quvchilarimizning muvaffaqiyatlari haqida ma’lumot beriladi.
+            Maktabning batafsil tarixi, imkoniyatlari va dasturlari tasdiqlangandan so‘ng qo‘shiladi.
           </p>
-          <Link
-            to="/maktab"
-            className="group mt-7 inline-flex items-center gap-2 font-semibold text-primary hover:text-gold"
-          >
-            Batafsil o‘qish{" "}
-            <ArrowRight
-              className="h-4 w-4 transition-transform group-hover:translate-x-1"
-              aria-hidden
-            />
+          <Link to="/maktab" className="group mt-7 inline-flex items-center gap-2 font-semibold text-primary hover:text-gold">
+            Batafsil o‘qish <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden />
           </Link>
         </div>
       </section>
@@ -98,35 +77,18 @@ function Home() {
       {/* Posts */}
       <section className="border-y bg-secondary py-20 md:py-24">
         <div className="container-site">
-          <SectionHeading
-            eyebrow="So‘nggi xabarlar"
-            title="Maktab hayotidan lavhalar"
-            intro="Maktabimizning so‘nggi yangiliklari, tadbirlari va e’lonlari."
-            action={{ to: "/yangiliklar", label: "Barcha yangiliklar" }}
-          />
+          <SectionHeading eyebrow="So‘nggi xabarlar" title="Maktab hayotidan lavhalar" intro="Yangiliklar, tadbirlar va e’lonlar. Hozircha namuna xabarlar ko‘rsatilmoqda." action={{ to: "/yangiliklar", label: "Barcha yangiliklar" }} />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {posts.map((p) => (
-              <PostCard key={p.slug} post={p} />
-            ))}
-            {!posts.length && (
-              <p className="text-muted-foreground">Yangiliklar tez orada e’lon qilinadi.</p>
-            )}
+            {posts.map((p) => <PostCard key={p.slug} post={p} />)}
           </div>
         </div>
       </section>
 
       {/* Achievements */}
       <section className="container-site py-20 md:py-24">
-        <SectionHeading
-          eyebrow="Yutuqlar"
-          title="O‘quvchilarimiz muvaffaqiyatlari"
-          intro="Fan olimpiadalari va sertifikatlar bo‘yicha e’lon qilingan natijalar."
-          action={{ to: "/yutuqlar", label: "Barcha yutuqlar" }}
-        />
+        <SectionHeading eyebrow="Yutuqlar" title="O‘quvchilarimiz muvaffaqiyatlari" intro="Quyidagi kartalar namuna sifatida berilgan; haqiqiy natijalar tasdiqlangach joylanadi." action={{ to: "/yutuqlar", label: "Barcha yutuqlar" }} />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {achievements.map((a) => (
-            <AchievementCard key={a.id} a={a} onPreview={setCert} />
-          ))}
+          {achievements.map((a) => <AchievementCard key={a.id} a={a} onPreview={setCert} />)}
         </div>
       </section>
 
@@ -135,42 +97,35 @@ function Home() {
         <div className="container-site">
           <div className="mb-10 max-w-2xl">
             <p className="eyebrow">Maktab hayoti</p>
-            <h2 className="mt-2 text-3xl font-semibold md:text-4xl">
-              To‘garaklar, loyihalar va faoliyatlar
-            </h2>
-            <p className="mt-3 text-on-navy-muted">
-              Maktab tadbirlari, to‘garaklar, loyihalar va esda qolarli lahzalar.
-            </p>
+            <h2 className="mt-2 text-3xl font-semibold md:text-4xl">To‘garaklar, loyihalar va faoliyatlar</h2>
+            <p className="mt-3 text-on-navy-muted">Namuna yo‘nalishlar. Haqiqiy to‘garaklar ro‘yxati keyinroq qo‘shiladi.</p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {life.map((item) => (
-              <SchoolLifeCard key={item.id} item={item} dark />
-            ))}
-            {!life.length && (
-              <p className="text-on-navy-muted">Faoliyatlar tez orada e’lon qilinadi.</p>
-            )}
+            {life.map((l) => {
+              const Icon = lifeIcons[l.id as keyof typeof lifeIcons] ?? Lightbulb;
+              return (
+                <article key={l.id} className="overflow-hidden rounded-xl border border-on-navy/15">
+                  <div className="aspect-[4/3]"><PhotoPlaceholder src={l.image} compact /></div>
+                  <div className="p-5">
+                    <div className="flex items-center justify-between">
+                      <Icon className="h-6 w-6 text-gold" strokeWidth={1.5} aria-hidden />
+                      {l.isDemo && <DemoBadge />}
+                    </div>
+                    <h3 className="mt-3 text-xl font-semibold">{l.title}</h3>
+                    <p className="mt-1 text-sm text-on-navy-muted">{l.description}</p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
-          <Link className="mt-8 inline-flex items-center gap-2 text-gold" to="/maktab-hayoti">
-            Barcha faoliyatlar <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
         </div>
       </section>
 
       {/* Teachers */}
       <section className="container-site py-20 md:py-24">
-        <SectionHeading
-          eyebrow="Jamoa"
-          title="O‘qituvchilarimiz"
-          intro="Maktabimizning e’lon qilingan ustozlar profillari."
-          action={{ to: "/oqituvchilar", label: "Barcha o‘qituvchilar" }}
-        />
+        <SectionHeading eyebrow="Jamoa" title="O‘qituvchilarimiz" intro="Namuna profillar. O‘qituvchilar ma’lumotlari tez orada qo‘shiladi." action={{ to: "/oqituvchilar", label: "Barcha o‘qituvchilar" }} />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {teachers.map((t) => (
-            <TeacherCard key={t.slug} t={t} />
-          ))}
-          {!teachers.length && (
-            <p className="text-muted-foreground">Ustozlar profillari tez orada qo‘shiladi.</p>
-          )}
+          {teachers.map((t) => <TeacherCard key={t.slug} t={t} />)}
         </div>
       </section>
 

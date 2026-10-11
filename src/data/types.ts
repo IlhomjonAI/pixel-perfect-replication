@@ -13,10 +13,14 @@ export interface Post {
 }
 
 export type AchievementType =
-  "Fan olimpiadasi" | "STEM" | "Al-Xorazmiy" | "IELTS" | "SAT" | "Milliy sertifikat";
+  | "Fan olimpiadasi"
+  | "STEM"
+  | "Al-Xorazmiy"
+  | "IELTS"
+  | "SAT"
+  | "Milliy sertifikat";
 
-export type CompetitionStage =
-  "Maktab" | "Tuman" | "Viloyat" | "Respublika" | "Xalqaro" | "Sertifikat";
+export type CompetitionStage = "Maktab" | "Tuman" | "Viloyat" | "Respublika" | "Xalqaro" | "Sertifikat";
 
 export interface Achievement {
   id: string;
@@ -43,7 +47,6 @@ export interface Teacher {
   experience: string;
   biography: string;
   certificates: string[];
-  certificateImages?: string[];
   isDemo: boolean;
 }
 
@@ -52,8 +55,5 @@ export interface SchoolLifeItem {
   title: string;
   description: string;
   image: string | null;
-  category?: string;
-  eventDate?: string | null;
-  gallery?: string[];
   isDemo: boolean;
 }
