@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
 import { AchievementCard } from "@/components/site/cards";
 import { CertificateModal } from "@/components/site/CertificateModal";
-import { EmptyState, PageHeader } from "@/components/site/common";
+import { EmptyState, LoadingState } from "@/components/site/common";
+import { FilterBar, SelectField } from "@/components/site/filters";
+import { PageHero } from "@/components/site/PageHero";
 import type { Achievement } from "@/data/types";
 import { getAchievementsPage, getAchievementFilters } from "@/lib/achievement-api";
 import {
@@ -11,6 +13,7 @@ import {
   type AchievementQuery,
 } from "@/lib/achievement-editor";
 import { pageHead } from "@/lib/site";
+
 export const Route = createFileRoute("/yutuqlar")({
   head: () =>
     pageHead(
@@ -23,7 +26,9 @@ export const Route = createFileRoute("/yutuqlar")({
   }),
   component: Achievements,
 });
+
 const ALL = "Barchasi";
+
 function Achievements() {
   const initial = Route.useLoaderData();
   const [items, setItems] = useState(initial.page.items);
@@ -34,6 +39,7 @@ function Achievements() {
   const [error, setError] = useState("");
   const [cert, setCert] = useState<Achievement | null>(null);
   const sequence = useRef(0);
+
   const opts = {
     year: [ALL, ...initial.options.year],
     subject: [ALL, ...initial.options.subject],
@@ -41,6 +47,7 @@ function Achievements() {
     stage: [ALL, ...achievementStages],
   };
   const labels = { year: "Yil", subject: "Fan", type: "Yutuq turi", stage: "Bosqich" };
+
   async function load(filters: typeof f, append = false) {
     const current = ++sequence.current;
     setLoading(true);
@@ -72,53 +79,53 @@ function Achievements() {
       if (current === sequence.current) setLoading(false);
     }
   }
+
   function change(key: keyof typeof f, value: string) {
     const next = { ...f, [key]: value };
     setF(next);
     void load(next);
   }
+
   function clear() {
     const next = { year: ALL, subject: ALL, type: ALL, stage: ALL };
     setF(next);
     void load(next);
   }
+
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Yutuqlar"
         title="O‘quvchilar yutuqlari"
         intro="Olimpiadalar va sertifikatlar bo‘yicha e’lon qilingan natijalar."
       />
-      <div className="container-site py-12">
-        <div className="card-surface mb-8 grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="container-site py-12 md:py-16">
+        <FilterBar className="mb-8">
           {(Object.keys(labels) as (keyof typeof f)[]).map((key) => (
-            <label key={key} className="block text-sm font-semibold text-primary">
-              {labels[key]}
-              <select
-                value={f[key]}
-                onChange={(e) => change(key, e.target.value)}
-                className="field mt-1.5 font-normal"
-              >
-                {opts[key].map((v) => (
-                  <option key={v}>{v}</option>
-                ))}
-              </select>
-            </label>
+            <SelectField
+              key={key}
+              id={`ach-${key}`}
+              label={labels[key]}
+              value={f[key]}
+              onChange={(value) => change(key, value)}
+              options={opts[key].map((v) => ({ value: v, label: v }))}
+            />
           ))}
-        </div>
-        {loading && (
-          <p role="status" className="mb-5 text-muted-foreground">
-            Yuklanmoqda…
-          </p>
-        )}
+        </FilterBar>
+
         {error ? (
-          <div role="alert" className="py-8">
+          <div
+            role="alert"
+            className="card-surface flex flex-col items-center gap-4 py-12 text-center"
+          >
             <p className="text-destructive">{error}</p>
-            <button className="btn btn-outline mt-4" onClick={() => void load(f)}>
+            <button className="btn btn-outline" onClick={() => void load(f)}>
               Qayta urinish
             </button>
           </div>
-        ) : !loading && !items.length ? (
+        ) : loading && !items.length ? (
+          <LoadingState label="Yutuqlar yuklanmoqda…" />
+        ) : !items.length ? (
           <EmptyState
             title="Mos yutuq topilmadi"
             description="Filtrlarni o‘zgartiring yoki keyinroq qayta tekshiring."
@@ -141,7 +148,7 @@ function Achievements() {
                   disabled={loading}
                   onClick={() => void load(f, true)}
                 >
-                  Ko‘proq ko‘rsatish
+                  {loading ? "Yuklanmoqda…" : "Ko‘proq ko‘rsatish"}
                 </button>
               </div>
             )}

@@ -2,13 +2,14 @@ import { PhotoGallery } from "@/components/site/PhotoGallery";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { DemoBadge, EmptyState } from "@/components/site/common";
+import { PageHero } from "@/components/site/PageHero";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
-import { getPost } from "@/lib/api";
+import { getDatabasePost } from "@/lib/news-api";
 import { formatDate, pageHead } from "@/lib/site";
 
 export const Route = createFileRoute("/yangiliklar/$slug")({
   loader: async ({ params }) => {
-    const post = await getPost(params.slug);
+    const post = await getDatabasePost(params.slug);
     if (!post) throw notFound();
     return post;
   },
@@ -38,39 +39,52 @@ function PostNotFound() {
 function PostDetail() {
   const post = Route.useLoaderData();
   return (
-    <article className="container-site max-w-4xl py-12">
-      <Link
-        to="/yangiliklar"
-        className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:text-gold"
-      >
-        <ArrowLeft className="h-4 w-4" aria-hidden /> Barcha yangiliklar
-      </Link>
-      <div className="mt-6 flex flex-wrap items-center gap-3 text-sm">
-        <span className="rounded-full bg-primary px-3 py-1 font-semibold text-primary-foreground">
-          {post.category}
-        </span>
-        <time dateTime={post.date} className="text-muted-foreground">
-          {formatDate(post.date)}
-        </time>
-        {post.isDemo && <DemoBadge />}
+    <article>
+      <PageHero eyebrow={post.category} title={post.title} className="text-on-navy">
+        <div className="flex flex-wrap items-center gap-4">
+          <Link
+            to="/yangiliklar"
+            className="inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-on-navy-muted hover:text-gold"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden /> Barcha yangiliklar
+          </Link>
+          <span className="h-4 w-px bg-on-navy/25" aria-hidden />
+          <time dateTime={post.date} className="text-sm text-on-navy-muted">
+            {formatDate(post.date)}
+          </time>
+          {post.isDemo && <DemoBadge />}
+        </div>
+      </PageHero>
+
+      <div className="container-narrow py-12 md:py-16">
+        <div className="aspect-[16/9] overflow-hidden rounded-2xl border bg-secondary shadow-[var(--shadow-card)]">
+          <PhotoPlaceholder src={post.coverImage} alt={post.title} lazy={false} />
+        </div>
+
+        <div className="prose-editorial mt-10">
+          {post.body.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
+
+        {post.gallery.length > 0 && (
+          <section className="mt-14 border-t pt-10">
+            <h2 className="text-2xl font-medium text-primary">Fotogalereya</h2>
+            <div className="mt-6">
+              <PhotoGallery images={post.gallery} title={post.title} />
+            </div>
+          </section>
+        )}
+
+        <div className="mt-14 border-t pt-8">
+          <Link
+            to="/yangiliklar"
+            className="inline-flex min-h-11 items-center gap-2 font-semibold text-primary hover:text-gold-ink"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden /> Barcha yangiliklar
+          </Link>
+        </div>
       </div>
-      <h1 className="mt-4 text-3xl font-semibold text-primary md:text-5xl">{post.title}</h1>
-      <div className="mt-8 aspect-[16/9] overflow-hidden rounded-2xl">
-        <PhotoPlaceholder src={post.coverImage} alt={post.title} lazy={false} />
-      </div>
-      <div className="mt-8 space-y-5 text-lg leading-relaxed text-foreground">
-        {post.body.map((p, i) => (
-          <p key={i}>{p}</p>
-        ))}
-      </div>
-      {post.gallery.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-primary">Fotogalereya</h2>
-          <div className="mt-5">
-            <PhotoGallery images={post.gallery} title={post.title} />
-          </div>
-        </section>
-      )}
     </article>
   );
 }

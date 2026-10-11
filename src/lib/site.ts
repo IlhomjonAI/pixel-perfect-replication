@@ -1,7 +1,11 @@
-export const SCHOOL_NAME = "Bekobod tuman ixtisoslashtirilgan maktabi";
+export const SCHOOL_NAME = "Bekobod tumani ixtisoslashtirilgan maktabi";
 export const TELEGRAM_URL = "https://t.me/piima_bekobodtumani";
 export const ARIZA_URL = "https://ariza.piima.uz";
 export const PENDING = "Ma’lumot tez orada qo‘shiladi";
+
+export const SCHOOL_TAGLINE = "Bilimga intilish. Izlanishdan yutuqqa.";
+export const HERO_PRIMARY = "Maktab bilan tanishish";
+export const HERO_SECONDARY = "Yutuqlarimiz";
 
 export const NAV = [
   { to: "/", label: "Bosh sahifa" },

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Props {
@@ -12,17 +12,22 @@ interface Props {
   fit?: "cover" | "contain";
 }
 
-/** Shows a real image when available, otherwise a neutral labelled placeholder. */
+/**
+ * Shows a real image when available, otherwise an intentional, labelled
+ * fallback. The fallback reserves the same space (the parent sets the aspect
+ * ratio) so a missing or broken image never shifts the layout.
+ */
 export function PhotoPlaceholder({
   src,
   alt = "",
   className,
-  label = "Maktab fotosurati uchun joy",
+  label = "Fotosurat tez orada qo‘shiladi",
   lazy = true,
   compact,
   fit = "cover",
 }: Props) {
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
+
   if (src && failedSrc !== src) {
     return (
       <img
@@ -39,18 +44,23 @@ export function PhotoPlaceholder({
       />
     );
   }
+
   return (
     <div
       role="img"
       aria-label={src ? "Rasm hozir ochilmadi" : label}
       className={cn(
-        "placeholder-pattern flex h-full w-full flex-col items-center justify-center gap-2 text-muted-foreground",
+        "placeholder-pattern flex h-full w-full flex-col items-center justify-center gap-3 text-center text-muted-foreground",
         className,
       )}
     >
-      <ImageIcon className={compact ? "h-5 w-5" : "h-8 w-8"} strokeWidth={1.5} aria-hidden />
+      <ImageOff
+        className={cn(compact ? "h-5 w-5" : "h-7 w-7 text-gold-ink")}
+        strokeWidth={1.4}
+        aria-hidden
+      />
       {!compact && (
-        <span className="rounded-full bg-card px-3 py-1 text-xs font-medium">
+        <span className="max-w-[18ch] px-3 text-xs font-medium leading-snug">
           {src ? "Rasm hozir ochilmadi" : label}
         </span>
       )}

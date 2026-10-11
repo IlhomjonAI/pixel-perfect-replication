@@ -1,4 +1,14 @@
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import {
+  AdminFormHeading,
+  AdminListItem,
+  AdminLoading,
+  AdminNotice,
+  AdminPager,
+  AdminRefresh,
+  AdminSectionHeader,
+} from "@/components/admin/admin-ui";
+import { useAdminApi } from "@/components/admin/use-admin-api";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "@tanstack/react-router";
 import { teacherInput, type TeacherInput, type AdminTeacher } from "@/lib/teacher-editor";
@@ -38,26 +48,14 @@ export function TeacherManager({ onExpired }: { onExpired: () => void }) {
   const [dirty, setDirty] = useState(false);
   const [certificatesText, setCertificatesText] = useState("");
   const [imagesText, setImagesText] = useState("");
-  const api = useCallback(
-    async (path: string, init?: RequestInit) => {
-      const r = await fetch(path, { cache: "no-store", ...init });
-      const data = await r.json();
-      if (r.status === 401) {
-        onExpired();
-        throw new Error("Sessiya tugagan. Qayta kiring.");
-      }
-      if (!r.ok) throw new Error(data.error?.message ?? "So‘rov bajarilmadi.");
-      return data;
-    },
-    [onExpired],
-  );
+  const api = useAdminApi(onExpired);
   const load = useCallback(
     async (page: number) => {
       setLoading(true);
       try {
-        const result = await api("/api/admin/teachers?offset=" + page);
+        const result = await api<AdminTeacher[]>("/api/admin/teachers?offset=" + page);
         setItems(result.data);
-        setMore(result.pagination.hasMore);
+        setMore(result.pagination?.hasMore ?? false);
         setOffset(page);
       } catch (e) {
         setError(e instanceof Error ? e.message : "Serverga ulanib bo‘lmadi.");
@@ -132,7 +130,7 @@ export function TeacherManager({ onExpired }: { onExpired: () => void }) {
     }
     setBusy(true);
     try {
-      const result = await api(
+      const result = await api<AdminTeacher>(
         "/api/admin/teachers" + (editing ? "/" + encodeURIComponent(editing) : ""),
         {
           method: editing ? "PUT" : "POST",
@@ -140,7 +138,7 @@ export function TeacherManager({ onExpired }: { onExpired: () => void }) {
           body: JSON.stringify(parsed.data),
         },
       );
-      const saved: AdminTeacher = result.data;
+      const saved = result.data;
       setEditing(saved.slug);
       setForm({ ...parsed.data, version: saved.version });
       setDirty(false);
@@ -156,44 +154,41 @@ export function TeacherManager({ onExpired }: { onExpired: () => void }) {
   return (
     <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1.4fr]">
       <section aria-label="Ustozlar ro‘yxati">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-2xl font-semibold text-primary">Ustozlar</h2>
-          <button
-            className="btn btn-outline"
-            disabled={busy || uploading}
-            onClick={() => open(null)}
-          >
-            Yangi ustoz
-          </button>
-        </div>
-        <button
-          className="mt-3 text-sm underline"
+        <AdminSectionHeader
+          title="Ustozlar"
+          action={
+            <button
+              className="btn btn-outline"
+              disabled={busy || uploading}
+              onClick={() => open(null)}
+            >
+              Yangi ustoz
+            </button>
+          }
+        />
+        <AdminRefresh
           disabled={busy || uploading || loading}
           onClick={() => {
             setError("");
             void load(offset);
           }}
-        >
-          Ro‘yxatni yangilash
-        </button>
+        />
         {loading ? (
-          <p role="status" className="mt-5">
-            Yuklanmoqda…
-          </p>
+          <AdminLoading />
         ) : items.length ? (
           <ul className="mt-5 space-y-3">
             {items.map((item) => (
               <li key={item.slug}>
-                <button
+                <AdminListItem
+                  active={editing === item.slug}
                   disabled={busy || uploading}
                   onClick={() => open(item)}
-                  className={`w-full rounded-xl border p-4 text-left ${editing === item.slug ? "border-primary bg-muted" : "bg-background"}`}
                 >
                   <strong className="block">{item.name}</strong>
                   <span className="mt-2 block text-sm text-muted-foreground">
                     {item.subject} · {statuses[item.status]}
                   </span>
-                </button>
+                </AdminListItem>
               </li>
             ))}
           </ul>
@@ -202,27 +197,15 @@ export function TeacherManager({ onExpired }: { onExpired: () => void }) {
             Hozircha ustoz yo‘q. Birinchi profilni qo‘shing.
           </p>
         )}
-        <div className="mt-4 flex gap-3">
-          <button
-            className="btn btn-outline"
-            disabled={loading || busy || uploading || offset === 0}
-            onClick={() => void load(Math.max(0, offset - 20))}
-          >
-            Oldingi
-          </button>
-          <button
-            className="btn btn-outline"
-            disabled={loading || busy || uploading || !more}
-            onClick={() => void load(offset + 20)}
-          >
-            Keyingi
-          </button>
-        </div>
+        <AdminPager
+          offset={offset}
+          hasMore={more}
+          disabled={loading || busy || uploading}
+          onPage={(page) => void load(page)}
+        />
       </section>
       <section>
-        <h2 className="text-2xl font-semibold text-primary">
-          {editing ? "Ustozni tahrirlash" : "Yangi ustoz"}
-        </h2>
+        <AdminFormHeading>{editing ? "Ustozni tahrirlash" : "Yangi ustoz"}</AdminFormHeading>
         <form onSubmit={save} className="mt-5 space-y-4">
           <fieldset disabled={busy || uploading} className="space-y-4">
             {textFields.map(([key, label, max]) => (
@@ -326,16 +309,7 @@ export function TeacherManager({ onExpired }: { onExpired: () => void }) {
             </button>
           </fieldset>
         </form>
-        {notice && (
-          <p role="status" className="mt-4 text-primary">
-            {notice}
-          </p>
-        )}
-        {error && (
-          <p role="alert" className="mt-4 text-destructive">
-            {error}
-          </p>
-        )}
+        <AdminNotice notice={notice} error={error} />
       </section>
     </div>
   );

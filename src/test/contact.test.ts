@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { validateContact } from "@/lib/contact";
 
-const ok = { name: "Ali", contact: "ali@example.com", type: "Savol", message: "Salom, savolim bor.", consent: true };
+const ok = {
+  name: "Ali",
+  contact: "ali@example.com",
+  type: "Savol",
+  message: "Salom, savolim bor.",
+  consent: true,
+};
 
 describe("validateContact", () => {
   it("accepts a valid form", () => expect(validateContact(ok)).toEqual({}));
@@ -19,7 +25,8 @@ describe("validateContact", () => {
     expect(validateContact({ ...ok, contact: "() () ()" }).contact).toBeDefined());
   it("rejects a string with letters mixed in", () =>
     expect(validateContact({ ...ok, contact: "+998 90 abc 45 67" }).contact).toBeDefined());
-  it("requires consent", () => expect(validateContact({ ...ok, consent: false }).consent).toBeDefined());
+  it("requires consent", () =>
+    expect(validateContact({ ...ok, consent: false }).consent).toBeDefined());
   it("rejects unknown request type", () =>
     expect(validateContact({ ...ok, type: "Shikoyat" }).type).toBeDefined());
 });

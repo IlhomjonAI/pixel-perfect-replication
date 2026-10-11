@@ -1,56 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
-import { PageHeader, EmptyState } from "@/components/site/common";
+import { EmptyState } from "@/components/site/common";
+import { PageHero } from "@/components/site/PageHero";
 import { SchoolLifeCard } from "@/components/site/SchoolLifeCard";
+import { useLoadMore } from "@/lib/paging";
 import { getSchoolLifePage } from "@/lib/school-life-api";
 import { pageHead } from "@/lib/site";
+
 export const Route = createFileRoute("/maktab-hayoti")({
   head: () =>
     pageHead("Maktab hayoti", "Maktab tadbirlari, to‘garaklar, loyihalar va fotogalereyalar."),
   loader: () => getSchoolLifePage(20),
   component: SchoolLife,
 });
+
 function SchoolLife() {
   const initial = Route.useLoaderData();
-  const [items, setItems] = useState(initial),
-    [offset, setOffset] = useState(initial.length);
-  const [more, setMore] = useState(initial.length === 20),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
-  useEffect(() => {
-    setItems(initial);
-    setOffset(initial.length);
-    setMore(initial.length === 20);
-  }, [initial]);
-  async function loadMore() {
-    setBusy(true);
-    setError("");
-    try {
-      const next = await getSchoolLifePage(20, offset);
-      setItems((current) => [
-        ...current,
-        ...next.filter((n) => !current.some((c) => c.id === n.id)),
-      ]);
-      setOffset((v) => v + next.length);
-      setMore(next.length === 20);
-    } catch {
-      setError("Faoliyatlar yuklanmadi. Qayta urinib ko‘ring.");
-    } finally {
-      setBusy(false);
-    }
-  }
+  const { items, hasMore, loading, error, loadMore } = useLoadMore({
+    initial,
+    pageSize: 20,
+    keyOf: (item) => item.id,
+    load: (offset) => getSchoolLifePage(20, offset),
+    errorLabel: "Faoliyatlar yuklanmadi. Qayta urinib ko‘ring.",
+  });
+
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Maktab muhiti"
         title="Maktab hayoti"
         intro="Tadbirlar, to‘garaklar, loyihalar va esda qolarli lahzalar."
       />
-      <section className="container-site py-12">
+      <section className="container-site py-12 md:py-16">
         {items.length ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((item) => (
-              <SchoolLifeCard key={item.id} item={item} />
+            {items.map((item, index) => (
+              <SchoolLifeCard key={item.id} item={item} feature={index === 0} />
             ))}
           </div>
         ) : (
@@ -59,15 +43,15 @@ function SchoolLife() {
             description="Maktab tadbirlari va galereyalar shu yerda chiqadi."
           />
         )}
-        {more && (
-          <div className="mt-8 text-center">
-            <button className="btn btn-outline" disabled={busy} onClick={loadMore}>
-              {busy ? "Yuklanmoqda…" : "Ko‘proq faoliyat"}
+        {hasMore && (
+          <div className="mt-10 text-center">
+            <button className="btn btn-outline" disabled={loading} onClick={() => void loadMore()}>
+              {loading ? "Yuklanmoqda…" : "Ko‘proq faoliyat"}
             </button>
           </div>
         )}
         {error && (
-          <p role="alert" className="mt-4 text-destructive">
+          <p role="alert" className="mt-4 text-center text-destructive">
             {error}
           </p>
         )}

@@ -1,25 +1,28 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Send } from "lucide-react";
-import { ARIZA_URL, NAV, SCHOOL_NAME, TELEGRAM_URL } from "@/lib/site";
+import { ARIZA_URL, NAV, SCHOOL_NAME, SCHOOL_TAGLINE, TELEGRAM_URL } from "@/lib/site";
 import { Emblem } from "./Emblem";
 
 export function SiteFooter() {
   return (
-    <footer className="bg-navy-deep text-on-navy">
-      <div className="container-site grid gap-10 py-12 md:grid-cols-[1.2fr_1fr_1fr] md:py-16">
+    <footer className="relative bg-navy-deep text-on-navy">
+      <div className="divider-gold absolute left-0 top-0 w-full" aria-hidden />
+      <div className="container-site grid gap-10 py-14 md:grid-cols-[1.2fr_1fr_1fr] md:py-16">
         <div>
           <Link to="/" className="flex max-w-sm items-center gap-3">
             <Emblem className="h-12 w-12 shrink-0" />
-            <p className="font-display text-xl font-medium leading-snug">{SCHOOL_NAME}</p>
+            <p className="font-display text-xl font-medium leading-snug text-on-navy">
+              {SCHOOL_NAME}
+            </p>
           </Link>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-on-navy-muted">
-            Bilimga qiziqish, har kungi izlanish va yangi yutuqlar — maktab hayotimizning bir qismi.
+            {SCHOOL_TAGLINE} Har kungi izlanish va yangi yutuqlar — maktab hayotimizning bir qismi.
           </p>
           <a
             href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold"
+            className="mt-5 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-gold hover:text-on-navy"
           >
             <Send className="h-4 w-4" aria-hidden /> Telegram kanal{" "}
             <ArrowRight className="h-4 w-4" aria-hidden />
@@ -60,8 +63,12 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-on-navy/10">
         <div className="container-site flex flex-col gap-2 py-5 text-xs text-on-navy-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>© {SCHOOL_NAME}</p>
-          <p>Bilim, izlanish va yutuqlar sari.</p>
+          <p>
+            © {new Date().getFullYear()} {SCHOOL_NAME}
+          </p>
+          <Link to="/admin" className="hover:text-gold">
+            Xodimlar uchun
+          </Link>
         </div>
       </div>
     </footer>

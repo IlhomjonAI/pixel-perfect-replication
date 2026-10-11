@@ -1,4 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  AdminCard,
+  AdminListItem,
+  AdminLoading,
+  AdminNotice,
+  AdminPager,
+} from "@/components/admin/admin-ui";
+import { useAdminApi } from "@/components/admin/use-admin-api";
 import { messageStatuses, messageStatusLabels, type AdminMessage } from "@/lib/contact-workflow";
 export function MessageManager({ onExpired }: { onExpired: () => void }) {
   const [items, setItems] = useState<AdminMessage[]>([]);
@@ -13,34 +21,22 @@ export function MessageManager({ onExpired }: { onExpired: () => void }) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const sequence = useRef(0);
-  const api = useCallback(
-    async (path: string, init?: RequestInit) => {
-      const r = await fetch(path, { cache: "no-store", ...init });
-      const data = await r.json();
-      if (r.status === 401) {
-        onExpired();
-        throw new Error("Sessiya tugagan. Qayta kiring.");
-      }
-      if (!r.ok) throw new Error(data.error?.message ?? "So‘rov bajarilmadi.");
-      return data;
-    },
-    [onExpired],
-  );
+  const api = useAdminApi(onExpired);
   const load = useCallback(
     async (status: string, page: number) => {
       const current = ++sequence.current;
       setLoading(true);
       setError("");
       try {
-        const result = await api(
+        const result = await api<AdminMessage[]>(
           "/api/admin/messages?offset=" +
             page +
             (status ? "&status=" + encodeURIComponent(status) : ""),
         );
         if (current !== sequence.current) return;
         setItems(result.data);
-        setCounts(result.counts);
-        setMore(result.pagination.hasMore);
+        setCounts(result.counts ?? {});
+        setMore(result.pagination?.hasMore ?? false);
         setOffset(page);
       } catch (e) {
         if (current === sequence.current)
@@ -66,7 +62,7 @@ export function MessageManager({ onExpired }: { onExpired: () => void }) {
     setError("");
     setNotice("");
     try {
-      const result = await api("/api/admin/messages/" + selected.id, {
+      const result = await api<AdminMessage>("/api/admin/messages/" + selected.id, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: chosen, version: selected.version }),
@@ -127,13 +123,13 @@ export function MessageManager({ onExpired }: { onExpired: () => void }) {
       <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_1.3fr]">
         <div>
           {loading ? (
-            <p role="status">Yuklanmoqda…</p>
+            <AdminLoading />
           ) : items.length ? (
             <ul className="space-y-3">
               {items.map((item) => (
                 <li key={item.id}>
-                  <button
-                    className={`w-full rounded-xl border p-4 text-left ${selected?.id === item.id ? "border-primary bg-muted" : "bg-background"}`}
+                  <AdminListItem
+                    active={selected?.id === item.id}
                     disabled={busy}
                     onClick={() => open(item)}
                   >
@@ -147,33 +143,23 @@ export function MessageManager({ onExpired }: { onExpired: () => void }) {
                     >
                       {date(item.created_at)}
                     </time>
-                  </button>
+                  </AdminListItem>
                 </li>
               ))}
             </ul>
           ) : (
             <p className="text-muted-foreground">Bu holatda murojaat yo‘q.</p>
           )}
-          <div className="mt-4 flex gap-3">
-            <button
-              className="btn btn-outline"
-              disabled={loading || busy || offset === 0}
-              onClick={() => void load(filter, Math.max(0, offset - 20))}
-            >
-              Oldingi
-            </button>
-            <button
-              className="btn btn-outline"
-              disabled={loading || busy || !more}
-              onClick={() => void load(filter, offset + 20)}
-            >
-              Keyingi
-            </button>
-          </div>
+          <AdminPager
+            offset={offset}
+            hasMore={more}
+            disabled={loading || busy}
+            onPage={(page) => void load(filter, page)}
+          />
         </div>
         <div>
           {selected ? (
-            <article className="rounded-xl border p-5">
+            <AdminCard>
               <h3 className="text-xl font-semibold text-primary">{selected.name}</h3>
               <dl className="mt-4 space-y-3">
                 <div>
@@ -215,20 +201,11 @@ export function MessageManager({ onExpired }: { onExpired: () => void }) {
               >
                 {busy ? "Saqlanmoqda…" : "Holatni saqlash"}
               </button>
-            </article>
+            </AdminCard>
           ) : (
             <p className="text-muted-foreground">Murojaatni o‘qish uchun ro‘yxatdan tanlang.</p>
           )}
-          {notice && (
-            <p role="status" className="mt-4 text-primary">
-              {notice}
-            </p>
-          )}
-          {error && (
-            <p role="alert" className="mt-4 text-destructive">
-              {error}
-            </p>
-          )}
+          <AdminNotice notice={notice} error={error} />
         </div>
       </div>
     </section>

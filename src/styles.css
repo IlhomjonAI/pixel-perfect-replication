@@ -5,13 +5,15 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Fraunces", Georgia, serif;
-  --font-sans: "Manrope", system-ui, sans-serif;
+  --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-2xl: calc(var(--radius) + 10px);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -20,6 +22,8 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-forest: var(--forest);
+  --color-forest-deep: var(--forest-deep);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -27,10 +31,13 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
   --color-gold-soft: var(--gold-soft);
   --color-navy-deep: var(--navy-deep);
   --color-on-navy: var(--on-navy);
   --color-on-navy-muted: var(--on-navy-muted);
+  --color-sage: var(--sage);
+  --color-ivory: var(--ivory);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -38,42 +45,75 @@
   --color-ring: var(--ring);
   --color-placeholder: var(--placeholder);
   --color-placeholder-line: var(--placeholder-line);
+
   --shadow-card: var(--shadow-card);
   --shadow-lift: var(--shadow-lift);
+  --shadow-hero: var(--shadow-hero);
 }
 
+/*
+ * Contemporary academic palette
+ * forest #123C32 - forest-deep #092820 - ivory #F7F5EE - white #FFFFFF
+ * sage #DFE8DE - gold #D6B46B - ink #20352E - muted #56655D
+ * gold-ink #8A6414 is the only gold used for small text (>= 4.5:1 on ivory).
+ */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(0.985 0.008 85);
-  --foreground: oklch(0.24 0.05 262);
-  --card: oklch(1 0.004 85);
-  --card-foreground: oklch(0.24 0.05 262);
-  --popover: oklch(1 0.004 85);
-  --popover-foreground: oklch(0.24 0.05 262);
-  --primary: oklch(0.3 0.08 262);
-  --primary-foreground: oklch(0.985 0.008 85);
-  --secondary: oklch(0.955 0.014 85);
-  --secondary-foreground: oklch(0.3 0.08 262);
-  --muted: oklch(0.95 0.012 85);
-  --muted-foreground: oklch(0.47 0.03 262);
-  --accent: oklch(0.94 0.04 85);
-  --accent-foreground: oklch(0.3 0.08 262);
-  --gold: oklch(0.72 0.12 78);
-  --gold-ink: oklch(0.46 0.08 78);
-  --gold-soft: oklch(0.93 0.05 85);
-  --navy-deep: oklch(0.22 0.06 262);
-  --on-navy: oklch(0.97 0.01 85);
-  --on-navy-muted: oklch(0.8 0.02 262);
-  --destructive: oklch(0.55 0.2 27);
-  --destructive-foreground: oklch(0.985 0.008 85);
-  --border: oklch(0.89 0.015 85);
-  --input: oklch(0.86 0.015 85);
-  --ring: oklch(0.62 0.13 78);
-  --placeholder: oklch(0.925 0.015 85);
-  --placeholder-line: oklch(0.85 0.02 85);
-  --shadow-card: 0 1px 2px oklch(0.24 0.05 262 / 0.05), 0 4px 16px -8px oklch(0.24 0.05 262 / 0.12);
-  --shadow-lift:
-    0 2px 4px oklch(0.24 0.05 262 / 0.06), 0 16px 32px -16px oklch(0.24 0.05 262 / 0.25);
+  --radius: 0.75rem;
+
+  --ivory: #f7f5ee;
+  --forest: #123c32;
+  --forest-deep: #092820;
+  --sage: #dfe8de;
+
+  --background: var(--ivory);
+  --foreground: #20352e;
+  --card: #ffffff;
+  --card-foreground: #20352e;
+  --popover: #ffffff;
+  --popover-foreground: #20352e;
+  --primary: var(--forest);
+  --primary-foreground: #f7f5ee;
+  --secondary: #eef1ea;
+  --secondary-foreground: var(--forest);
+  --muted: #edeadf;
+  --muted-foreground: #56655d;
+  --accent: var(--sage);
+  --accent-foreground: var(--forest-deep);
+
+  --gold: #d6b46b;
+  --gold-ink: #8a6414;
+  --gold-soft: #f2e8d2;
+
+  --navy-deep: var(--forest-deep);
+  --on-navy: #f4f1e8;
+  --on-navy-muted: #a9c3b4;
+
+  --destructive: #a53a2e;
+  --destructive-foreground: #f7f5ee;
+
+  --border: #e3e1d4;
+  --input: #d6d3c2;
+  --ring: #8a6414;
+  --placeholder: #edeadf;
+  --placeholder-line: #dad6c5;
+
+  --shadow-card: 0 1px 2px rgb(9 40 32 / 0.05), 0 10px 30px -18px rgb(9 40 32 / 0.22);
+  --shadow-lift: 0 2px 6px rgb(9 40 32 / 0.07), 0 24px 48px -24px rgb(9 40 32 / 0.34);
+  --shadow-hero: 0 40px 80px -40px rgb(9 40 32 / 0.6);
+
+  /* Kept in sync with SiteHeader; lets the home hero slide under the header. */
+  --site-header-h: 4rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --site-header-h: 6.5rem;
+  }
+}
+@media (min-width: 1280px) {
+  :root {
+    --site-header-h: 7rem;
+  }
 }
 
 @layer base {
@@ -82,6 +122,7 @@
   }
   html {
     overflow-x: hidden;
+    scroll-behavior: smooth;
   }
   body {
     background-color: var(--color-background);
@@ -89,6 +130,7 @@
     font-family: var(--font-sans);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
   }
   body {
     overflow-wrap: anywhere;
@@ -105,7 +147,12 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  ::selection {
+    background: var(--forest);
+    color: var(--ivory);
   }
   :focus-visible {
     outline: 2px solid var(--ring);
@@ -119,6 +166,7 @@
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
@@ -134,12 +182,29 @@
   }
 }
 
+@utility container-narrow {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 46rem;
+  padding-inline: 1.25rem;
+  @media (min-width: 768px) {
+    padding-inline: 2rem;
+  }
+}
+
 @utility eyebrow {
-  font-size: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--gold-ink);
+}
+
+@utility rule {
+  height: 1px;
+  width: 100%;
+  background: var(--border);
 }
 
 @utility card-surface {
@@ -151,12 +216,12 @@
 
 @utility card-interactive {
   transition:
-    box-shadow 200ms ease,
-    transform 200ms ease,
-    border-color 200ms ease;
+    box-shadow 220ms ease,
+    transform 220ms ease,
+    border-color 220ms ease;
   &:hover {
     box-shadow: var(--shadow-lift);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     border-color: var(--placeholder-line);
   }
 }
@@ -172,28 +237,34 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  border-radius: 0.625rem;
+  border-radius: 999px;
   min-height: 2.75rem;
-  padding: 0.75rem 1.4rem;
+  padding: 0.7rem 1.5rem;
+  font-family: var(--font-sans);
   font-weight: 600;
   font-size: 0.95rem;
+  letter-spacing: 0.005em;
   transition:
     background-color 200ms ease,
     color 200ms ease,
-    border-color 200ms ease;
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
 }
 @utility btn-primary {
   background: var(--primary);
   color: var(--primary-foreground);
   &:hover {
     background: var(--navy-deep);
+    box-shadow: var(--shadow-card);
   }
 }
 @utility btn-gold {
   background: var(--gold);
-  color: var(--navy-deep);
+  color: var(--forest-deep);
   &:hover {
-    background: var(--gold-soft);
+    background: #e2c47f;
+    box-shadow: 0 10px 24px -12px rgb(214 180 107 / 0.8);
   }
 }
 @utility btn-outline {
@@ -202,14 +273,17 @@
   background: transparent;
   &:hover {
     border-color: var(--primary);
+    background: var(--secondary);
   }
 }
 @utility btn-ghost-navy {
-  border: 1px solid oklch(1 0 0 / 0.3);
+  border: 1px solid rgb(247 245 238 / 0.32);
   color: var(--on-navy);
+  background: rgb(9 40 32 / 0.18);
   &:hover {
     border-color: var(--gold);
     color: var(--gold);
+    background: rgb(9 40 32 / 0.32);
   }
 }
 
@@ -218,9 +292,12 @@
   border: 1px solid var(--input);
   border-radius: var(--radius-md);
   background: var(--card);
-  padding: 0.65rem 0.85rem;
+  padding: 0.7rem 0.9rem;
   font-size: 1rem;
   color: var(--foreground);
+  &::placeholder {
+    color: var(--muted-foreground);
+  }
   &:focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 1px;
@@ -230,34 +307,93 @@
   }
 }
 
+@utility home-section {
+  padding-block: 3.5rem;
+  @media (min-width: 768px) {
+    padding-block: 5.5rem;
+  }
+}
+
+@utility section-lg {
+  padding-block: 4rem;
+  @media (min-width: 768px) {
+    padding-block: 6.5rem;
+  }
+}
+
+/* Editorial long-form body copy */
+@utility prose-editorial {
+  font-size: 1.125rem;
+  line-height: 1.85;
+  color: var(--foreground);
+  & > p + p {
+    margin-top: 1.4em;
+  }
+  & a {
+    color: var(--forest);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
 @layer base {
   .text-on-navy .eyebrow {
     color: var(--gold);
   }
 }
 
-@utility home-section {
-  padding-block: 3.5rem;
-  @media (min-width: 768px) {
-    padding-block: 5rem;
-  }
-}
-
 @layer components {
-  .home-hero {
-    background-image: radial-gradient(
-      ellipse at 85% 20%,
-      oklch(0.44 0.065 262 / 0.4),
-      transparent 60%
-    );
+  /* Subtle academic motif used behind the hero and empty visual states. */
+  .hero-grid {
+    background-image:
+      linear-gradient(to right, rgb(214 180 107 / 0.14) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(214 180 107 / 0.14) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
-  .hero-story {
-    box-shadow: 0 24px 48px -24px oklch(0.1 0.03 262 / 0.7);
+  .hero-vignette {
+    background:
+      radial-gradient(ellipse 90% 70% at 50% 0%, rgb(18 60 50 / 0.35), transparent 70%),
+      linear-gradient(
+        180deg,
+        rgb(9 40 32 / 0.66) 0%,
+        rgb(9 40 32 / 0.82) 55%,
+        rgb(9 40 32 / 0.95) 100%
+      );
   }
   .academic-art {
-    background-image: linear-gradient(145deg, oklch(0.32 0.07 262), var(--navy-deep));
+    background-image: linear-gradient(150deg, #16493c 0%, var(--forest-deep) 70%);
   }
   .contact-banner {
     border-left: 3px solid var(--gold);
+  }
+  .divider-gold {
+    height: 1px;
+    width: 3.5rem;
+    background: var(--gold);
+  }
+}
+
+/* Entrance motion: pure CSS, progressive, and disabled by reduced-motion. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise-in 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: rise-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 42%;
+    }
   }
 }

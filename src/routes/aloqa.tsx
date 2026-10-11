@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Send } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
-import { PageHeader } from "@/components/site/common";
+import { Eyebrow } from "@/components/site/common";
+import { PageHero } from "@/components/site/PageHero";
 import { validateContact, type ContactErrors, type ContactForm } from "@/lib/contact";
 import { PENDING, TELEGRAM_URL, pageHead } from "@/lib/site";
 
@@ -68,7 +69,7 @@ function Contact() {
 
   const err = (k: keyof ContactForm) =>
     errors[k] && (
-      <p id={`${k}-err`} className="mt-1 text-sm text-destructive">
+      <p id={`${k}-err`} className="mt-1.5 text-sm text-destructive">
         {errors[k]}
       </p>
     );
@@ -79,12 +80,12 @@ function Contact() {
 
   return (
     <>
-      <PageHeader
+      <PageHero
         eyebrow="Aloqa"
         title="Aloqa va murojaat"
         intro="Savol, taklif yoki hamkorlik bo‘yicha murojaat qoldiring."
       />
-      <div className="container-site grid gap-10 py-12 lg:grid-cols-[1fr_340px]">
+      <div className="container-site grid gap-10 py-12 lg:grid-cols-[1fr_340px] lg:gap-14">
         <form noValidate onSubmit={submit} className="card-surface space-y-5 p-6 md:p-8">
           <p className="text-sm text-muted-foreground">
             Murojaatingiz maktab administratoriga yuboriladi.
@@ -180,7 +181,7 @@ function Contact() {
               {error}
             </p>
           )}
-          <button disabled={busy} type="submit" className="btn btn-primary">
+          <button disabled={busy} type="submit" className="btn btn-primary w-full sm:w-auto">
             <Send className="h-4 w-4" aria-hidden /> {busy ? "Yuborilmoqda…" : "Yuborish"}
           </button>
         </form>
@@ -191,15 +192,15 @@ function Contact() {
             ["Elektron pochta", PENDING],
           ].map(([k, v]) => (
             <div key={k} className="card-surface p-5">
-              <p className="eyebrow">{k}</p>
-              <p className="mt-1">{v}</p>
+              <Eyebrow>{k}</Eyebrow>
+              <p className="mt-2 text-muted-foreground">{v}</p>
             </div>
           ))}
           <a
             href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-primary w-full"
+            className="btn btn-outline w-full"
           >
             <Send className="h-4 w-4" aria-hidden /> Telegram kanal
           </a>

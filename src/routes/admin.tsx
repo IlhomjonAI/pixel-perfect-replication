@@ -3,24 +3,37 @@ import { MessageManager } from "@/components/admin/MessageManager";
 import { TeacherManager } from "@/components/admin/TeacherManager";
 import { AchievementManager } from "@/components/admin/AchievementManager";
 import { PostManager } from "@/components/admin/PostManager";
+import { AdminCard, AdminLoading } from "@/components/admin/admin-ui";
+import { Eyebrow } from "@/components/site/common";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [{ title: "Admin | Bekobod maktabi" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminPage,
 });
+
+const VIEWS = [
+  { key: "posts", label: "Yangiliklar" },
+  { key: "achievements", label: "Yutuqlar" },
+  { key: "teachers", label: "Ustozlar" },
+  { key: "messages", label: "Murojaatlar" },
+  { key: "life", label: "Maktab hayoti" },
+] as const;
+
+type View = (typeof VIEWS)[number]["key"];
+
 function AdminPage() {
-  const [view, setView] = useState<"posts" | "achievements" | "teachers" | "messages" | "life">(
-    "posts",
-  );
+  const [view, setView] = useState<View>("posts");
   const [authenticated, setAuthenticated] = useState(false);
   const onExpired = useCallback(() => setAuthenticated(false), []);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
   useEffect(() => {
     let active = true;
     fetch("/api/admin/session", { cache: "no-store" })
@@ -40,6 +53,7 @@ function AdminPage() {
       active = false;
     };
   }, []);
+
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
@@ -63,6 +77,7 @@ function AdminPage() {
       setBusy(false);
     }
   }
+
   async function logout() {
     setBusy(true);
     setError("");
@@ -77,55 +92,40 @@ function AdminPage() {
       setBusy(false);
     }
   }
+
   return (
-    <section className="container-site py-16">
-      <div
-        className={`mx-auto ${authenticated ? "max-w-6xl" : "max-w-md"} rounded-2xl border bg-card p-5 shadow-sm sm:p-8`}
-      >
-        <p className="eyebrow">Maktab boshqaruvi</p>
-        <h1 className="mt-3 text-3xl font-semibold text-primary">Admin panel</h1>
+    <section className="container-site py-14 md:py-20">
+      <div className="mx-auto mb-8 max-w-6xl">
+        <Eyebrow>Maktab boshqaruvi</Eyebrow>
+        <h1 className="mt-3 text-[clamp(1.9rem,4vw,2.75rem)] font-medium text-primary">
+          Admin panel
+        </h1>
+      </div>
+
+      <AdminCard className={authenticated ? "mx-auto max-w-6xl" : "mx-auto max-w-md"}>
         {loading ? (
-          <p className="mt-6" role="status">
-            Tekshirilmoqda…
-          </p>
+          <AdminLoading label="Tekshirilmoqda…" />
         ) : authenticated ? (
-          <div className="mt-6">
-            <div className="flex flex-wrap gap-3" role="group" aria-label="Boshqaruv bo‘limi">
-              <button
-                className={`btn ${view === "posts" ? "btn-primary" : "btn-outline"}`}
-                aria-pressed={view === "posts"}
-                onClick={() => setView("posts")}
-              >
-                Yangiliklar
-              </button>
-              <button
-                className={`btn ${view === "achievements" ? "btn-primary" : "btn-outline"}`}
-                aria-pressed={view === "achievements"}
-                onClick={() => setView("achievements")}
-              >
-                Yutuqlar
-              </button>
-              <button
-                className={`btn ${view === "teachers" ? "btn-primary" : "btn-outline"}`}
-                aria-pressed={view === "teachers"}
-                onClick={() => setView("teachers")}
-              >
-                Ustozlar
-              </button>
-              <button
-                className={`btn ${view === "messages" ? "btn-primary" : "btn-outline"}`}
-                aria-pressed={view === "messages"}
-                onClick={() => setView("messages")}
-              >
-                Murojaatlar
-              </button>
-              <button
-                className={`btn ${view === "life" ? "btn-primary" : "btn-outline"}`}
-                aria-pressed={view === "life"}
-                onClick={() => setView("life")}
-              >
-                Maktab hayoti
-              </button>
+          <div>
+            <div
+              role="group"
+              aria-label="Boshqaruv bo‘limi"
+              className="flex flex-wrap gap-2 border-b pb-5"
+            >
+              {VIEWS.map(({ key, label }) => (
+                <button
+                  key={key}
+                  className={`inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-semibold transition-colors ${
+                    view === key
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-input bg-card text-forest hover:border-primary hover:bg-secondary"
+                  }`}
+                  aria-pressed={view === key}
+                  onClick={() => setView(key)}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
             <div hidden={view !== "life"}>
               <SchoolLifeManager onExpired={onExpired} />
@@ -142,13 +142,16 @@ function AdminPage() {
             <div hidden={view !== "messages"}>
               <MessageManager onExpired={onExpired} />
             </div>
-            <button className="btn btn-outline mt-6" onClick={logout} disabled={busy}>
+            <button className="btn btn-outline mt-8" onClick={logout} disabled={busy}>
               {busy ? "Kutilmoqda…" : "Tizimdan chiqish"}
             </button>
           </div>
         ) : (
-          <form className="mt-6 space-y-4" onSubmit={submit}>
-            <label className="block" htmlFor="admin-password">
+          <form className="space-y-4" onSubmit={submit}>
+            <p className="text-sm text-muted-foreground">
+              Davom etish uchun administrator parolini kiriting.
+            </p>
+            <label className="block text-sm font-semibold text-primary" htmlFor="admin-password">
               Admin paroli
             </label>
             <input
@@ -159,7 +162,7 @@ function AdminPage() {
               maxLength={256}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border bg-background p-3"
+              className="field"
             />
             <button disabled={busy} className="btn btn-primary w-full" type="submit">
               {busy ? "Tekshirilmoqda…" : "Kirish"}
@@ -171,7 +174,7 @@ function AdminPage() {
             {error}
           </p>
         )}
-      </div>
+      </AdminCard>
     </section>
   );
 }

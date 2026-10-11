@@ -38,5 +38,6 @@ dist-ssr
 .dev.vars*
 !*.example
 
-# Downloaded local delivery patches
+# Downloaded local delivery patches (archived under patches/, not runtime code)
 /bekobod-*.patch
+/patches/
