@@ -1,3 +1,4 @@
+import { SchoolLifeManager } from "@/components/admin/SchoolLifeManager";
 import { MessageManager } from "@/components/admin/MessageManager";
 import { TeacherManager } from "@/components/admin/TeacherManager";
 import { AchievementManager } from "@/components/admin/AchievementManager";
@@ -11,7 +12,9 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 function AdminPage() {
-  const [view, setView] = useState<"posts" | "achievements" | "teachers" | "messages">("posts");
+  const [view, setView] = useState<"posts" | "achievements" | "teachers" | "messages" | "life">(
+    "posts",
+  );
   const [authenticated, setAuthenticated] = useState(false);
   const onExpired = useCallback(() => setAuthenticated(false), []);
   const [loading, setLoading] = useState(true);
@@ -77,7 +80,7 @@ function AdminPage() {
   return (
     <section className="container-site py-16">
       <div
-        className={`mx-auto ${authenticated ? "max-w-6xl" : "max-w-md"} rounded-2xl border bg-card p-8 shadow-sm`}
+        className={`mx-auto ${authenticated ? "max-w-6xl" : "max-w-md"} rounded-2xl border bg-card p-5 shadow-sm sm:p-8`}
       >
         <p className="eyebrow">Maktab boshqaruvi</p>
         <h1 className="mt-3 text-3xl font-semibold text-primary">Admin panel</h1>
@@ -116,6 +119,16 @@ function AdminPage() {
               >
                 Murojaatlar
               </button>
+              <button
+                className={`btn ${view === "life" ? "btn-primary" : "btn-outline"}`}
+                aria-pressed={view === "life"}
+                onClick={() => setView("life")}
+              >
+                Maktab hayoti
+              </button>
+            </div>
+            <div hidden={view !== "life"}>
+              <SchoolLifeManager onExpired={onExpired} />
             </div>
             <div hidden={view !== "posts"}>
               <PostManager onExpired={onExpired} />

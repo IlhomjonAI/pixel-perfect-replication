@@ -350,3 +350,60 @@ References:
 - https://supabase.com/docs/guides/storage/buckets/fundamentals
 - https://supabase.com/docs/guides/getting-started/api-keys
 - https://supabase.com/pricing
+
+## Backend milestone 8 — school life and galleries
+
+The admin panel now manages school activities: events, clubs, projects and other
+activities. Fields are title, description, category, optional date, optional cover
+image, up to 20 gallery URLs, publication status and edit version. Cover and
+gallery files use the existing protected Supabase uploader. Upload alone does
+not attach an image until the activity is saved. Admin lists page 20 records.
+
+Apply migration 0009 locally, run `npm run check`, then `npm run worker:local`.
+The existing admin password and Supabase configuration remain in use. Create a
+draft in `/admin` → Maktab hayoti, upload a cover and two photos, save and verify
+it is hidden publicly. Publish, then open `/maktab-hayoti` and the homepage. The
+activity detail dialog displays the full description and gallery with previous/
+next controls and original image links. Archive and verify it disappears.
+
+GET/POST `/api/admin/school-life` and GET/PUT `/api/admin/school-life/:id` require
+admin sessions; writes also require matching Origin, bounded 64 KiB JSON and
+validated fields. A stale version gets 409. No permanent deletion is provided.
+Public GET `/api/school-life` and server functions return only published records
+in stable date-descending, ID-ascending order. Undated activities follow dated
+ones. The homepage reads four; `/maktab-hayoti` loads 20 at a time. Drafts and
+archives remain visible only in the admin content API. Image URLs in public
+Supabase buckets still have public delivery access independently of this status.
+
+Migration 0009 preserves existing school-life records, statuses and images while
+adding category, optional date, gallery, version and update metadata. Mock school
+life content is no longer returned by the live pages. Existing empty tables show
+an empty state until the admin publishes content. Photo fit classes are now
+static so Tailwind includes both cover and contain styles for gallery previews.
+
+Tests use isolated local D1 databases and cover publication/archive transitions,
+concurrent stale edits, validation, permissions, request limits, pagination over
+45 records and preservation of older content during migration. No remote
+migration, publishing action or deployment has been performed.
+
+## Frontend polish and repository cleanup
+
+Mobile navigation now uses the existing accessible Sheet component for focus
+containment, Escape dismissal, backdrop dismissal and return focus. It closes
+when navigating or switching to desktop width. Header spacing is more compact,
+form text uses a mobile-friendly size and disabled controls are visibly disabled.
+Gold eyebrow text uses a darker tone on light backgrounds and keeps the bright
+accent on navy. Pending navigation displays an accessible loading message.
+
+Failed images fall back to a labelled placeholder, with subsequent new image
+URLs still able to load. News galleries open a keyboard-accessible image dialog
+with navigation and original links. Certificates also offer full-image links.
+News and teacher lists update when loader data changes, show result counts,
+provide filter reset and distinguish empty data from no search matches.
+
+Unused mock data modules were removed after checking imports. Root downloaded
+`bekobod-*.patch` delivery files are ignored. Source, migrations, tests and
+package lockfiles remain versioned; build output, dependencies, Wrangler local
+data and credentials remain ignored. Nothing in this change deploys the site
+or makes unverified school facts official. Address, contact details, school
+history, leadership and admissions content still require confirmed information.

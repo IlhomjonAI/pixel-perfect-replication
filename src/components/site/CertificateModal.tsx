@@ -10,15 +10,30 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export function CertificateModal({ item, onClose }: { item: Achievement | null; onClose: () => void }) {
+export function CertificateModal({
+  item,
+  onClose,
+}: {
+  item: Achievement | null;
+  onClose: () => void;
+}) {
   return (
-    <Dialog open={item !== null} onOpenChange={(open) => { if (!open) onClose(); }}>
+    <Dialog
+      open={item !== null}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
       <DialogContent className="max-w-2xl overflow-hidden p-0">
         <DialogHeader className="border-b p-5">
           {item?.isDemo && <DemoBadge />}
-          <DialogTitle className="mt-2 text-xl font-semibold text-primary">{item?.title}</DialogTitle>
+          <DialogTitle className="mt-2 text-xl font-semibold text-primary">
+            {item?.title}
+          </DialogTitle>
           <DialogDescription>
-            {item ? `${item.studentName} · ${formatDate(item.achievementDate)} · ${item.result}` : ""}
+            {item
+              ? `${item.studentName} · ${formatDate(item.achievementDate)} · ${item.result}`
+              : ""}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[70vh] overflow-y-auto">
@@ -34,6 +49,16 @@ export function CertificateModal({ item, onClose }: { item: Achievement | null; 
             )}
           </div>
         </div>
+        {item?.certificateImage && (
+          <a
+            href={item.certificateImage}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="border-t p-4 text-center text-sm font-semibold text-primary underline"
+          >
+            Sertifikatni to‘liq ochish
+          </a>
+        )}
       </DialogContent>
     </Dialog>
   );

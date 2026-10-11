@@ -1,9 +1,10 @@
+import { SchoolLifeCard } from "@/components/site/SchoolLifeCard";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Cpu, FlaskConical, Languages, Lightbulb } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { AchievementCard, PostCard, TeacherCard } from "@/components/site/cards";
 import { CertificateModal } from "@/components/site/CertificateModal";
-import { DemoBadge, SectionHeading } from "@/components/site/common";
+import { SectionHeading } from "@/components/site/common";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
 import type { Achievement } from "@/data/types";
 import { getAchievements, getPosts, getSchoolLife, getTeachers } from "@/lib/api";
@@ -18,13 +19,11 @@ export const Route = createFileRoute("/")({
   loader: async () => ({
     posts: await getPosts(6),
     achievements: await getAchievements(4),
-    life: await getSchoolLife(),
+    life: await getSchoolLife(4),
     teachers: await getTeachers(3),
   }),
   component: Home,
 });
-
-const lifeIcons = { stem: FlaskConical, robot: Cpu, eng: Languages, proj: Lightbulb } as const;
 
 function Home() {
   const { posts, achievements, life, teachers } = Route.useLoaderData();
@@ -140,29 +139,20 @@ function Home() {
               To‘garaklar, loyihalar va faoliyatlar
             </h2>
             <p className="mt-3 text-on-navy-muted">
-              Namuna yo‘nalishlar. Haqiqiy to‘garaklar ro‘yxati keyinroq qo‘shiladi.
+              Maktab tadbirlari, to‘garaklar, loyihalar va esda qolarli lahzalar.
             </p>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {life.map((l) => {
-              const Icon = lifeIcons[l.id as keyof typeof lifeIcons] ?? Lightbulb;
-              return (
-                <article key={l.id} className="overflow-hidden rounded-xl border border-on-navy/15">
-                  <div className="aspect-[4/3]">
-                    <PhotoPlaceholder src={l.image} compact />
-                  </div>
-                  <div className="p-5">
-                    <div className="flex items-center justify-between">
-                      <Icon className="h-6 w-6 text-gold" strokeWidth={1.5} aria-hidden />
-                      {l.isDemo && <DemoBadge />}
-                    </div>
-                    <h3 className="mt-3 text-xl font-semibold">{l.title}</h3>
-                    <p className="mt-1 text-sm text-on-navy-muted">{l.description}</p>
-                  </div>
-                </article>
-              );
-            })}
+            {life.map((item) => (
+              <SchoolLifeCard key={item.id} item={item} dark />
+            ))}
+            {!life.length && (
+              <p className="text-on-navy-muted">Faoliyatlar tez orada e’lon qilinadi.</p>
+            )}
           </div>
+          <Link className="mt-8 inline-flex items-center gap-2 text-gold" to="/maktab-hayoti">
+            Barcha faoliyatlar <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
         </div>
       </section>
 

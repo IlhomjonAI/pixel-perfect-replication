@@ -1,11 +1,8 @@
-/**
- * Published news, achievements and teachers use D1. School-life currently
- * retains demo data.
- */
+/** Published school content uses Cloudflare D1. */
 import { getAchievementsPage } from "@/lib/achievement-api";
 import { getPostsPage, getDatabasePost } from "@/lib/news-api";
 import { getTeachersPage, getDatabaseTeacher } from "@/lib/teacher-api";
-import { mockSchoolLife } from "@/data/mock/teachers";
+import { getSchoolLifePage } from "@/lib/school-life-api";
 import type { Achievement, Post, SchoolLifeItem, Teacher } from "@/data/types";
 
 export async function getPosts(limit = 50): Promise<Post[]> {
@@ -23,6 +20,6 @@ export async function getTeachers(limit = 50): Promise<Teacher[]> {
 export async function getTeacher(slug: string): Promise<Teacher | null> {
   return getDatabaseTeacher(slug);
 }
-export async function getSchoolLife(): Promise<SchoolLifeItem[]> {
-  return mockSchoolLife;
+export async function getSchoolLife(limit = 20): Promise<SchoolLifeItem[]> {
+  return getSchoolLifePage(limit);
 }

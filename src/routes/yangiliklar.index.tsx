@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { PostCard } from "@/components/site/cards";
 import { EmptyState, PageHeader } from "@/components/site/common";
 import type { PostCategory } from "@/data/types";
@@ -23,6 +23,11 @@ function News() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [offset, setOffset] = useState(initialPosts.length);
+  useEffect(() => {
+    setPosts(initialPosts);
+    setOffset(initialPosts.length);
+    setHasMore(initialPosts.length === 50);
+  }, [initialPosts]);
   async function loadMore() {
     setLoading(true);
     setError("");
@@ -88,6 +93,23 @@ function News() {
               </button>
             ))}
           </div>
+        </div>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
+            {list.length} ta xabar ko‘rsatilmoqda
+          </p>
+          {(q || cat !== "Barchasi") && (
+            <button
+              type="button"
+              className="text-sm font-semibold text-primary underline"
+              onClick={() => {
+                setQ("");
+                setCat("Barchasi");
+              }}
+            >
+              Filtrlarni tozalash
+            </button>
+          )}
         </div>
         {list.length ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

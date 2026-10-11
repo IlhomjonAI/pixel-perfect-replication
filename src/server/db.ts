@@ -84,7 +84,7 @@ export async function listSchoolLife(db: D1Database, limit = 20, offset = 0) {
   const page = boundPagination(limit, offset);
   const { results } = await db
     .prepare(
-      "SELECT id, title, description, image, is_demo FROM school_life WHERE status = 'published' ORDER BY id LIMIT ? OFFSET ?",
+      "SELECT id, title, description, image, category, event_date, gallery, is_demo FROM school_life WHERE status = 'published' ORDER BY COALESCE(event_date, '0000-01-01') DESC, id ASC LIMIT ? OFFSET ?",
     )
     .bind(page.limit, page.offset)
     .all<SchoolLifeRow>();

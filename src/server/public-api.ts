@@ -6,6 +6,7 @@ import {
   listAchievements,
   listPosts,
   listTeachers,
+  listSchoolLife,
   MAX_OFFSET,
   MAX_PAGE_SIZE,
 } from "@/server/db";
@@ -40,7 +41,9 @@ export async function handlePublicApi(request: Request, env: unknown): Promise<R
         ? listTeachers
         : path === "/api/achievements"
           ? listAchievements
-          : null;
+          : path === "/api/school-life"
+            ? listSchoolLife
+            : null;
   const detail = /^\/api\/(posts|teachers)\/([^/]+)$/.exec(path);
   if (path !== "/api/health" && !list && !detail) {
     return error("NOT_FOUND", "API manzili topilmadi.", 404);

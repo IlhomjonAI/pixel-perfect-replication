@@ -52,5 +52,8 @@ export interface SchoolLifeItem {
   title: string;
   description: string;
   image: string | null;
+  category?: string;
+  eventDate?: string | null;
+  gallery?: string[];
   isDemo: boolean;
 }

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { TeacherCard } from "@/components/site/cards";
 import { EmptyState, PageHeader } from "@/components/site/common";
 import { getTeachersPage } from "@/lib/teacher-api";
@@ -20,6 +20,11 @@ function Teachers() {
   const [hasMore, setHasMore] = useState(initial.length === 50);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  useEffect(() => {
+    setTeachers(initial);
+    setOffset(initial.length);
+    setHasMore(initial.length === 50);
+  }, [initial]);
   async function loadMore() {
     setLoading(true);
     setError("");
@@ -78,6 +83,23 @@ function Teachers() {
             </select>
           </label>
         </div>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
+            {list.length} ta ustoz ko‘rsatilmoqda
+          </p>
+          {(q || subject !== "Barchasi") && (
+            <button
+              type="button"
+              className="text-sm font-semibold text-primary underline"
+              onClick={() => {
+                setQ("");
+                setSubject("Barchasi");
+              }}
+            >
+              Filtrlarni tozalash
+            </button>
+          )}
+        </div>
         {list.length ? (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {list.map((t) => (
@@ -86,8 +108,16 @@ function Teachers() {
           </div>
         ) : (
           <EmptyState
-            title="O‘qituvchi topilmadi"
-            description="Qidiruv shartlarini o‘zgartirib ko‘ring."
+            title={
+              teachers.length
+                ? "O‘qituvchi topilmadi"
+                : "Ustozlar profillari tez orada e’lon qilinadi"
+            }
+            description={
+              teachers.length
+                ? "Qidiruv shartlarini o‘zgartirib ko‘ring."
+                : "E’lon qilingan profillar shu yerda ko‘rsatiladi."
+            }
           />
         )}
         {hasMore && (

@@ -46,6 +46,9 @@ export type SchoolLifeRow = {
   title: string;
   description: string;
   image: string | null;
+  category?: string;
+  event_date?: string | null;
+  gallery?: string;
   is_demo: number;
 };
 
@@ -123,6 +126,9 @@ export function mapSchoolLifeRow(row: SchoolLifeRow): SchoolLifeItem {
     title: row.title,
     description: row.description,
     image: row.image,
+    category: row.category ?? "Faoliyat",
+    eventDate: row.event_date ?? null,
+    gallery: parseStringArray(row.gallery ?? "[]"),
     isDemo: row.is_demo === 1,
   };
 }

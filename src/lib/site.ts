@@ -9,10 +9,24 @@ export const NAV = [
   { to: "/yangiliklar", label: "Yangiliklar" },
   { to: "/yutuqlar", label: "Yutuqlar" },
   { to: "/oqituvchilar", label: "O‘qituvchilar" },
+  { to: "/maktab-hayoti", label: "Maktab hayoti" },
   { to: "/qabul", label: "Qabul" },
 ] as const;
 
-const MONTHS = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"];
+const MONTHS = [
+  "yanvar",
+  "fevral",
+  "mart",
+  "aprel",
+  "may",
+  "iyun",
+  "iyul",
+  "avgust",
+  "sentabr",
+  "oktabr",
+  "noyabr",
+  "dekabr",
+];
 
 export function formatDate(iso: string): string {
   const parts = iso.split("-").map(Number);
