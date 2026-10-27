@@ -1,57 +1,70 @@
-# Bekobod tumani ixtisoslashtirilgan maktabi — rasmiy veb-sayti
+# Bekobod maktabi — Next.js + Node.js
 
-Bekobod tuman ixtisoslashtirilgan maktabining rasmiy veb-sayti. Sayt Cloudflare
-Workers + D1 bilan ishlaydi: yangiliklar, yutuqlar, o‘qituvchilar, maktab hayoti
-va murojaatlar administratorlar tomonidan boshqariladi. Nashr etilmagan
-yozuvlar va tasdiqlanmagan faktlar jamoatchilikka ko‘rsatilmaydi.
+Mavjud dizayn, ommaviy sahifalar va admin panel Next.js App Router bilan ishlaydi.
+Alohida Node.js server API, admin sessiyalari, kontent va murojaatlarni boshqaradi.
+Ma’lumotlar Node.js SQLite bazasida, yuklangan rasmlar Supabase Storage’da saqlanadi.
+Node.js 24 yoki undan yangi versiya kerak.
 
-## Bo‘limlar
-
-- **Bosh sahifa** — maktab tanishtiruvi, so‘nggi yangiliklar, yutuqlar, o‘qituvchilar va maktab hayoti
-- **Maktab haqida** — tasdiqlangan ma’lumot qo‘shilgach to‘ldiriladigan bo‘limlar
-- **Yangiliklar** — yangiliklar, tadbirlar va e’lonlar ro‘yxati, qidiruv va turkumlar bo‘yicha saralash
-- **Yutuqlar** — o‘quvchilar yutuqlari, sertifikatlarni to‘liq ko‘rish, filtrlash
-- **O‘qituvchilar** — o‘qituvchilar ro‘yxati va shaxsiy profillar
-- **Maktab hayoti** — to‘garaklar, loyihalar va gallereyalar
-- **Qabul** — qabul haqida ma’lumot va `ariza.piima.uz` ga yo‘naltirish
-- **Aloqa** — murojaat yuborish (CSRF origin tekshiruvi va cheklovlar bilan)
-- **Admin** — pasport-bilan kirish, mazmun boshqaruvi va murojaatlar
-
-## Texnologiyalar
-
-- **Frontend:** React 19, TanStack Start (SSR) va Router, Tailwind CSS v4
-- **Backend:** Cloudflare Workers (Nitro), Cloudflare D1, Supabase Storage (rasm yuklash)
-- **Shablon:** [Lovable](https://lovable.dev)
-
-## Branding va media
-
-Maktab logotipi va hero (bosh sahifa foni) konfiguratsiyasi `src/lib/brand.ts`
-faylida. Rasmiy logotip `public/brand/school-logo.svg` manzilida turadi va
-header, bosh sahifa hero, footer, admin hamda faviconda ishlatiladi (fayl
-yo‘qolsa SVG belgi avtomatik fallback bo‘ladi). Hero fotosurati/videosi hali
-tasdiqlanmagan, shuning uchun hero grafik fon bilan ishlaydi. Tafsilot:
-[BACKEND.md](BACKEND.md).
-
-## Loyiha bilan ishlash
+## Ishga tushirish
 
 ```sh
 npm ci
-npm run db:migrate:local
-npm run build
-npm run worker:local
+npm run dev
 ```
 
-Keyin http://localhost:8787 oching. `GET /api/health`
-`{"data":{"status":"ok","database":"ready"}}` qaytarishi kerak.
+Sayt: http://localhost:3000. Admin panel: http://localhost:3000/admin.
+API ichki manzili: http://127.0.0.1:4000.
+Birinchi ishga tushishda migratsiyalar avtomatik qo‘llanadi.
+Mavjud .dev.vars faylidagi admin va Supabase sozlamalari saqlanadi va o‘qiladi.
+Yangi o‘rnatishda admin hisobini npm run admin:setup orqali yarating.
 
-### Build va test
+## Tuzilish
+
+- frontend/app/ — Next.js sahifalari, serverda dastlabki ma’lumot yuklash va metadata.
+- frontend/views/ va frontend/components/ — mavjud dizayn va interaktiv interfeys.
+- frontend/api/ — Node.js API uchun HTTP mijoz.
+- admin/ — kontent, murojaat va rasm boshqaruvi.
+- backend/server.ts — alohida Node.js HTTP server.
+- backend/api/ — validatsiya, autentifikatsiya va API handlerlari.
+- backend/database/ — parametrli SQL so‘rovlari va SQLite ulanishi.
+- backend/migrations/ — ketma-ket, ma’lumotlarni saqlovchi SQL migratsiyalari.
+- backend/data/school.sqlite — mahalliy baza, Git’ga kiritilmaydi.
+
+## Eski ma’lumotlarni ko‘chirish
+
+Ushbu kompyuterdagi eski mahalliy D1 bazasi yangi SQLite bazaga ko‘chirildi.
+Eski .wrangler/state fayllari o‘zgartirilmagan.
+Boshqa o‘rnatishda, yangi bazani ishga tushirishdan oldin:
 
 ```sh
-npm run check      # typecheck + `npm test` + production build
-npm run lint       # eslint (0 xato; format: npm run format)
+npm run db:import:legacy
 ```
 
-## Loyihada davom ettirish
+Bir nechta eski baza bo‘lsa, buyruqdan keyin -- va aniq fayl manzilini bering.
+Import mavjud maqsad bazaning ustiga yozmaydi. Masofaviy D1 ma’lumotlari
+avtomatik olinmaydi; ularni alohida eksport qilish kerak.
 
-Bu loyiha [Lovable](https://lovable.dev) bilan bog'langan. Lovable editorida
-o'zgartirishlar to'g'ridan-to'g'ri ushbu repozitoriyaga sinxronlanadi.
+## Production
+
+```sh
+npm run build
+npm start
+```
+
+Next.js va API birga ishga tushadi. Production domenini .env dagi PUBLIC_ORIGIN
+bilan moslang. .env.example namuna sifatida berilgan. API_INTERNAL_URL serverlar
+orasidagi ichki manzil; brauzer API’ga Next.js orqali shu domenning /api manzilidan
+murojaat qiladi. Baza uchun doimiy disk va muntazam zaxira nusxasi kerak.
+Tashqi domen yoki hostingga deploy ushbu migratsiya tarkibida bajarilmagan.
+
+Alohida jarayonlar: npm run dev:frontend, npm run dev:backend,
+npm run start:frontend, npm run start:backend.
+
+## Tekshiruv
+
+```sh
+npm run check
+```
+
+TypeScript, ESLint, frontend va Node SQLite testlari, Next.js production build.
+Testlar vaqtinchalik bazalarda ishlaydi; haqiqiy kontent yoki tashqi xizmatlarga yozmaydi.

@@ -38,7 +38,7 @@ dist-ssr
 .dev.vars*
 !*.example
 
-# Downloaded local delivery patches (archived under patches/, not runtime code)
-/bekobod-*.patch
-/*.patch
-/patches/
+# Next.js and Node database
+frontend/.next/
+*.tsbuildinfo
+backend/data/

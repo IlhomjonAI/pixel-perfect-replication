@@ -1,0 +1,60 @@
+{
+  "description": "Namunaviy (stock) tasvirlar — maktabga tegishli EMAS. Faqat dizayn namunasi sifatida ishlatiladi va saytda 'Namunaviy tasvir' bilan belgilanadi.",
+  "license": "https://unsplash.com/license",
+  "images": [
+    {
+      "file": "hero-campus.jpg",
+      "source": "https://images.unsplash.com/photo-1562774053-701939374585",
+      "credit": "Unsplash",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "campus-dusk.jpg",
+      "source": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f",
+      "credit": "Unsplash",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "intro-library.jpg",
+      "source": "https://images.unsplash.com/photo-1507842217343-583bb7270b66",
+      "credit": "Alfons Morales",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "library-shelves.jpg",
+      "source": "https://images.unsplash.com/photo-1521587760476-6c12a4b040da",
+      "credit": "Iñaki del Olmo",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "science-lab.jpg",
+      "source": "https://images.unsplash.com/photo-1532094349884-543bc11b234d",
+      "credit": "Hans Reniers",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "classroom.jpg",
+      "source": "https://images.unsplash.com/photo-1509062522246-3755977927d7",
+      "credit": "Unsplash",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "study-collab.jpg",
+      "source": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
+      "credit": "Unsplash",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "notebook.jpg",
+      "source": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8",
+      "credit": "Unsplash",
+      "license": "Unsplash License"
+    },
+    {
+      "file": "reading.jpg",
+      "source": "https://images.unsplash.com/photo-1588072432836-e10032774350",
+      "credit": "Unsplash",
+      "license": "Unsplash License"
+    }
+  ]
+}

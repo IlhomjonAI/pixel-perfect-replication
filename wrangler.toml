@@ -1,9 +1,0 @@
-# Cloudflare Workers + D1. database_id is a placeholder until it is copied from the dashboard.
-name = "bekobod-maktab"
-compatibility_date = "2026-10-10"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "bekobod-maktab-db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
-migrations_dir = "migrations"
