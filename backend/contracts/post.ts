@@ -5,13 +5,14 @@ export const imageUrl = z
   .string()
   .max(2000)
   .refine((v) => {
+    if (/^\/media\/staff\/[a-z0-9-]+\.webp$/.test(v)) return true;
     try {
       const u = new URL(v);
       return u.protocol === "https:" && !u.username && !u.password;
     } catch {
       return false;
     }
-  }, "Rasm uchun HTTPS havola kiriting.");
+  }, "Rasm uchun HTTPS havola yoki saytning xodimlar rasmi manzilini kiriting.");
 export const postInput = z
   .object({
     title: z.string().trim().min(3).max(200),

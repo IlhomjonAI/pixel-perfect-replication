@@ -60,7 +60,15 @@ Tashqi domen yoki hostingga deploy ushbu migratsiya tarkibida bajarilmagan.
 Alohida jarayonlar: npm run dev:frontend, npm run dev:backend,
 npm run start:frontend, npm run start:backend.
 
-## Tekshiruv
+## Maktab jamoasi rasmlari va tavsiflari
+
+Foydalanuvchi yuborgan arxivdan 5 nafar rahbariyat vakili va 25 nafar ustoz portreti qo‘shilgan. Optimallashtirilgan rasmlar `frontend/public/media/staff/`da, ism, fan, lavozim va boshlang‘ich tavsiflar `backend/contracts/staff.ts`da saqlanadi. Bir xil ustozga tegishli takroriy rasm alohida profil yaratmaydi.
+
+Backend birinchi ishga tushganda ustozlar bazaga bir marta import qilinadi. Keyingi admin tahrirlari, arxivlash va o‘chirishlar server qayta ishga tushganda saqlanadi. Import mavjud ism yoki slug bilan profilni almashtirmaydi. Rahbariyat kartalarini o‘zgartirish uchun `backend/contracts/staff.ts`ni tahrirlab frontendni qayta deploy qiling.
+
+«Oliy darajadagi ustoz» — foydalanuvchi so‘ragan taqdimot tavsifi. Diplom, rasmiy malaka toifasi, sertifikat yoki ish staji haqidagi ma’lumotlar arxivda yo‘qligi uchun qo‘shilmagan.
+
+## Tekshiruv buyruqlari
 
 ```sh
 npm run check

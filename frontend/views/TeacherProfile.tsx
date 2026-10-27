@@ -13,7 +13,7 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
   const t = initialData;
   const rows: [string, string][] = [
     ["Fan", t.subject],
-    ["Malaka toifasi", t.qualification],
+    ["Kasbiy tavsif", t.qualification],
     ["Ma’lumoti", t.education],
     ["Ish tajribasi", t.experience],
   ];
@@ -37,7 +37,13 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
             from="left"
             className="aspect-[4/5] overflow-hidden rounded-2xl border bg-secondary shadow-[var(--shadow-card)]"
           >
-            <PhotoPlaceholder src={t.photo} label="O‘qituvchi fotosurati uchun joy" lazy={false} />
+            <PhotoPlaceholder
+              src={t.photo}
+              alt={t.name}
+              label="O‘qituvchi fotosurati uchun joy"
+              className="object-top"
+              lazy={false}
+            />
           </Reveal>
           <Reveal from="right" className="min-w-0">
             <dl className="card-surface divide-y divide-border overflow-hidden">

@@ -6,12 +6,7 @@ import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
 import { Reveal } from "@/components/site/Reveal";
 import { MEDIA } from "@/config/brand";
 import { SCHOOL_NAME } from "@/config/site";
-
-const LEADERSHIP = [
-  "Direktor",
-  "O‘quv ishlari bo‘yicha direktor o‘rinbosari",
-  "Ma’naviy-ma’rifiy ishlar bo‘yicha o‘rinbosar",
-];
+import { SCHOOL_LEADERSHIP } from "@backend/contracts/staff";
 
 export default function About() {
   return (
@@ -62,19 +57,24 @@ export default function About() {
             </div>
           </Reveal>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {LEADERSHIP.map((role, index) => (
+            {SCHOOL_LEADERSHIP.map((person, index) => (
               <Reveal
-                key={role}
+                key={person.slug}
                 from="up"
                 delay={index * 90}
                 className="card-surface overflow-hidden"
               >
                 <div className="aspect-[4/5] bg-secondary">
-                  <PhotoPlaceholder label="Fotosurat uchun joy" compact />
+                  <PhotoPlaceholder src={person.photo} alt={person.name} className="object-top" />
                 </div>
                 <div className="p-5">
-                  <p className="eyebrow">{role}</p>
-                  <p className="mt-2 font-semibold text-primary">Ma’lumot tez orada qo‘shiladi</p>
+                  <p className="eyebrow">{person.role}</p>
+                  <h3 className="mt-3 text-xl font-semibold leading-snug text-primary">
+                    {person.name}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                    {person.description}
+                  </p>
                 </div>
               </Reveal>
             ))}

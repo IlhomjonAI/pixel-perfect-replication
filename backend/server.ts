@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { Readable } from "node:stream";
 import { handle } from "./api/handler";
 import { SqliteDatabase } from "./database/sqlite";
+import { seedSchoolStaff } from "./database/seed-staff";
 import { databasePath } from "./config";
 import { startTelegramWorker } from "./telegram/worker";
 import { authorizedProxy, clientIp } from "./lib/proxy";
@@ -16,6 +17,7 @@ if (process.env["RENDER"]) {
 
 const db = new SqliteDatabase(databasePath);
 db.migrate();
+seedSchoolStaff(db);
 const env: AppBindings = { DB: db };
 for (const key of [
   "ADMIN_PASSWORD_HASH",

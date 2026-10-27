@@ -142,7 +142,7 @@ export function TeacherCard({ t }: { t: Teacher }) {
           src={t.photo}
           alt={t.name}
           label="Surat tez orada qo‘shiladi"
-          className="transition-transform duration-700 group-hover:scale-[1.04]"
+          className="object-top transition-transform duration-700 group-hover:scale-[1.04]"
         />
       </div>
       <div className="flex flex-1 flex-col p-5">
