@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { DemoBadge, PendingBlock } from "@/components/site/common";
 import { PageHero } from "@/components/site/PageHero";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
+import { Portrait } from "@/components/site/Portrait";
 import { Reveal } from "@/components/site/Reveal";
 import { getDatabaseTeacher } from "@/api/teacher";
 import { PENDING } from "@/config/site";
@@ -37,13 +38,7 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
             from="left"
             className="aspect-[4/5] overflow-hidden rounded-2xl border bg-secondary shadow-[var(--shadow-card)]"
           >
-            <PhotoPlaceholder
-              src={t.photo}
-              alt={t.name}
-              label="O‘qituvchi fotosurati uchun joy"
-              className="object-top"
-              lazy={false}
-            />
+            <Portrait src={t.photo} name={t.name} eager />
           </Reveal>
           <Reveal from="right" className="min-w-0">
             <dl className="card-surface divide-y divide-border overflow-hidden">
@@ -55,7 +50,7 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
               ))}
             </dl>
 
-            <h2 className="mt-10 font-display text-2xl text-primary">Tarjimai hol</h2>
+            <h2 className="mt-10 font-display text-2xl text-primary">Ustoz haqida</h2>
             <p className="mt-3 whitespace-pre-line leading-relaxed text-muted-foreground">
               {t.biography}
             </p>

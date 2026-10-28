@@ -8,6 +8,7 @@ import { PageHero } from "@/components/site/PageHero";
 import { MEDIA } from "@/config/brand";
 import { useLoadMore } from "@/hooks/use-load-more";
 import { getTeachersPage } from "@/api/teacher";
+import { matchesSearch } from "@/lib/search";
 
 export default function Teachers({ initialData }: { initialData: PageData }) {
   const initial = initialData;
@@ -40,8 +41,7 @@ export default function Teachers({ initialData }: { initialData: PageData }) {
 
   const list = teachers.filter(
     (t) =>
-      (subject === "all" || t.subject === subject) &&
-      (t.name + " " + t.subject).toLowerCase().includes(q.trim().toLowerCase()),
+      (subject === "all" || t.subject === subject) && matchesSearch(t.name + " " + t.subject, q),
   );
 
   return (

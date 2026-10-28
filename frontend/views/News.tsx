@@ -8,6 +8,7 @@ import { ChipGroup, FilterBar, ResultsCount, SearchField } from "@/components/si
 import { MEDIA } from "@/config/brand";
 import { getPostsPage } from "@/api/news";
 import { useLoadMore } from "@/hooks/use-load-more";
+import { matchesSearch } from "@/lib/search";
 
 const CATS = [
   { value: "all", label: "Barchasi" },
@@ -36,9 +37,7 @@ export default function News({ initialData }: { initialData: PageData }) {
   const list = useMemo(
     () =>
       posts.filter(
-        (p) =>
-          (cat === "all" || p.category === cat) &&
-          (p.title + " " + p.excerpt).toLowerCase().includes(q.trim().toLowerCase()),
+        (p) => (cat === "all" || p.category === cat) && matchesSearch(p.title + " " + p.excerpt, q),
       ),
     [posts, q, cat],
   );

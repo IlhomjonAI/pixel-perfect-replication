@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +26,7 @@ interface LightboxProps {
   /** Optional extra content rendered above the image stage. */
   children?: ReactNode;
   className?: string | undefined;
+  imageAspect?: "landscape" | "portrait";
 }
 
 /**
@@ -45,13 +46,47 @@ export function Lightbox({
   openLabel = "To‘liq ochish",
   children,
   className,
+  imageAspect = "landscape",
 }: LightboxProps) {
   const count = images.length;
-  const current = images[index] ?? null;
+  const opener = useRef<HTMLElement | null>(null);
+  const currentIndex = Math.max(
+    0,
+    Math.min(Number.isFinite(index) ? Math.trunc(index) : 0, count - 1),
+  );
+  const current = images[currentIndex] ?? null;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className={cn("max-h-[92vh] gap-0 overflow-hidden p-0 sm:max-w-3xl", className)}
+        onOpenAutoFocus={() => {
+          opener.current =
+            document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        }}
+        onCloseAutoFocus={(event) => {
+          if (opener.current?.isConnected) {
+            event.preventDefault();
+            opener.current.focus();
+          }
+        }}
+        className={cn(
+          "max-h-[92vh] grid-rows-[auto_minmax(0,1fr)] gap-0 overflow-hidden p-0 sm:max-w-3xl",
+          className,
+        )}
+        onKeyDown={(event) => {
+          if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+          if (
+            event.target instanceof HTMLElement &&
+            event.target.closest("input, textarea, select, [contenteditable=true]")
+          )
+            return;
+          if (event.key === "ArrowLeft" && currentIndex > 0) {
+            event.preventDefault();
+            onIndexChange(currentIndex - 1);
+          } else if (event.key === "ArrowRight" && currentIndex + 1 < count) {
+            event.preventDefault();
+            onIndexChange(currentIndex + 1);
+          }
+        }}
       >
         <DialogHeader className="border-b px-5 py-4 pr-14 text-left">
           <DialogTitle className="font-display text-xl leading-snug text-primary">
@@ -61,14 +96,18 @@ export function Lightbox({
             {description || title}
           </DialogDescription>
         </DialogHeader>
-        <div className="max-h-[74vh] overflow-y-auto px-5 py-5">
+        <div className="min-h-0 overflow-y-auto px-5 py-5">
           {children && <div className="mb-4">{children}</div>}
           {count > 0 && (
             <div className="overflow-hidden rounded-xl border bg-secondary">
-              <div className="aspect-[4/3]">
+              <div
+                className={
+                  imageAspect === "portrait" ? "aspect-[3/4] max-h-[65vh]" : "aspect-[4/3]"
+                }
+              >
                 <PhotoPlaceholder
                   src={current}
-                  alt={`${altPrefix ?? title}, ${index + 1}-rasm`}
+                  alt={`${altPrefix ?? title}, ${currentIndex + 1}-rasm`}
                   fit="contain"
                   lazy={false}
                 />
@@ -80,19 +119,19 @@ export function Lightbox({
               <button
                 type="button"
                 className="btn btn-outline"
-                disabled={index === 0}
-                onClick={() => onIndexChange(index - 1)}
+                disabled={currentIndex === 0}
+                onClick={() => onIndexChange(currentIndex - 1)}
               >
                 Oldingi rasm
               </button>
               <p role="status" className="text-sm text-muted-foreground">
-                {index + 1} / {count} ta rasm
+                {currentIndex + 1} / {count} ta rasm
               </p>
               <button
                 type="button"
                 className="btn btn-outline"
-                disabled={index >= count - 1}
-                onClick={() => onIndexChange(index + 1)}
+                disabled={currentIndex >= count - 1}
+                onClick={() => onIndexChange(currentIndex + 1)}
               >
                 Keyingi rasm
               </button>

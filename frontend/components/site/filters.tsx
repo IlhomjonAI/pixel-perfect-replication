@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import type { ReactNode } from "react";
+import { useId, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function SearchField({
@@ -19,9 +19,12 @@ export function SearchField({
   className?: string;
   id?: string;
 }) {
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
+  const input = useRef<HTMLInputElement>(null);
   return (
     <div className={cn("relative", className)}>
-      <label htmlFor={id} className="sr-only">
+      <label htmlFor={inputId} className="sr-only">
         {label}
       </label>
       <Search
@@ -29,20 +32,24 @@ export function SearchField({
         aria-hidden
       />
       <input
-        id={id}
+        ref={input}
+        id={inputId}
         type="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         aria-label={label}
-        className="field pl-10 pr-10"
+        className="field pl-10 pr-12 [&::-webkit-search-cancel-button]:appearance-none"
       />
       {value && (
         <button
           type="button"
-          onClick={() => onChange("")}
+          onClick={() => {
+            onChange("");
+            input.current?.focus();
+          }}
           aria-label="Qidiruvni tozalash"
-          className="absolute right-2.5 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
+          className="absolute right-0 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-muted-foreground hover:bg-secondary hover:text-foreground"
         >
           <X className="h-4 w-4" aria-hidden />
         </button>

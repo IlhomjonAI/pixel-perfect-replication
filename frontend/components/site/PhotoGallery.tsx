@@ -8,6 +8,7 @@ export function PhotoGallery({ images, title }: { images: (string | null)[]; tit
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
   const photos = Array.from(new Set(images.filter((url): url is string => !!url)));
+  const currentIndex = Math.max(0, Math.min(index, photos.length - 1));
   if (!photos.length) return null;
   return (
     <>
@@ -36,9 +37,11 @@ export function PhotoGallery({ images, title }: { images: (string | null)[]; tit
         open={open}
         onOpenChange={setOpen}
         title={title}
-        description={photos.length > 1 ? `${index + 1} / ${photos.length} ta rasm` : undefined}
+        description={
+          photos.length > 1 ? `${currentIndex + 1} / ${photos.length} ta rasm` : undefined
+        }
         images={photos}
-        index={index}
+        index={currentIndex}
         onIndexChange={setIndex}
         altPrefix={title}
       />

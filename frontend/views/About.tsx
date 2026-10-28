@@ -7,6 +7,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { MEDIA } from "@/config/brand";
 import { SCHOOL_NAME } from "@/config/site";
 import { SCHOOL_LEADERSHIP } from "@backend/contracts/staff";
+import { Portrait } from "@/components/site/Portrait";
 
 export default function About() {
   return (
@@ -65,7 +66,7 @@ export default function About() {
                 className="card-surface overflow-hidden"
               >
                 <div className="aspect-[4/5] bg-secondary">
-                  <PhotoPlaceholder src={person.photo} alt={person.name} className="object-top" />
+                  <Portrait src={person.photo} name={person.name} />
                 </div>
                 <div className="p-5">
                   <p className="eyebrow">{person.role}</p>
