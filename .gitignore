@@ -31,3 +31,14 @@ dist-ssr
 *.sln
 *.sw?
 .env
+
+# Environment secrets
+.env.*
+!.env.example
+.dev.vars*
+!*.example
+
+# Next.js and Node database
+frontend/.next/
+*.tsbuildinfo
+backend/data/

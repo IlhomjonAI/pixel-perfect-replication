@@ -6,7 +6,19 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", ".output", ".vinxi"] },
+  {
+    ignores: [
+      "dist",
+      ".wrangler/**",
+      ".tanstack/**",
+      ".output",
+      ".vinxi",
+      "backend/archive/**",
+      "**/.next/**",
+      "**/next-env.d.ts",
+      "**/*.tsbuildinfo",
+    ],
+  },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -20,20 +32,58 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  {
+    files: ["frontend/app/**/*.{ts,tsx}"],
+    rules: { "react-refresh/only-export-components": "off" },
+  },
+  {
+    files: ["backend/**/*.ts"],
+    rules: {
       "no-restricted-imports": [
         "error",
         {
-          paths: [
+          patterns: [
             {
-              name: "server-only",
+              group: ["@/*", "@admin/**", "**/frontend/**", "**/admin/**"],
               message:
-                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
+                "Backend must not depend on frontend or admin. Use packages/contracts for shared types and validation.",
             },
           ],
         },
       ],
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
-      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  {
+    files: [
+      "frontend/admin/**/*.{ts,tsx}",
+      "frontend/components/**/*.{ts,tsx}",
+      "frontend/hooks/**/*.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@backend/api/**",
+                "@backend/database/**",
+                "@backend/lib/**",
+                "@backend/server",
+                "**/backend/api/**",
+                "**/backend/database/**",
+                "**/backend/lib/**",
+              ],
+              message:
+                "UI components must use API functions or packages/contracts, never server implementation modules.",
+            },
+          ],
+        },
+      ],
     },
   },
   eslintPluginPrettier,
