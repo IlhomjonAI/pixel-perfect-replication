@@ -1,4 +1,4 @@
--- Local/schema-only migration. Do not apply remotely until database_id is set.
+-- PostgreSQL schema. Applied transactionally inside the private school_app schema.
 
 CREATE TABLE IF NOT EXISTS posts (
   slug TEXT PRIMARY KEY,
