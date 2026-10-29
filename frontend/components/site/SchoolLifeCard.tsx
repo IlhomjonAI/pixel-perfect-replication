@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
-import type { SchoolLifeItem } from "@backend/contracts/models";
+import type { SchoolLifeItem } from "@school/contracts/models";
 import { formatDate } from "@/config/site";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
 import { DemoBadge } from "@/components/site/common";

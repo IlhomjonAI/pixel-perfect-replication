@@ -6,13 +6,13 @@ import { CertificateModal } from "@/components/site/CertificateModal";
 import { EmptyState, LoadingState } from "@/components/site/common";
 import { FilterBar, SelectField } from "@/components/site/filters";
 import { PageHero } from "@/components/site/PageHero";
-import type { Achievement } from "@backend/contracts/models";
+import type { Achievement } from "@school/contracts/models";
 import { getAchievementsPage, getAchievementFilters } from "@/api/achievement";
 import {
   achievementTypes,
   achievementStages,
   type AchievementQuery,
-} from "@backend/contracts/achievement";
+} from "@school/contracts/achievement";
 import { MEDIA } from "@/config/brand";
 
 const ALL = "Barchasi";

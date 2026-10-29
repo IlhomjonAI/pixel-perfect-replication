@@ -1,0 +1,12 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "paths": {
+      "@backend/*": ["./*"],
+      "@school/contracts/*": ["../packages/contracts/*"]
+    }
+  },
+  "include": ["**/*.ts", "../packages/contracts/**/*.ts"],
+  "exclude": ["tests", "data"]
+}

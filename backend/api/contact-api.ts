@@ -1,6 +1,6 @@
 import { json, fail, readJson } from "./http";
 import { deleteRecord } from "./delete-record";
-import { contactInput, messageStatuses, messageUpdate } from "@backend/contracts/contact-workflow";
+import { contactInput, messageStatuses, messageUpdate } from "@school/contracts/contact-workflow";
 import { digest, requireAdmin } from "@backend/api/admin-auth";
 export async function handleContactSubmit(request: Request, env: Partial<AppBindings> = {}) {
   if (request.method !== "POST")
@@ -30,7 +30,7 @@ export async function handleContactSubmit(request: Request, env: Partial<AppBind
       [await digest(env.ADMIN_PASSWORD_HASH + ":phone:" + p.contact.replace(/\D/g, "")), 900, 3],
     ] as const) {
       const row = await env.DB.prepare(
-        "INSERT INTO contact_submission_limits (bucket,window_start,attempts) VALUES (?,?,1) ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN window_start<=? THEN 1 ELSE attempts+1 END, window_start=CASE WHEN window_start<=? THEN excluded.window_start ELSE window_start END RETURNING attempts",
+        "INSERT INTO contact_submission_limits (bucket,window_start,attempts) VALUES (?,?,1) ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN contact_submission_limits.window_start<=? THEN 1 ELSE contact_submission_limits.attempts+1 END, window_start=CASE WHEN contact_submission_limits.window_start<=? THEN excluded.window_start ELSE contact_submission_limits.window_start END RETURNING attempts",
       )
         .bind(bucket, now, now - seconds, now - seconds)
         .first<{ attempts: number }>();

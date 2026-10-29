@@ -5,6 +5,7 @@ const config: NextConfig = {
   outputFileTracingRoot: path.resolve(import.meta.dirname, ".."),
   turbopack: { root: path.resolve(import.meta.dirname, "..") },
   poweredByHeader: false,
+  transpilePackages: ["@school/contracts"],
   async headers() {
     return [
       {

@@ -2,12 +2,11 @@ import "./config";
 import { createServer } from "node:http";
 import { Readable } from "node:stream";
 import { handle } from "./api/handler";
-import { SqliteDatabase } from "./database/sqlite";
+import { connectDatabase } from "./database/connect";
 import { seedSchoolStaff } from "./database/seed-staff";
-import { databasePath } from "./config";
 import { startTelegramWorker } from "./telegram/worker";
 import { authorizedProxy, clientIp } from "./lib/proxy";
-import { startBackups } from "./lib/backups";
+
 import { deploymentErrors } from "./lib/deployment";
 
 if (process.env["RENDER"]) {
@@ -15,9 +14,14 @@ if (process.env["RENDER"]) {
   if (errors.length) throw new Error(errors.join("\n"));
 }
 
-const db = new SqliteDatabase(databasePath);
-db.migrate();
-seedSchoolStaff(db);
+const db = await connectDatabase();
+try {
+  await db.migrate();
+  await seedSchoolStaff(db);
+} catch (error) {
+  await db.close();
+  throw error;
+}
 const env: AppBindings = { DB: db };
 for (const key of [
   "ADMIN_PASSWORD_HASH",
@@ -83,6 +87,11 @@ const server = createServer(async (incoming, outgoing) => {
 const port = Number(process.env["PORT"] ?? process.env["API_PORT"] ?? 4000);
 let stopTelegram = async () => {};
 let stopBackups = async () => {};
+if (db.dialect === "sqlite") {
+  const { startBackups } = await import("./lib/backups");
+  const { SqliteDatabase } = await import("./database/sqlite");
+  if (db instanceof SqliteDatabase) stopBackups = startBackups(db);
+}
 server.listen(
   port,
   process.env["API_HOST"] ?? (process.env["RENDER"] ? "0.0.0.0" : "127.0.0.1"),
@@ -91,7 +100,6 @@ server.listen(
       `Node.js API: http://127.0.0.1:${(server.address() as import("node:net").AddressInfo).port}`,
     );
     stopTelegram = startTelegramWorker(db);
-    stopBackups = startBackups(db);
   },
 );
 let stopping = false;
@@ -102,9 +110,9 @@ for (const signal of ["SIGINT", "SIGTERM"] as const)
     const deadline = setTimeout(() => process.exit(1), 20000);
     deadline.unref();
     const drained = new Promise<void>((resolve) => server.close(() => resolve()));
-    void Promise.all([drained, stopTelegram(), stopBackups()]).finally(() => {
+    void Promise.all([drained, stopTelegram(), stopBackups()]).finally(async () => {
       clearTimeout(deadline);
-      db.close();
+      await db.close();
       process.exit(0);
     });
   });

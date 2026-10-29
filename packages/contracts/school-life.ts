@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { imageUrl, postInput, postStatuses } from "@backend/contracts/post";
-import type { SchoolLifeItem } from "@backend/contracts/models";
+import { imageUrl, postInput, postStatuses } from "@school/contracts/post";
+import type { SchoolLifeItem } from "@school/contracts/models";
 export const lifeCategories = ["Tadbir", "To‘garak", "Loyiha", "Faoliyat"] as const;
 export const schoolLifeInput = z
   .object({

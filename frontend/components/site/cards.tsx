@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Award, ArrowUpRight } from "lucide-react";
-import type { Achievement, Post, Teacher } from "@backend/contracts/models";
+import type { Achievement, Post, Teacher } from "@school/contracts/models";
 import { formatDate } from "@/config/site";
 import { DemoBadge, Pill } from "@/components/site/common";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";

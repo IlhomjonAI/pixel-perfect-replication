@@ -1,9 +1,9 @@
-# Bekobod maktabi — Next.js + Node.js
+# Bekobod maktabi — frontend va backend monorepo
 
-Mavjud dizayn, ommaviy sahifalar va admin panel Next.js App Router bilan ishlaydi.
-Alohida Node.js server API, admin sessiyalari, kontent va murojaatlarni boshqaradi.
-Ma’lumotlar Node.js SQLite bazasida, yuklangan rasmlar Supabase Storage’da saqlanadi.
-Node.js 24 yoki undan yangi versiya kerak.
+Frontend: Next.js App Router, React va TypeScript. Backend: Node.js 24, TypeScript,
+`node:http` asosidagi API. Express/NestJS va ORM ishlatilmagan; parametrli SQL
+so‘rovlari `pg` drayveri orqali bajariladi. Production bazasi Supabase PostgreSQL,
+rasmlar Supabase Storage’da. Mahalliy ishlab chiqishda SQLite ham saqlangan.
 
 ## Ishga tushirish
 
@@ -12,67 +12,80 @@ npm ci
 npm run dev
 ```
 
-Sayt: http://localhost:3000. Admin panel: http://localhost:3000/admin.
-API ichki manzili: http://127.0.0.1:4000.
-Birinchi ishga tushishda migratsiyalar avtomatik qo‘llanadi.
-Mavjud .dev.vars faylidagi admin va Supabase sozlamalari saqlanadi va o‘qiladi.
-Yangi o‘rnatishda admin hisobini npm run admin:setup orqali yarating.
+Node.js 24+ kerak. Frontend http://localhost:3000, admin /admin,
+backend http://127.0.0.1:4000. `DATABASE_URL` yo‘q bo‘lsa, faqat mahalliy rejimda
+`backend/data/school.sqlite` ishlaydi. Production SQLite’ga avtomatik qaytmaydi.
+
+Supabase uchun `backend/.env.example`ni `backend/.env`ga nusxalang va haqiqiy
+qiymatlarni kiriting. `frontend/.env.example` frontendning alohida namunasidir.
+Mavjud ildiz `.env` / `.dev.vars` ham o‘qiladi; hosting environment qiymatlari ustun.
+Maxfiy fayllar va bazalar Git’ga qo‘shilmaydi.
 
 ## Tuzilish
 
-- frontend/app/ — Next.js sahifalari, serverda dastlabki ma’lumot yuklash va metadata.
-- frontend/views/ va frontend/components/ — mavjud dizayn va interaktiv interfeys.
-- frontend/api/ — Node.js API uchun HTTP mijoz.
-- admin/ — kontent, murojaat va rasm boshqaruvi.
-- backend/server.ts — alohida Node.js HTTP server.
-- backend/api/ — validatsiya, autentifikatsiya va API handlerlari.
-- backend/database/ — parametrli SQL so‘rovlari va SQLite ulanishi.
-- backend/migrations/ — ketma-ket, ma’lumotlarni saqlovchi SQL migratsiyalari.
-- backend/data/school.sqlite — mahalliy baza, Git’ga kiritilmaydi.
+- `frontend/`: o‘z package.json va tsconfig.json’iga ega Next.js ilova.
+- `frontend/admin/`: frontend tarkibidagi admin interfeysi.
+- `backend/`: o‘z package.json va tsconfig.json’iga ega mustaqil API jarayoni.
+- `backend/api/`: HTTP handlerlar, autentifikatsiya va validatsiya.
+- `backend/database/`: PostgreSQL/SQLite adapterlari, so‘rovlar, mapperlar va import.
+- `backend/migrations/postgres/`: PostgreSQL uchun alohida migratsiyalar.
+- `backend/migrations/*.sql`: avvalgi SQLite migratsiyalari, tarix saqlangan.
+- `backend/telegram/`: bot, outbox, eslatmalar va worker lease.
+- `packages/contracts/`: ikkala ilova ishlatadigan modellar va Zod validatsiyasi.
+- `scripts/`: ikkala jarayonni ishga tushirish va deploy tekshiruvlari.
 
-## Eski ma’lumotlarni ko‘chirish
+Npm workspaces: `@school/frontend`, `@school/backend`, `@school/contracts`.
+Bir repository va bir root package-lock bor; ilovalar alohida deploy qilinadi.
+Backend frontend kodiga bog‘lanmagan. Frontend HTTP API va umumiy contracts’dan foydalanadi.
 
-Ushbu kompyuterdagi eski mahalliy D1 bazasi yangi SQLite bazaga ko‘chirildi.
-Eski .wrangler/state fayllari o‘zgartirilmagan.
-Boshqa o‘rnatishda, yangi bazani ishga tushirishdan oldin:
-
-```sh
-npm run db:import:legacy
-```
-
-Bir nechta eski baza bo‘lsa, buyruqdan keyin -- va aniq fayl manzilini bering.
-Import mavjud maqsad bazaning ustiga yozmaydi. Masofaviy D1 ma’lumotlari
-avtomatik olinmaydi; ularni alohida eksport qilish kerak.
-
-## Production
+## Alohida jarayonlar
 
 ```sh
+npm run dev:frontend
+npm run dev:backend
 npm run build
-npm start
+npm run build:backend
+npm run start:frontend
+npm run start:backend
 ```
 
-Next.js va API birga ishga tushadi. Production domenini .env dagi PUBLIC_ORIGIN
-bilan moslang. .env.example namuna sifatida berilgan. API_INTERNAL_URL serverlar
-orasidagi ichki manzil; brauzer API’ga Next.js orqali shu domenning /api manzilidan
-murojaat qiladi. Baza uchun doimiy disk va muntazam zaxira nusxasi kerak.
-Tashqi domen yoki hostingga deploy ushbu migratsiya tarkibida bajarilmagan.
+Backend build TypeScript’ni tekshiradi; start runtime dependency `tsx` orqali ishlaydi.
+Frontend build Next.js production artifact yaratadi.
 
-Alohida jarayonlar: npm run dev:frontend, npm run dev:backend,
-npm run start:frontend, npm run start:backend.
+## PostgreSQL va eski ma’lumotlar
 
-## Maktab jamoasi rasmlari va tavsiflari
+`DATABASE_URL` mavjud bo‘lsa, `pg` connection pool ishlaydi. Backend ishga tushishida
+migratsiyalar tranzaksiya bilan bajariladi, so‘ng 25 ustoz bir marta import qilinadi.
+Keyingi admin tahrirlari va o‘chirishlari saqlanadi.
 
-Foydalanuvchi yuborgan arxivdan 5 nafar rahbariyat vakili va 25 nafar ustoz portreti qo‘shilgan. Optimallashtirilgan rasmlar `frontend/public/media/staff/`da, ism, fan, lavozim va boshlang‘ich tavsiflar `backend/contracts/staff.ts`da saqlanadi. Bir xil ustozga tegishli takroriy rasm alohida profil yaratmaydi.
+Eski SQLite kontentini ko‘chirish uchun yangi PostgreSQL’ga serverni birinchi marta
+ishga tushirishdan OLDIN `DATABASE_URL`ni sozlang va ildizdan bajaring:
 
-Backend birinchi ishga tushganda ustozlar bazaga bir marta import qilinadi. Keyingi admin tahrirlari, arxivlash va o‘chirishlar server qayta ishga tushganda saqlanadi. Import mavjud ism yoki slug bilan profilni almashtirmaydi. Rahbariyat kartalarini o‘zgartirish uchun `backend/contracts/staff.ts`ni tahrirlab frontendni qayta deploy qiling.
+```sh
+npm run db:import:postgres -- "C:/absolute/path/school.sqlite"
+```
 
-«Oliy darajadagi ustoz» — foydalanuvchi so‘ragan taqdimot tavsifi. Diplom, rasmiy malaka toifasi, sertifikat yoki ish staji haqidagi ma’lumotlar arxivda yo‘qligi uchun qo‘shilmagan.
+Manba faqat o‘qiladi. Maqsad bo‘sh bo‘lmasa import bekor qilinadi; barcha yozuvlar
+bitta tranzaksiyada ko‘chadi. Tarixiy murojaatlar yangidan Telegramga yuborilmaydi.
+Admin sessiyalari va vaqtinchalik limitlar ko‘chirilmaydi. Avval manba zaxirasini oling.
+Mavjud rasm URLlari o‘sha Supabase loyiha va bucket saqlansa ishlaydi.
 
-## Tekshiruv buyruqlari
+## Rasmlar va matnlar
+
+5 rahbariyat vakili va 25 ustoz portreti `frontend/public/media/staff/`da.
+Boshlang‘ich ma’lumot `packages/contracts/staff.ts`da. «Oliy darajadagi ustoz»
+taqdimot tavsifi; tasdiqlanmagan diplom, malaka toifasi yoki staj qo‘shilmagan.
+Kontaktlar foydalanuvchi iltimosiga ko‘ra hozircha bo‘sh.
+
+## Tekshiruv
 
 ```sh
 npm run check
 ```
 
-TypeScript, ESLint, frontend va Node SQLite testlari, Next.js production build.
-Testlar vaqtinchalik bazalarda ishlaydi; haqiqiy kontent yoki tashqi xizmatlarga yozmaydi.
+TypeScript, backend build tekshiruvi, ESLint, API/UI testlari va Next.js production build.
+PostgreSQL testlari mahalliy PostgreSQL dvigateli PGlite’da ishlaydi. GitHub CI ayni
+testlarni vaqtinchalik PostgreSQL 17 xizmatida `pg` orqali bajaradi.
+Testlar Supabase hisobiga yoki haqiqiy SQLite bazasiga yozmaydi.
+
+Deploy: [DEPLOYMENT.md](DEPLOYMENT.md). Backend: [backend/README.md](backend/README.md).

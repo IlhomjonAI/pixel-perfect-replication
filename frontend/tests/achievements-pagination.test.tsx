@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import Achievements from "@/views/Achievements";
-import type { Achievement } from "@backend/contracts/models";
+import type { Achievement } from "@school/contracts/models";
 
 afterEach(() => {
   cleanup();

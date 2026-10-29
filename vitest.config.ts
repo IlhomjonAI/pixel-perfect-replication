@@ -8,13 +8,14 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./frontend/tests/setup.ts"],
-    include: ["{frontend,backend,admin}/**/*.{test,spec}.{ts,tsx}"],
+    include: ["{frontend,backend}/**/*.{test,spec}.{ts,tsx}"],
   },
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./frontend"),
+      "@school/contracts": path.resolve(import.meta.dirname, "./packages/contracts"),
       "@backend": path.resolve(import.meta.dirname, "./backend"),
-      "@admin": path.resolve(import.meta.dirname, "./admin"),
+      "@admin": path.resolve(import.meta.dirname, "./frontend/admin"),
     },
   },
 });

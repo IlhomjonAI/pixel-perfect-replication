@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validateContact } from "@backend/contracts/contact";
+import { validateContact } from "@school/contracts/contact";
 
 const ok = {
   name: "Ali",

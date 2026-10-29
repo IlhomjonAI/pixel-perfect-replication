@@ -6,7 +6,7 @@ import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";
 import { Reveal } from "@/components/site/Reveal";
 import { MEDIA } from "@/config/brand";
 import { SCHOOL_NAME } from "@/config/site";
-import { SCHOOL_LEADERSHIP } from "@backend/contracts/staff";
+import { SCHOOL_LEADERSHIP } from "@school/contracts/staff";
 import { Portrait } from "@/components/site/Portrait";
 
 export default function About() {

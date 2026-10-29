@@ -18,6 +18,7 @@ async function start() {
   child = spawn(process.execPath, ["--import", "tsx", "backend/server.ts"], {
     env: {
       ...process.env,
+      DATABASE_URL: "",
       NODE_ENV: "test",
       RENDER: "",
       PORT: "0",

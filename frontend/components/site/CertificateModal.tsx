@@ -1,6 +1,6 @@
 "use client";
 
-import type { Achievement } from "@backend/contracts/models";
+import type { Achievement } from "@school/contracts/models";
 import { formatDate } from "@/config/site";
 import { DemoBadge } from "./common";
 import { Lightbox } from "./Lightbox";

@@ -1,7 +1,7 @@
 import type { TelegramApi } from "./client";
 import { TelegramError } from "./client";
 import { contactButtons, contactText, MESSAGE_FIELDS, splitTelegramText } from "./messages";
-import type { AdminMessage } from "@backend/contracts/contact-workflow";
+import type { AdminMessage } from "@school/contracts/contact-workflow";
 
 export async function deliverPendingContacts(
   db: Database,

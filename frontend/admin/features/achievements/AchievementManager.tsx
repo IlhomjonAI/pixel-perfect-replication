@@ -22,7 +22,7 @@ import {
   isCertificate,
   type AchievementInput,
   type AdminAchievement,
-} from "@backend/contracts/achievement";
+} from "@school/contracts/achievement";
 const statuses = { draft: "Qoralama", published: "E’lon qilingan", archived: "Arxiv" };
 const blank = (): AchievementInput => ({
   studentName: "",

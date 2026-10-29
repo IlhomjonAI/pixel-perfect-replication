@@ -1,5 +1,5 @@
 import { apiGet } from "./client";
-import type { Teacher } from "@backend/contracts/models";
+import type { Teacher } from "@school/contracts/models";
 export const getTeachersPage = (limit = 50, offset = 0) =>
   apiGet<Teacher[]>(`teachers?limit=${limit}&offset=${offset}`);
 export const getDatabaseTeacher = (slug: string) =>

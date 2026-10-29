@@ -1,9 +1,9 @@
-import { databasePath } from "../config";
-import { SqliteDatabase } from "../database/sqlite";
-const db = new SqliteDatabase(databasePath);
+import "../config";
+import { connectDatabase } from "../database/connect";
+const db = await connectDatabase();
 try {
-  db.migrate();
-  console.log("Database migrations applied.");
+  await db.migrate();
+  console.log(`${db.dialect}: database migrations applied.`);
 } finally {
-  db.close();
+  await db.close();
 }

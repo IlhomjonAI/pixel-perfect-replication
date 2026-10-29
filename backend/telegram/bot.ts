@@ -11,7 +11,7 @@ import {
   messageStatuses,
   messageStatusLabels,
   type AdminMessage,
-} from "@backend/contracts/contact-workflow";
+} from "@school/contracts/contact-workflow";
 
 interface TelegramMessage {
   message_id: number;

@@ -141,7 +141,7 @@ export async function handleAdminAuth(request: Request, env: Partial<AppBindings
       [await digest(ip), 5],
     ] as const) {
       const row = await env.DB.prepare(
-        "INSERT INTO admin_login_limits (bucket,window_start,attempts) VALUES (?, ?, 1) ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN window_start<=? THEN 1 ELSE attempts+1 END, window_start=CASE WHEN window_start<=? THEN excluded.window_start ELSE window_start END RETURNING attempts",
+        "INSERT INTO admin_login_limits (bucket,window_start,attempts) VALUES (?, ?, 1) ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN admin_login_limits.window_start<=? THEN 1 ELSE admin_login_limits.attempts+1 END, window_start=CASE WHEN admin_login_limits.window_start<=? THEN excluded.window_start ELSE admin_login_limits.window_start END RETURNING attempts",
       )
         .bind(bucket, now, now - 900, now - 900)
         .first<{ attempts: number }>();

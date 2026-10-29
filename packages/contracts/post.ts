@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Post } from "@backend/contracts/models";
+import type { Post } from "@school/contracts/models";
 export const postStatuses = ["draft", "published", "archived"] as const;
 export const imageUrl = z
   .string()

@@ -12,7 +12,7 @@ import {
 import { deliverPendingContacts } from "@backend/telegram/outbox";
 import { contactText, splitTelegramText } from "@backend/telegram/messages";
 import { acquireWorkerLease } from "@backend/telegram/worker";
-import type { AdminMessage } from "@backend/contracts/contact-workflow";
+import type { AdminMessage } from "@school/contracts/contact-workflow";
 
 let db: SqliteDatabase;
 const admin = 123456789;

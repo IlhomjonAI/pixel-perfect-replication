@@ -5,44 +5,37 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/run.mjs dev",
-    "dev:frontend": "next dev frontend --port 3000",
-    "dev:backend": "tsx watch backend/server.ts",
-    "build": "next build frontend",
+    "dev:frontend": "npm run dev --workspace @school/frontend",
+    "dev:backend": "npm run dev --workspace @school/backend",
+    "build": "npm run build --workspace @school/frontend",
     "start": "node scripts/run.mjs start",
-    "start:frontend": "next start frontend --port 3000",
-    "start:backend": "tsx backend/server.ts",
+    "start:frontend": "npm run start --workspace @school/frontend",
+    "start:backend": "npm run start --workspace @school/backend",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "check": "npm run typecheck && npm run build:backend && npm run lint && npm test && npm run build",
     "deploy:check": "tsx scripts/check-deployment.ts",
-    "db:migrate:local": "tsx backend/scripts/migrate.ts",
+    "db:migrate:local": "tsx backend/scripts/migrate-sqlite.ts",
     "db:import:legacy": "tsx backend/scripts/import-legacy.ts",
     "admin:setup": "node backend/scripts/setup-admin.mjs",
     "images:setup": "node backend/scripts/setup-image-storage.mjs",
     "backup:create": "tsx backend/scripts/backup.ts",
-    "backup:restore": "tsx backend/scripts/restore-backup.ts"
-  },
-  "dependencies": {
-    "@radix-ui/react-dialog": "^1.1.15",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "lucide-react": "^0.575.0",
-    "next": "^16.2.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "tailwind-merge": "^3.5.0",
-    "tw-animate-css": "^1.3.4",
-    "zod": "^4.6.7"
+    "backup:restore": "tsx backend/scripts/restore-backup.ts",
+    "build:backend": "npm run build --workspace @school/backend",
+    "db:migrate": "npm run db:migrate --workspace @school/backend",
+    "db:import:postgres": "npm run db:import:sqlite --workspace @school/backend"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.13",
     "@eslint/js": "^9.32.0",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/jest-dom": "^6.6.0",
     "@testing-library/react": "^16.0.0",
     "@types/node": "^22.16.5",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.2.0",
@@ -55,7 +48,6 @@
     "jsdom": "^20.0.3",
     "prettier": "^3.7.3",
     "tailwindcss": "^4.2.1",
-    "tsx": "^4.20.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",
     "vite": "^8.3.5",
@@ -63,5 +55,10 @@
   },
   "engines": {
     "node": ">=24.0.0"
-  }
+  },
+  "workspaces": [
+    "frontend",
+    "backend",
+    "packages/contracts"
+  ]
 }

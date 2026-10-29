@@ -4,9 +4,9 @@ import path from "node:path";
 import { afterEach, beforeEach, expect, it } from "vitest";
 import { SqliteDatabase } from "../database/sqlite";
 import { seedSchoolStaff } from "../database/seed-staff";
-import { SCHOOL_LEADERSHIP, SCHOOL_TEACHERS } from "../contracts/staff";
-import { teacherInput } from "../contracts/teacher";
-import { imageUrl } from "../contracts/post";
+import { SCHOOL_LEADERSHIP, SCHOOL_TEACHERS } from "@school/contracts/staff";
+import { teacherInput } from "@school/contracts/teacher";
+import { imageUrl } from "@school/contracts/post";
 import { listTeachers } from "../database/queries";
 
 let db: SqliteDatabase;
@@ -30,14 +30,14 @@ it("provides 25 distinct teacher profiles and five leaders with real bundled por
 });
 
 it("imports once and preserves later admin edits and deletions on restart", async () => {
-  seedSchoolStaff(db);
+  await seedSchoolStaff(db);
   expect(await listTeachers(db, 50)).toHaveLength(25);
   const [first, second] = SCHOOL_TEACHERS;
   db.connection
     .prepare("UPDATE teachers SET biography=?,version=version+1 WHERE slug=?")
     .run("Administrator tahrirlagan tarjimai hol.", first!.slug);
   db.connection.prepare("DELETE FROM teachers WHERE slug=?").run(second!.slug);
-  seedSchoolStaff(db);
+  await seedSchoolStaff(db);
   expect(await listTeachers(db, 50)).toHaveLength(24);
   expect(
     db.connection.prepare("SELECT biography FROM teachers WHERE slug=?").get(first!.slug)?.[
@@ -61,7 +61,7 @@ it("does not replace an existing profile when importing the archive", async () =
       "Tajriba",
       "Oldingi tarjimai hol",
     );
-  seedSchoolStaff(db);
+  await seedSchoolStaff(db);
   expect(
     db.connection.prepare("SELECT COUNT(*) AS count FROM teachers WHERE name=?").get(first.name)?.[
       "count"

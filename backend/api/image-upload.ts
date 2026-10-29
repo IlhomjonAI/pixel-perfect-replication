@@ -173,7 +173,7 @@ export async function handleImageUpload(
       ["day", 86400, 1000],
     ] as const) {
       const row = await env.DB.prepare(
-        "INSERT INTO image_upload_limits (bucket,window_start,attempts) VALUES (?,?,1) ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN window_start<=? THEN 1 ELSE attempts+1 END, window_start=CASE WHEN window_start<=? THEN excluded.window_start ELSE window_start END RETURNING attempts",
+        "INSERT INTO image_upload_limits (bucket,window_start,attempts) VALUES (?,?,1) ON CONFLICT(bucket) DO UPDATE SET attempts=CASE WHEN image_upload_limits.window_start<=? THEN 1 ELSE image_upload_limits.attempts+1 END, window_start=CASE WHEN image_upload_limits.window_start<=? THEN excluded.window_start ELSE image_upload_limits.window_start END RETURNING attempts",
       )
         .bind(bucket, now, now - seconds, now - seconds)
         .first<{ attempts: number }>();

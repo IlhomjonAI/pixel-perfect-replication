@@ -5,7 +5,7 @@ import { useRef, useState, type FormEvent } from "react";
 import { Eyebrow } from "@/components/site/common";
 import { PageHero } from "@/components/site/PageHero";
 import { MEDIA } from "@/config/brand";
-import { validateContact, type ContactErrors, type ContactForm } from "@backend/contracts/contact";
+import { validateContact, type ContactErrors, type ContactForm } from "@school/contracts/contact";
 import { TELEGRAM_URL } from "@/config/site";
 import { SCHOOL_CONTACTS } from "@/config/contact";
 

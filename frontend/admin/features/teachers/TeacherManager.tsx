@@ -15,26 +15,38 @@ import {
 import { useAdminApi } from "@admin/hooks/use-admin-api";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import {
-  schoolLifeInput,
-  lifeCategories,
-  type SchoolLifeInput,
-  type AdminSchoolLife,
-} from "@backend/contracts/school-life";
+import { teacherInput, type TeacherInput, type AdminTeacher } from "@school/contracts/teacher";
 const statuses = { draft: "Qoralama", published: "E’lon qilingan", archived: "Arxiv" };
-const blank = (): SchoolLifeInput => ({
-  title: "",
-  description: "",
-  category: "Faoliyat",
-  eventDate: null,
-  image: null,
-  gallery: [],
+const blank = (): TeacherInput => ({
+  name: "",
+  photo: null,
+  subject: "",
+  qualification: "",
+  education: "",
+  experience: "",
+  biography: "",
+  certificates: [],
+  certificateImages: [],
   status: "draft",
   version: 0,
 });
-export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
+const placeholders = {
+  name: "Masalan: Dilnoza Karimova",
+  subject: "Masalan: Matematika",
+  qualification: "Masalan: Oliy toifali o‘qituvchi",
+  education: "Masalan: Nizomiy nomidagi TDPU, matematika",
+  experience: "Masalan: 12 yil",
+};
+const textFields = [
+  ["name", "Ustoz ismi", 150],
+  ["subject", "Fan", 100],
+  ["qualification", "Malaka toifasi", 200],
+  ["education", "Ta’lim", 500],
+  ["experience", "Ish tajribasi", 200],
+] as const;
+export function TeacherManager({ onExpired }: { onExpired: () => void }) {
   const router = useRouter();
-  const [items, setItems] = useState<AdminSchoolLife[]>([]);
+  const [items, setItems] = useState<AdminTeacher[]>([]);
   const [offset, setOffset] = useState(0);
   const [more, setMore] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -43,9 +55,10 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [editing, setEditing] = useState<string | null>(null);
-  const [form, setForm] = useState<SchoolLifeInput>(blank);
+  const [form, setForm] = useState<TeacherInput>(blank);
   const [dirty, setDirty] = useState(false);
-  const [galleryText, setGalleryText] = useState("");
+  const [certificatesText, setCertificatesText] = useState("");
+  const [imagesText, setImagesText] = useState("");
   const api = useAdminApi(onExpired);
   const sequence = useRef(0);
   const load = useCallback(
@@ -54,7 +67,7 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
       setLoading(true);
       setError("");
       try {
-        const result = await api<AdminSchoolLife[]>("/api/admin/school-life?offset=" + page);
+        const result = await api<AdminTeacher[]>("/api/admin/teachers?offset=" + page);
         if (current !== sequence.current) return;
         setItems(result.data);
         setMore(result.pagination?.hasMore ?? false);
@@ -75,29 +88,33 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
     };
   }, [load]);
   useUnsavedChanges(dirty);
-  function change<K extends keyof SchoolLifeInput>(key: K, value: SchoolLifeInput[K]) {
+  function change<K extends keyof TeacherInput>(key: K, value: TeacherInput[K]) {
     setForm((p) => ({ ...p, [key]: value }));
     setDirty(true);
     setNotice("");
   }
-  function open(item: AdminSchoolLife | null) {
+  function open(item: AdminTeacher | null) {
     if (dirty && !window.confirm("Saqlanmagan o‘zgarishlardan voz kechasizmi?")) return;
-    setEditing(item?.id ?? null);
+    setEditing(item?.slug ?? null);
     setForm(
       item
         ? {
-            title: item.title,
-            description: item.description,
-            category: item.category as SchoolLifeInput["category"],
-            eventDate: item.eventDate ?? null,
-            image: item.image,
-            gallery: item.gallery ?? [],
+            name: item.name,
+            photo: item.photo,
+            subject: item.subject,
+            qualification: item.qualification,
+            education: item.education,
+            experience: item.experience,
+            biography: item.biography,
+            certificates: item.certificates,
+            certificateImages: item.certificateImages ?? [],
             status: item.status,
             version: item.version,
           }
         : blank(),
     );
-    setGalleryText(item?.gallery?.join("\n") ?? "");
+    setCertificatesText(item?.certificates.join("\n") ?? "");
+    setImagesText(item?.certificateImages?.join("\n") ?? "");
     setDirty(false);
     setError("");
     setNotice("");
@@ -106,21 +123,27 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
     event.preventDefault();
     setError("");
     setNotice("");
-    const parsed = schoolLifeInput.safeParse({
+    const parsed = teacherInput.safeParse({
       ...form,
-      gallery: galleryText
+      certificates: certificatesText
+        .split("\n")
+        .map((v) => v.trim())
+        .filter(Boolean),
+      certificateImages: imagesText
         .split("\n")
         .map((v) => v.trim())
         .filter(Boolean),
     });
     if (!parsed.success) {
-      setError("Sarlavha, tavsif, sana va turini tekshiring. Rasm uchun HTTPS havola kiriting.");
+      setError(
+        "Ism, fan, malaka, ta’lim, tajriba va tarjimai holni tekshiring. Rasm uchun HTTPS havola kiriting.",
+      );
       return;
     }
     setBusy(true);
     try {
-      const result = await api<AdminSchoolLife>(
-        "/api/admin/school-life" + (editing ? "/" + encodeURIComponent(editing) : ""),
+      const result = await api<AdminTeacher>(
+        "/api/admin/teachers" + (editing ? "/" + encodeURIComponent(editing) : ""),
         {
           method: editing ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
@@ -128,7 +151,7 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
         },
       );
       const saved = result.data;
-      setEditing(saved.id);
+      setEditing(saved.slug);
       setForm({ ...parsed.data, version: saved.version });
       setDirty(false);
       setNotice("Saqlandi: " + statuses[saved.status] + ".");
@@ -146,14 +169,14 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
     setError("");
     setNotice("");
     try {
-      await api(
-        "/api/admin/school-life/" + encodeURIComponent(editing) + "?version=" + form.version,
-        { method: "DELETE" },
-      );
+      await api("/api/admin/teachers/" + encodeURIComponent(editing) + "?version=" + form.version, {
+        method: "DELETE",
+      });
       setEditing(null);
       setForm(blank());
       setDirty(false);
-      setGalleryText("");
+      setCertificatesText("");
+      setImagesText("");
       setNotice("Yozuv o‘chirildi.");
       await load(offset > 0 && items.length === 1 ? Math.max(0, offset - 20) : offset);
       router.refresh();
@@ -163,16 +186,16 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
   }
   return (
     <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1.4fr]">
-      <section aria-label="Maktab hayoti ro‘yxati">
+      <section aria-label="Ustozlar ro‘yxati">
         <AdminSectionHeader
-          title="Maktab hayoti"
+          title="Ustozlar"
           action={
             <button
               className="btn btn-outline"
               disabled={busy || uploading}
               onClick={() => open(null)}
             >
-              Yangi faoliyat
+              Yangi ustoz
             </button>
           }
         />
@@ -188,15 +211,15 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
         ) : items.length ? (
           <ul className="mt-5 space-y-3">
             {items.map((item) => (
-              <li key={item.id}>
+              <li key={item.slug}>
                 <AdminListItem
-                  active={editing === item.id}
+                  active={editing === item.slug}
                   disabled={busy || uploading}
                   onClick={() => open(item)}
                 >
-                  <strong className="block">{item.title}</strong>
+                  <strong className="block">{item.name}</strong>
                   <span className="mt-2 block text-sm text-muted-foreground">
-                    {item.category} · {statuses[item.status]}
+                    {item.subject} · {statuses[item.status]}
                   </span>
                 </AdminListItem>
               </li>
@@ -204,7 +227,7 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
           </ul>
         ) : (
           <p className="mt-5 text-muted-foreground">
-            Hozircha faoliyat yo‘q. Birinchi yozuvni qo‘shing.
+            Hozircha ustoz yo‘q. Birinchi profilni qo‘shing.
           </p>
         )}
         <AdminPager
@@ -215,91 +238,85 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
         />
       </section>
       <section>
-        <AdminFormHeading>{editing ? "Faoliyatni tahrirlash" : "Yangi faoliyat"}</AdminFormHeading>
+        <AdminFormHeading>{editing ? "Ustozni tahrirlash" : "Yangi ustoz"}</AdminFormHeading>
         <form onSubmit={save} className="mt-5 space-y-4">
           <fieldset disabled={busy || uploading} className="space-y-4">
+            {textFields.map(([key, label, max]) => (
+              <label className="block" key={key}>
+                {label}
+                <input
+                  className="field mt-2"
+                  required
+                  maxLength={max}
+                  placeholder={placeholders[key]}
+                  value={form[key]}
+                  onChange={(e) => change(key, e.target.value)}
+                />
+              </label>
+            ))}
             <label className="block">
-              Sarlavha
-              <input
-                className="field mt-2"
-                required
-                minLength={3}
-                maxLength={200}
-                placeholder="Masalan: Maktabimizda ilm-fan haftaligi"
-                value={form.title}
-                onChange={(e) => change("title", e.target.value)}
-              />
-            </label>
-            <label className="block">
-              Turi
-              <select
-                className="field mt-2"
-                value={form.category}
-                onChange={(e) => change("category", e.target.value as SchoolLifeInput["category"])}
-              >
-                {lifeCategories.map((category) => (
-                  <option key={category}>{category}</option>
-                ))}
-              </select>
-            </label>
-            <label className="block">
-              Sana (ixtiyoriy)
-              <input
-                className="field mt-2"
-                type="date"
-                value={form.eventDate ?? ""}
-                onChange={(e) => change("eventDate", e.target.value || null)}
-              />
-            </label>
-            <label className="block">
-              Tavsif
+              Tarjimai hol
               <textarea
                 className="field mt-2"
                 required
                 minLength={10}
                 maxLength={5000}
                 rows={6}
-                placeholder="Tadbir qayerda, qachon va qanday o‘tganini yozing…"
-                value={form.description}
-                onChange={(e) => change("description", e.target.value)}
+                placeholder="Ustozning ta’limi, tajribasi va yutuqlari haqida yozing…"
+                value={form.biography}
+                onChange={(e) => change("biography", e.target.value)}
               />
             </label>
             <ImageUploader
-              label="Muqova rasmini kompyuterdan yuklash"
+              label="Ustoz fotosuratini yuklash"
               onExpired={onExpired}
               onBusyChange={setUploading}
-              onUploaded={(urls) => change("image", urls[0] ?? null)}
+              onUploaded={(urls) => change("photo", urls[0] ?? null)}
             />
             <label className="block">
-              Muqova rasmi havolasi
+              Ustoz fotosurati havolasi
               <input
                 className="field mt-2"
                 type="url"
                 placeholder="https://…"
-                value={form.image ?? ""}
-                onChange={(e) => change("image", e.target.value || null)}
+                value={form.photo ?? ""}
+                onChange={(e) => change("photo", e.target.value || null)}
+              />
+            </label>
+            <label className="block">
+              Sertifikat nomlari
+              <textarea
+                className="field mt-2"
+                rows={3}
+                placeholder="Har qatorda bittadan sertifikat nomi"
+                value={certificatesText}
+                onChange={(e) => {
+                  setCertificatesText(e.target.value);
+                  setDirty(true);
+                  setNotice("");
+                }}
               />
             </label>
             <ImageUploader
-              label="Galereya rasmlarini yuklash"
-              maxFiles={Math.max(0, 20 - galleryText.split("\n").filter((v) => v.trim()).length)}
+              label="Sertifikat rasmlarini yuklash"
+              maxFiles={Math.max(0, 20 - imagesText.split("\n").filter((v) => v.trim()).length)}
               onExpired={onExpired}
               onBusyChange={setUploading}
               onUploaded={(urls) => {
-                setGalleryText((current) => [current.trim(), ...urls].filter(Boolean).join("\n"));
+                setImagesText((current) => [current.trim(), ...urls].filter(Boolean).join("\n"));
                 setDirty(true);
                 setNotice("");
               }}
             />
             <label className="block">
-              Galereya havolalari
+              Sertifikat rasmlari havolalari
               <textarea
                 className="field mt-2"
-                rows={4}
-                placeholder="Har qatorda bittadan HTTPS havola, ko‘pi bilan 20 ta"
-                value={galleryText}
+                rows={3}
+                placeholder="Har qatorda bittadan HTTPS havola"
+                value={imagesText}
                 onChange={(e) => {
-                  setGalleryText(e.target.value);
+                  setImagesText(e.target.value);
                   setDirty(true);
                   setNotice("");
                 }}
@@ -310,7 +327,7 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
               <select
                 className="field mt-2"
                 value={form.status}
-                onChange={(e) => change("status", e.target.value as SchoolLifeInput["status"])}
+                onChange={(e) => change("status", e.target.value as TeacherInput["status"])}
               >
                 {Object.entries(statuses).map(([key, value]) => (
                   <option key={key} value={key}>
@@ -320,7 +337,7 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
               </select>
             </label>
             <p className="text-sm text-muted-foreground">
-              E’lon qilingan faoliyatlar ommaga ko‘rinadi. Qoralama va arxiv faqat adminda qoladi.
+              E’lon qilingan profillar ommaga ko‘rinadi. Qoralama va arxiv faqat adminda qoladi.
             </p>
             <button className="btn btn-primary" type="submit">
               {busy ? "Saqlanmoqda…" : "Saqlash"}
@@ -329,7 +346,7 @@ export function SchoolLifeManager({ onExpired }: { onExpired: () => void }) {
         </form>
         {editing && (
           <AdminDeleteButton
-            name={form.title}
+            name={form.name}
             disabled={busy || uploading || loading}
             onDelete={remove}
           />

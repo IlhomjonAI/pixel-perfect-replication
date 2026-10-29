@@ -15,7 +15,7 @@ import {
 import { useAdminApi } from "@admin/hooks/use-admin-api";
 import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { type AdminPost, type PostInput, postInput } from "@backend/contracts/post";
+import { type AdminPost, type PostInput, postInput } from "@school/contracts/post";
 const labels = { draft: "Qoralama", published: "E’lon qilingan", archived: "Arxiv" };
 const blank = (): PostInput => ({
   title: "",

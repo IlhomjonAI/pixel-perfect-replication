@@ -1,14 +1,21 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": { "plugins": [{ "name": "next" }], "incremental": true, "jsx": "preserve" },
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "incremental": true,
+    "jsx": "preserve"
+  },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "../admin/**/*.tsx",
-    "../backend/contracts/**/*.ts",
     "./.next/types/**/*.ts",
-    "./.next/dev/types/**/*.ts"
+    "./.next/dev/types/**/*.ts",
+    "../packages/contracts/**/*.ts"
   ],
   "exclude": ["node_modules", "tests"]
 }

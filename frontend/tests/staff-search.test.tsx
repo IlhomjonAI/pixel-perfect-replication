@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, it } from "vitest";
 import Teachers from "@/views/Teachers";
-import { SCHOOL_TEACHERS } from "@backend/contracts/staff";
+import { SCHOOL_TEACHERS } from "@school/contracts/staff";
 import { matchesSearch } from "@/lib/search";
 
 afterEach(cleanup);

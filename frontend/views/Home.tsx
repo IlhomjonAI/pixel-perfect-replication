@@ -12,7 +12,7 @@ import { Reveal } from "@/components/site/Reveal";
 import { SampleImage } from "@/components/site/SampleImage";
 import { Logo } from "@/components/site/Logo";
 import { SchoolLifeCard } from "@/components/site/SchoolLifeCard";
-import type { Achievement } from "@backend/contracts/models";
+import type { Achievement } from "@school/contracts/models";
 import { getAchievementsPage } from "@/api/achievement";
 import { MEDIA } from "@/config/brand";
 import { getPostsPage } from "@/api/news";

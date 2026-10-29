@@ -14,9 +14,14 @@ const salt = Buffer.alloc(16, 11);
 beforeAll(async () => {
   dir = mkdtempSync(path.join(tmpdir(), "school-server-"));
   const credential = `pbkdf2:100000:${salt.toString("hex")}:${pbkdf2Sync(password, salt, 100000, 32, "sha256").toString("hex")}`;
-  child = spawn(process.execPath, ["--import", "tsx", "backend/server.ts"], {
+  child = spawn(process.execPath, ["--import", "tsx", "server.ts"], {
+    cwd: path.resolve("backend"),
     env: {
       ...process.env,
+      DATABASE_URL: "",
+      NODE_ENV: "test",
+      RENDER: "",
+      BACKUP_ENABLED: "false",
       API_PORT: "0",
       PORT: "0",
       PUBLIC_ORIGIN: "https://school.test",

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { Post } from "@backend/contracts/models";
+import type { Post } from "@school/contracts/models";
 import { PostCard } from "@/components/site/cards";
 import { Reveal } from "@/components/site/Reveal";
 import { PhotoPlaceholder } from "@/components/site/PhotoPlaceholder";

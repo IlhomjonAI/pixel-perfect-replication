@@ -17,9 +17,9 @@ export async function sendOverdueReminder(
   if (previous?.value === day) return;
   const count = await db
     .prepare(
-      "SELECT COUNT(*) AS count FROM contact_messages WHERE status!='resolved' AND julianday(created_at)<=julianday(?) - 1",
+      "SELECT COUNT(*) AS count FROM contact_messages WHERE status!='resolved' AND replace(substr(created_at,1,19),' ','T')<=?",
     )
-    .bind(now.toISOString())
+    .bind(new Date(now.getTime() - 86400000).toISOString().slice(0, 19))
     .first<{ count: number }>();
   if (!count?.count) return;
   await api.call("sendMessage", {

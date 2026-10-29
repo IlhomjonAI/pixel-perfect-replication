@@ -1,7 +1,7 @@
 import { json, fail, readJson } from "./http";
 import { deleteRecord } from "./delete-record";
 import { requireAdmin } from "@backend/api/admin-auth";
-import { schoolLifeInput } from "@backend/contracts/school-life";
+import { schoolLifeInput } from "@school/contracts/school-life";
 import { mapSchoolLifeRow, type SchoolLifeRow } from "@backend/database/mappers";
 const fields = "id,title,description,image,category,event_date,gallery,is_demo,status,version";
 type Row = SchoolLifeRow & { status: "draft" | "published" | "archived"; version: number };

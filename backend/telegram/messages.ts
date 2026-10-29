@@ -1,5 +1,5 @@
-import { TELEGRAM_USERNAME } from "@backend/contracts/contact";
-import { messageStatusLabels, type AdminMessage } from "@backend/contracts/contact-workflow";
+import { TELEGRAM_USERNAME } from "@school/contracts/contact";
+import { messageStatusLabels, type AdminMessage } from "@school/contracts/contact-workflow";
 
 export const MESSAGE_FIELDS =
   "id,name,contact,telegram_username,email,type,message,created_at,consent_at,status,version";

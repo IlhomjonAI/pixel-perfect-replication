@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { imageUrl, postStatuses } from "@backend/contracts/post";
-import type { Teacher } from "@backend/contracts/models";
+import { imageUrl, postStatuses } from "@school/contracts/post";
+import type { Teacher } from "@school/contracts/models";
 export const teacherInput = z
   .object({
     name: z.string().trim().min(2).max(150),

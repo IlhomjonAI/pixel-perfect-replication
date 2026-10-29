@@ -10,12 +10,12 @@ import {
 } from "@admin/components/admin-ui";
 import { AdminDeleteButton } from "@admin/components/AdminDeleteButton";
 import { useAdminApi } from "@admin/hooks/use-admin-api";
-import { TELEGRAM_USERNAME, isValidPhone } from "@backend/contracts/contact";
+import { TELEGRAM_USERNAME, isValidPhone } from "@school/contracts/contact";
 import {
   messageStatuses,
   messageStatusLabels,
   type AdminMessage,
-} from "@backend/contracts/contact-workflow";
+} from "@school/contracts/contact-workflow";
 export function MessageManager({ onExpired }: { onExpired: () => void }) {
   const [items, setItems] = useState<AdminMessage[]>([]);
   const [selected, setSelected] = useState<AdminMessage | null>(null);

@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { imageUrl, postInput, postStatuses } from "@backend/contracts/post";
-import type { Achievement } from "@backend/contracts/models";
+import { imageUrl, postInput, postStatuses } from "@school/contracts/post";
+import type { Achievement } from "@school/contracts/models";
 export const achievementTypes = [
   "Fan olimpiadasi",
   "STEM",

@@ -1,0 +1,21 @@
+{
+  "name": "@school/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch server.ts",
+    "start": "tsx server.ts",
+    "build": "tsc --noEmit -p tsconfig.json",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:import:sqlite": "tsx scripts/import-sqlite-to-postgres.ts"
+  },
+  "dependencies": {
+    "@school/contracts": "1.0.0",
+    "pg": "^8.23.1",
+    "tsx": "^4.20.0"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

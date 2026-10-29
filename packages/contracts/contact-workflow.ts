@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { validateContact, normalizeTelegramUsername } from "@backend/contracts/contact";
+import { validateContact, normalizeTelegramUsername } from "@school/contracts/contact";
 export const messageStatuses = ["new", "in_progress", "resolved"] as const;
 export const messageStatusLabels = {
   new: "Yangi",

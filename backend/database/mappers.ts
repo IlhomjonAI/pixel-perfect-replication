@@ -1,4 +1,4 @@
-import type { Achievement, Post, SchoolLifeItem, Teacher } from "@backend/contracts/models";
+import type { Achievement, Post, SchoolLifeItem, Teacher } from "@school/contracts/models";
 
 export type PostRow = {
   slug: string;

@@ -1,7 +1,7 @@
 import { json, fail, readJson } from "./http";
 import { deleteRecord } from "./delete-record";
 import { requireAdmin } from "@backend/api/admin-auth";
-import { achievementInput } from "@backend/contracts/achievement";
+import { achievementInput } from "@school/contracts/achievement";
 import { mapAchievementRow, type AchievementRow } from "@backend/database/mappers";
 const fields =
   "id,student_name,class_at_achievement,type,title,subject,stage,result,achievement_date,teacher_name,certificate_image,is_demo,status,version";

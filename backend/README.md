@@ -1,54 +1,92 @@
-# Node.js backend
+# Backend: Node.js + TypeScript + PostgreSQL
 
-Node.js 24 HTTP server backend/server.ts orqali ishga tushadi.
-API interfeysi saqlangan: ommaviy kontent, admin sessiyalari, parallel tahrirlashda
-versiya nazorati, rasm yuklash va murojaatlar. Cloudflare Worker talab qilinmaydi.
+## Texnologiyalar
 
-## Ishga tushirish
+Node.js 24 standart `node:http` serveri ishlatiladi. Express yoki NestJS yo‘q.
+Transport Request/Response obyektlariga o‘girilib, `api/handler.ts` yo‘llarni tegishli
+handlerga yuboradi. SQL parametrli, ORM yo‘q; PostgreSQL drayveri `pg`, validatsiya Zod.
+Frontend — alohida Next.js ilova; admin frontend ichida. Umumiy modellar va
+validatsiya `packages/contracts/`da. Backend frontendni import qilmaydi.
 
-Loyiha ildizida npm run dev yoki npm run dev:backend.
-Migratsiyalar ishga tushishda avtomatik qo‘llanadi; alohida buyruq: npm run db:migrate:local.
-Baza: backend/data/school.sqlite. DATABASE_PATH orqali boshqa doimiy diskni tanlash mumkin.
-Eski mahalliy baza: npm run db:import:legacy. Import manbani o‘zgartirmaydi va
-mavjud maqsad bazaning ustiga yozmaydi.
+## Bazalar va ulanish
 
-## Sozlamalar
+Production: Supabase PostgreSQL. `DATABASE_URL` bo‘lsa `database/postgres.ts`
+connection pool ishlaydi. `DATABASE_POOL_MAX` sukut bo‘yicha 5, chegarasi 1–20.
+TLS sertifikat tekshiruvi yoqilgan; zarur bo‘lsa Supabase CA sertifikatini
+`DATABASE_CA_CERT` orqali bering. TLS tekshiruvini o‘chirmang.
 
-.env.example dagi parametrlar qo‘llab-quvvatlanadi. Mavjud .dev.vars ham o‘qiladi.
-ADMIN_PASSWORD_HASH, SUPABASE_URL, SUPABASE_SECRET_KEY va SUPABASE_STORAGE_BUCKET
-faqat backendda ishlatiladi. Maxfiy fayllarni Git’ga qo‘shmang.
-Production uchun PUBLIC_ORIGIN saytning aniq https domeni bo‘lishi kerak:
-barcha yozish so‘rovlarida Origin tekshiriladi. API odatda 127.0.0.1:4000’da,
-Next.js esa /api orqali proksi qiladi.
+Faqat mahalliy rejimda DATABASE_URL bo‘lmasa `node:sqlite` ishlaydi.
+Eski `backend/data/school.sqlite` saqlanadi. Production yoki Render’da
+DATABASE_URL bo‘lmasa server aniq xato bilan to‘xtaydi.
+
+Supabase PostgreSQL va Supabase Storage boshqa xizmatlar: DATABASE_URL baza uchun,
+SUPABASE_URL/SECRET_KEY esa rasm yuklash uchun. Supabase Auth ishlatilmaydi;
+admin autentifikatsiyasi backendning o‘zida.
+
+## Qatlamlar
+
+1. `server.ts`: HTTP transporti, ishonchli proksi, startup va graceful shutdown.
+2. `api/`: yo‘llar, origin, sessiya, body hajmi, Zod va versiya tekshiruvi.
+3. `database/queries.ts`, `achievement-page.ts`: kontent, filtr va pagination.
+4. `database/mappers.ts`: DB qatorlarini API modellariga o‘girish.
+5. `database/postgres.ts`: pool, parametrlar, tranzaksiyalar va migratsiyalar.
+6. `telegram/`: xabar navbati, polling, worker lease va kundalik eslatma.
+7. `lib/`: proksi, deploy tekshiruvi va mahalliy SQLite backup/restore.
+
+## Saqlanadigan ma’lumotlar
+
+- `posts`: yangiliklar, matnlar, muqova va galereya.
+- `teachers`: ustozlar, fanlar, tavsiflar va sertifikat havolalari.
+- `achievements`: o‘quvchilar yutuqlari.
+- `school_life`: maktab hayoti va tadbirlar.
+- `contact_messages`: murojaat, aloqa, rozilik, holat, request_id va versiya.
+- `admin_sessions`: token xeshlari va sessiya muddati.
+- `*_limits`: login, murojaat va rasm yuklash limitlari.
+- `image_assets`: Supabase Storage rasmlari metama’lumoti.
+- `telegram_outbox`, `telegram_state`, `telegram_worker_lock`: yetkazish va bot holati.
+- `recycle_bin`, `restore_bin`: o‘chirilgan yozuvlar va atomar tiklash.
+- `schema_migrations`, `content_imports`: migratsiya va boshlang‘ich importlar.
+
+Jadvallar alohida `school_app` schemasida. PUBLIC rolining schema huquqlari
+bekor qilingan. Uni Supabase Data API exposed schemas ro‘yxatiga qo‘shmang.
+Brauzer backend orqali ishlaydi; bazaning maxfiy kalitini olmaydi.
+
+## Xatti-harakatlar
+
+HttpOnly/SameSite=Strict cookie; HTTPS’da Secure. Parol PBKDF2 xeshi bilan
+tekshiriladi, session tokenlari bazada xeshlangan. Yozish so‘rovlari Origin’ni
+tekshiradi. Vercel–Render proksisi umumiy maxfiy kalit va ishonchli IP ishlatadi.
+Parallel tahrirlash `version` orqali 409 qaytaradi. Request ID takroriy murojaatni
+oldini oladi. Contact insert va Telegram navbati DB triggeri orqali atomar.
+O‘chirish savatga nusxa oladi; tiklash ham tranzaksion.
 
 ## API
 
-GET /api/health — baza tayyorligi.
-GET /api/posts, /api/teachers, /api/achievements, /api/school-life — nashr qilingan kontent.
-GET /api/posts/:slug, /api/teachers/:slug — tafsilotlar.
-GET /api/achievement-page — limit, offset, year, subject, type va stage bilan filtrlangan sahifa.
-GET /api/achievement-filters — nashr qilingan yillar va fanlar.
-POST /api/contact — idempotent murojaat yuborish.
-Yangi murojaat uchun telefon va Telegram username majburiy, email ixtiyoriy.
-/api/admin/ — login/logout/session, kontent, xabarlar va Supabase rasm yuklash.
+- GET `/api/health`: baza tayyorligi.
+- GET `/api/posts`, `/api/posts/:slug`: nashr qilingan yangiliklar.
+- GET `/api/teachers`, `/api/teachers/:slug`: ustozlar.
+- GET `/api/achievements`, `/api/achievement-page`, `/api/achievement-filters`: yutuqlar.
+- GET `/api/school-life`: tadbirlar.
+- POST `/api/contact`: idempotent murojaat.
+- `/api/admin/login`, `/api/admin/logout`, `/api/admin/session`: autentifikatsiya.
+- `/api/admin/posts`, `/api/admin/teachers`, `/api/admin/achievements`,
+  `/api/admin/school-life`, `/api/admin/messages`: boshqaruv.
+- POST `/api/admin/uploads`: Supabase Storage’ga rasm yuklash.
+- GET `/api/admin/trash`, POST `/api/admin/trash/:id/restore`: savat va tiklash.
 
-Cookie HttpOnly va SameSite=Strict; https domenida Secure ham qo‘yiladi.
-Limitlar va sessiyalar bazada saqlanadi. Mavjud SQL migratsiyalarini qayta yozmang.
+## Buyruqlar va import
 
-## Tekshiruv
+Ildizdan `npm run dev:backend`, `npm run start:backend`, `npm run build:backend`,
+`npm run db:migrate`. Backend papkasida `npm run dev`, `npm start`, `npm run db:migrate`.
+Bir repository package-lock va umumiy contracts workspace’dan foydalaniladi.
 
-npm test — API handlerlari haqiqiy Node SQLite’da tekshiriladi, jumladan
-admin kirishi, ruxsatlar, versiyalar, murojaat cheklovlari va rasm validatsiyasi.
-Supabase tashqi so‘rovlari testlarda almashtirilgan; jonli xizmatga yozilmaydi.
+SQLite’dan import: `npm run db:import:postgres -- ABSOLUTE_SQLITE_PATH`, yangi bo‘sh
+PostgreSQL’da, serverning birinchi startup’idan oldin. Import sessiyalar, cheklovlar
+va bot worker holatini ko‘chirmaydi; tarixiy murojaatlar qayta yuborilmaydi.
 
-Telegram xabarlari va bot menyusi: [telegram/README.md](telegram/README.md).
+PostgreSQL backup: Supabase backup rejasi yoki tashqi scheduled `pg_dump`.
+SQLite’ning `backup:create` buyrug‘i PostgreSQL uchun ishlamaydi, aniq xato qaytaradi.
+Bu o‘zgarish Supabase’da backup jadvalini avtomatik yaratmaydi. Storage obyektlari
+uchun ham alohida nusxa kerak.
 
-## Kontentni o‘chirish
-
-DELETE /api/admin/{posts|teachers|achievements|school-life|messages}/:id?version=N
-joriy admin sessiyasi va aynan sayt Origin’i bilan ishlaydi. Versiya mos kelmasa
-409, yozuv topilmasa 404 qaytadi. Admin panelida yozuvni tanlang, O‘chirish tugmasini
-bosing va dialogda tasdiqlang. O‘chirilgan yozuv Savatga tushadi va tiklanishi mumkin; Supabase’dagi umumiy rasm fayllari
-avtomatik o‘chirilmaydi. Testlar faqat vaqtinchalik bazadagi yozuvlarni o‘chiradi.
-
-Hosting, backup va monitoring: [DEPLOYMENT.md](../DEPLOYMENT.md).
+Hosting: [DEPLOYMENT.md](../DEPLOYMENT.md). Bot: [telegram/README.md](telegram/README.md).

@@ -1,4 +1,4 @@
-import path from "node:path";
+import { postgresConfig } from "../database/postgres";
 import { storageConfig } from "../api/image-upload";
 
 export function validHttpsOrigin(value: string | undefined) {
@@ -32,8 +32,13 @@ export function deploymentErrors(
   } else {
     if (!validHttpsOrigin(env["PUBLIC_ORIGIN"]))
       errors.push("PUBLIC_ORIGIN: Vercel saytining to‘liq HTTPS origin manzili kerak.");
-    if (!env["DATABASE_PATH"] || !path.isAbsolute(env["DATABASE_PATH"]))
-      errors.push("DATABASE_PATH: Render doimiy diskidagi mutlaq fayl yo‘li kerak.");
+    try {
+      postgresConfig(env);
+    } catch {
+      errors.push(
+        "DATABASE_URL: Supabase PostgreSQL ulanish manzili kerak; DATABASE_POOL_MAX 1–20 bo‘lsin.",
+      );
+    }
     if (!/^pbkdf2:100000:[a-f0-9]{32}:[a-f0-9]{64}$/.test(env["ADMIN_PASSWORD_HASH"] ?? ""))
       errors.push("ADMIN_PASSWORD_HASH: admin parolining yaroqli xeshi kerak.");
     if (
@@ -51,10 +56,10 @@ export function deploymentErrors(
         Number(env["TELEGRAM_ADMIN_ID"]) < 1)
     )
       errors.push("TELEGRAM: token va raqamli admin ID kerak yoki TELEGRAM_ENABLED=false qiling.");
-    if (env["BACKUP_ENABLED"] !== "true")
-      errors.push("BACKUP_ENABLED: avtomatik zaxira uchun true bo‘lishi kerak.");
-    if (!env["BACKUP_DIR"] || !path.isAbsolute(env["BACKUP_DIR"]))
-      errors.push("BACKUP_DIR: doimiy diskdagi mutlaq papka yo‘li kerak.");
+    if (env["BACKUP_ENABLED"] === "true")
+      errors.push(
+        "BACKUP_ENABLED: PostgreSQL rejimida SQLite zaxiralashini o‘chiring (false); Supabase backup yoki pg_dump ishlating.",
+      );
   }
   return errors;
 }

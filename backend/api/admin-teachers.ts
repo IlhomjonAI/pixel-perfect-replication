@@ -1,7 +1,7 @@
 import { json, fail, readJson } from "./http";
 import { deleteRecord } from "./delete-record";
 import { requireAdmin } from "@backend/api/admin-auth";
-import { teacherInput } from "@backend/contracts/teacher";
+import { teacherInput } from "@school/contracts/teacher";
 import { mapTeacherRow, type TeacherRow } from "@backend/database/mappers";
 const fields =
   "slug,name,photo,subject,qualification,education,experience,biography,certificates,certificate_images,is_demo,status,version";

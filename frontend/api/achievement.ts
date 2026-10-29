@@ -1,6 +1,6 @@
 import { apiGet } from "./client";
-import { achievementQuery, type AchievementQuery } from "@backend/contracts/achievement";
-import type { Achievement } from "@backend/contracts/models";
+import { achievementQuery, type AchievementQuery } from "@school/contracts/achievement";
+import type { Achievement } from "@school/contracts/models";
 export function getAchievementsPage(query: Partial<AchievementQuery> = {}) {
   const parsed = achievementQuery.parse(query);
   const params = new URLSearchParams(

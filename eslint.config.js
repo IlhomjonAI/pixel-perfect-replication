@@ -50,7 +50,7 @@ export default tseslint.config(
             {
               group: ["@/*", "@admin/**", "**/frontend/**", "**/admin/**"],
               message:
-                "Backend must not depend on frontend or admin. Use backend/contracts for shared types and validation.",
+                "Backend must not depend on frontend or admin. Use packages/contracts for shared types and validation.",
             },
           ],
         },
@@ -59,7 +59,7 @@ export default tseslint.config(
   },
   {
     files: [
-      "admin/**/*.{ts,tsx}",
+      "frontend/admin/**/*.{ts,tsx}",
       "frontend/components/**/*.{ts,tsx}",
       "frontend/hooks/**/*.{ts,tsx}",
     ],
@@ -79,7 +79,7 @@ export default tseslint.config(
                 "**/backend/lib/**",
               ],
               message:
-                "UI components must use API functions or backend/contracts, never server implementation modules.",
+                "UI components must use API functions or packages/contracts, never server implementation modules.",
             },
           ],
         },

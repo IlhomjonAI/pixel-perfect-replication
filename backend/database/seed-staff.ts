@@ -1,22 +1,32 @@
-import type { SqliteDatabase } from "./sqlite";
-import { SCHOOL_TEACHERS } from "../contracts/staff";
+import type { ManagedDatabase } from "./managed";
+import { SCHOOL_TEACHERS } from "@school/contracts/staff";
 
 /** One-time content import: future admin edits, archives and deletions stay intact. */
-export function seedSchoolStaff(database: SqliteDatabase) {
-  const db = database.connection;
-  db.exec(
-    "CREATE TABLE IF NOT EXISTS content_imports (name TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
-  );
+export async function seedSchoolStaff(database: ManagedDatabase) {
+  await database
+    .prepare(
+      "CREATE TABLE IF NOT EXISTS content_imports (name TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)",
+    )
+    .run();
   const name = "bekobod-staff-2026-10-27";
-  db.exec("BEGIN IMMEDIATE");
-  try {
-    if (!db.prepare("SELECT name FROM content_imports WHERE name=?").get(name)) {
-      const insert = db.prepare(`INSERT INTO teachers
+  await database.transaction(async (db) => {
+    // Claim the import marker inside the same transaction, including concurrent starts.
+    const claimed = await db
+      .prepare(
+        "INSERT INTO content_imports(name) VALUES(?) ON CONFLICT(name) DO NOTHING RETURNING name",
+      )
+      .bind(name)
+      .first();
+    if (!claimed) return;
+    for (const t of SCHOOL_TEACHERS) {
+      await db
+        .prepare(
+          `INSERT INTO teachers
         (slug,name,photo,subject,qualification,education,experience,biography,certificates,certificate_images,is_demo,status)
         SELECT ?,?,?,?,?,?,?,?,?,?,0,'published'
-        WHERE NOT EXISTS (SELECT 1 FROM teachers WHERE slug=? OR name=?)`);
-      for (const t of SCHOOL_TEACHERS)
-        insert.run(
+        WHERE NOT EXISTS (SELECT 1 FROM teachers WHERE slug=? OR name=?)`,
+        )
+        .bind(
           t.slug,
           t.name,
           t.photo,
@@ -29,12 +39,8 @@ export function seedSchoolStaff(database: SqliteDatabase) {
           JSON.stringify(t.certificateImages),
           t.slug,
           t.name,
-        );
-      db.prepare("INSERT INTO content_imports(name) VALUES (?)").run(name);
+        )
+        .run();
     }
-    db.exec("COMMIT");
-  } catch (error) {
-    db.exec("ROLLBACK");
-    throw error;
-  }
+  });
 }

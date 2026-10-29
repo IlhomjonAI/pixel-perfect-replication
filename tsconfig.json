@@ -3,10 +3,9 @@
     "frontend/**/*.ts",
     "frontend/**/*.tsx",
     "backend/**/*.ts",
-    "admin/**/*.ts",
-    "admin/**/*.tsx",
     "scripts/**/*.ts",
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "packages/**/*.ts"
   ],
   "compilerOptions": {
     "target": "ES2022",
@@ -32,7 +31,8 @@
     "paths": {
       "@/*": ["./frontend/*"],
       "@backend/*": ["./backend/*"],
-      "@admin/*": ["./admin/*"]
+      "@admin/*": ["./frontend/admin/*"],
+      "@school/contracts/*": ["./packages/contracts/*"]
     }
   },
   "exclude": ["node_modules", "frontend/.next"]

@@ -1,4 +1,4 @@
-import { achievementQuery } from "@backend/contracts/achievement";
+import { achievementQuery } from "@school/contracts/achievement";
 import { getAchievementPage, getAchievementOptions } from "@backend/database/achievement-page";
 import {
   boundPagination,

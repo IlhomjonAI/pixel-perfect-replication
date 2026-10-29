@@ -1,4 +1,4 @@
-import { achievementQuery, type AchievementQuery } from "@backend/contracts/achievement";
+import { achievementQuery, type AchievementQuery } from "@school/contracts/achievement";
 import { mapAchievementRow, type AchievementRow } from "@backend/database/mappers";
 const fields =
   "id,student_name,class_at_achievement,type,title,subject,stage,result,achievement_date,teacher_name,certificate_image,is_demo";

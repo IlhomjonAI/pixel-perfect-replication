@@ -4,6 +4,7 @@ import path from "node:path";
 
 /** Async query interface shared by handlers and tests; persisted with Node SQLite. */
 export class SqliteDatabase implements Database {
+  readonly dialect = "sqlite" as const;
   readonly connection: DatabaseSync;
   constructor(filename = ":memory:") {
     if (filename !== ":memory:")
@@ -56,6 +57,17 @@ export class SqliteDatabase implements Database {
         db.exec("ROLLBACK");
         throw error;
       }
+    }
+  }
+  async transaction<T>(work: (database: Database) => Promise<T>): Promise<T> {
+    this.connection.exec("BEGIN IMMEDIATE");
+    try {
+      const result = await work(this);
+      this.connection.exec("COMMIT");
+      return result;
+    } catch (error) {
+      this.connection.exec("ROLLBACK");
+      throw error;
     }
   }
   close() {

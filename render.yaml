@@ -3,13 +3,9 @@ services:
     name: bekobod-school-api
     runtime: node
     plan: starter
-    buildCommand: npm ci --include=dev && npm run deploy:check -- backend
+    buildCommand: npm ci --include=dev && npm run build:backend && npm run deploy:check -- backend
     startCommand: npm run start:backend
     healthCheckPath: /api/health
-    disk:
-      name: school-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: NODE_VERSION
         value: 24.17.0
@@ -17,12 +13,12 @@ services:
         value: production
       - key: API_HOST
         value: 0.0.0.0
-      - key: DATABASE_PATH
-        value: /var/data/school.sqlite
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_POOL_MAX
+        value: "5"
       - key: BACKUP_ENABLED
-        value: "true"
-      - key: BACKUP_DIR
-        value: /var/data/backups
+        value: "false"
       - key: PUBLIC_ORIGIN
         sync: false
       - key: API_PROXY_SECRET
@@ -39,5 +35,3 @@ services:
         sync: false
       - key: SUPABASE_STORAGE_BUCKET
         value: school-images
-      - key: BACKUP_STORAGE_BUCKET
-        sync: false

@@ -1,7 +1,7 @@
 import { json, fail, readJson } from "./http";
 import { deleteRecord } from "./delete-record";
 import { requireAdmin } from "@backend/api/admin-auth";
-import { postInput } from "@backend/contracts/post";
+import { postInput } from "@school/contracts/post";
 import { mapPostRow, type PostRow } from "@backend/database/mappers";
 const fields = "slug,title,category,date,excerpt,body,cover_image,gallery,is_demo,status,version";
 type Row = PostRow & { status: "draft" | "published" | "archived"; version: number };
