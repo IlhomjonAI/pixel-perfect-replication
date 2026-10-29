@@ -30,8 +30,10 @@ export function deploymentErrors(
     if (!validHttpsOrigin(env["API_INTERNAL_URL"]))
       errors.push("API_INTERNAL_URL: Render backendining to‘liq HTTPS origin manzili kerak.");
   } else {
-    if (!validHttpsOrigin(env["PUBLIC_ORIGIN"]))
-      errors.push("PUBLIC_ORIGIN: Vercel saytining to‘liq HTTPS origin manzili kerak.");
+    if (!validPublicOrigin(env))
+      errors.push(
+        "PUBLIC_ORIGIN: HTTPS origin kerak. Localhost sinovi uchun http://localhost:3000 va ALLOW_LOCAL_FRONTEND=true kiriting.",
+      );
     try {
       postgresConfig(env);
     } catch {
@@ -47,8 +49,28 @@ export function deploymentErrors(
         SUPABASE_SECRET_KEY: env["SUPABASE_SECRET_KEY"] ?? "",
         SUPABASE_STORAGE_BUCKET: env["SUPABASE_STORAGE_BUCKET"] ?? "school-images",
       })
-    )
-      errors.push("SUPABASE: rasm saqlash URL, secret key va bucket sozlamalarini tekshiring.");
+    ) {
+      const baseline = {
+        SUPABASE_URL: "https://example.supabase.co",
+        SUPABASE_SECRET_KEY: "sb_secret_" + "a".repeat(25),
+        SUPABASE_STORAGE_BUCKET: "school-images",
+      };
+      if (!storageConfig({ ...baseline, SUPABASE_URL: env["SUPABASE_URL"] ?? "" }))
+        errors.push(
+          "SUPABASE_URL: https://PROJECT_ID.supabase.co kerak; Dashboard yoki PostgreSQL URL emas.",
+        );
+      if (!storageConfig({ ...baseline, SUPABASE_SECRET_KEY: env["SUPABASE_SECRET_KEY"] ?? "" }))
+        errors.push("SUPABASE_SECRET_KEY: sb_secret_ bilan boshlanadigan to‘liq secret key kerak.");
+      if (
+        !storageConfig({
+          ...baseline,
+          SUPABASE_STORAGE_BUCKET: env["SUPABASE_STORAGE_BUCKET"] ?? "school-images",
+        })
+      )
+        errors.push(
+          "SUPABASE_STORAGE_BUCKET: bucket nomini kiriting, masalan school-images; URL emas.",
+        );
+    }
     if (
       env["TELEGRAM_ENABLED"] !== "false" &&
       (!/^\d{5,}:[A-Za-z0-9_-]{20,}$/.test(env["TELEGRAM_BOT_TOKEN"] ?? "") ||
@@ -62,4 +84,17 @@ export function deploymentErrors(
       );
   }
   return errors;
+}
+
+export function validPublicOrigin(env: Record<string, string | undefined>) {
+  if (validHttpsOrigin(env["PUBLIC_ORIGIN"])) return true;
+  return (
+    env["ALLOW_LOCAL_FRONTEND"] === "true" &&
+    [
+      "http://localhost:3000",
+      "http://localhost:3000/",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3000/",
+    ].includes(env["PUBLIC_ORIGIN"] ?? "")
+  );
 }

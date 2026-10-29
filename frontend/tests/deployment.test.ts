@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { expect, it } from "vitest";
-import { deploymentErrors } from "@backend/lib/deployment";
+import { deploymentErrors, validPublicOrigin } from "@backend/lib/deployment";
 import { apiOrigin } from "@/api/origin";
 
 it("rejects missing or unsafe Vercel API configuration instead of using localhost", () => {
@@ -41,4 +41,32 @@ it("checks deployment variables without returning credentials in diagnostics", (
   expect(errors).toHaveLength(2);
   expect(errors.join()).not.toContain("private");
   expect(deploymentErrors("frontend", {})).toHaveLength(2);
+  expect(
+    deploymentErrors("backend", {
+      ...env,
+      PUBLIC_ORIGIN: "http://localhost:3000",
+      ALLOW_LOCAL_FRONTEND: "true",
+    }),
+  ).toEqual([]);
+  const storageErrors = deploymentErrors("backend", {
+    ...env,
+    SUPABASE_URL: "https://supabase.com/dashboard/project/test",
+    SUPABASE_SECRET_KEY: "private-invalid-key",
+  });
+  expect(storageErrors).toHaveLength(2);
+  expect(storageErrors.join()).not.toContain("private-invalid-key");
+});
+
+it("only permits explicit loopback frontend origins with opt-in", () => {
+  expect(validPublicOrigin({ PUBLIC_ORIGIN: "http://localhost:3000" })).toBe(false);
+  for (const origin of ["http://localhost:3000", "http://127.0.0.1:3000/"])
+    expect(validPublicOrigin({ PUBLIC_ORIGIN: origin, ALLOW_LOCAL_FRONTEND: "true" })).toBe(true);
+  for (const origin of [
+    "http://example.com:3000",
+    "http://localhost.evil.test:3000",
+    "http://localhost:3000/admin",
+    "http://user:pass@localhost:3000",
+    "http://localhost:3001",
+  ])
+    expect(validPublicOrigin({ PUBLIC_ORIGIN: origin, ALLOW_LOCAL_FRONTEND: "true" })).toBe(false);
 });
