@@ -97,12 +97,25 @@ export default function About() {
             qizi.
           </p>
           <PhotoGallery
-            images={[MEDIA.library.src, MEDIA.campus.src, MEDIA.reading.src]}
-            title="Maktab kutubxonasi, hovlisi va foyesi"
+            images={[
+              MEDIA.library.src,
+              MEDIA.shelves.src,
+              MEDIA.heritage.src,
+              MEDIA.reading.src,
+              MEDIA.garden.src,
+              MEDIA.campus.src,
+            ]}
+            title="Maktab bo‘ylab"
+            landscape
+            captions={[
+              MEDIA.library.caption,
+              MEDIA.shelves.caption,
+              MEDIA.heritage.caption,
+              MEDIA.reading.caption,
+              MEDIA.garden.caption,
+              MEDIA.campus.caption,
+            ]}
           />
-          <p className="text-xs text-muted-foreground">
-            Maktab taqdim etgan suratlar. Kutubxona surati yorug‘lik va rang bo‘yicha tahrirlangan.
-          </p>
         </section>
       </div>
     </>
