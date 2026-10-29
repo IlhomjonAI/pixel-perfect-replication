@@ -7,7 +7,7 @@ import { seedSchoolStaff } from "./database/seed-staff";
 import { startTelegramWorker } from "./telegram/worker";
 import { authorizedProxy, clientIp } from "./lib/proxy";
 
-import { deploymentErrors } from "./lib/deployment";
+import { deploymentErrors, validPublicOrigin } from "./lib/deployment";
 
 if (process.env["RENDER"]) {
   const errors = deploymentErrors("backend", process.env);
@@ -32,8 +32,8 @@ for (const key of [
   if (process.env[key]) env[key] = process.env[key];
 }
 const publicOrigin = new URL(process.env["PUBLIC_ORIGIN"] ?? "http://localhost:3000").origin;
-if (process.env["RENDER"] && (!process.env["API_PROXY_SECRET"] || publicOrigin.startsWith("http:")))
-  throw new Error("Render requires HTTPS PUBLIC_ORIGIN and API_PROXY_SECRET.");
+if (process.env["RENDER"] && (!process.env["API_PROXY_SECRET"] || !validPublicOrigin(process.env)))
+  throw new Error("Render requires a valid PUBLIC_ORIGIN and API_PROXY_SECRET.");
 const server = createServer(async (incoming, outgoing) => {
   try {
     const url = new URL(incoming.url ?? "/", publicOrigin);
