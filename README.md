@@ -55,7 +55,7 @@ Frontend build Next.js production artifact yaratadi.
 ## PostgreSQL va eski ma’lumotlar
 
 `DATABASE_URL` mavjud bo‘lsa, `pg` connection pool ishlaydi. Backend ishga tushishida
-migratsiyalar tranzaksiya bilan bajariladi, so‘ng 25 ustoz bir marta import qilinadi.
+migratsiyalar tranzaksiya bilan bajariladi, so‘ng 29 ustoz bir marta import qilinadi.
 Keyingi admin tahrirlari va o‘chirishlari saqlanadi.
 
 Eski SQLite kontentini ko‘chirish uchun yangi PostgreSQL’ga serverni birinchi marta
@@ -73,9 +73,21 @@ Mavjud rasm URLlari o‘sha Supabase loyiha va bucket saqlansa ishlaydi.
 ## Rasmlar va matnlar
 
 5 rahbariyat vakili va 25 ustoz portreti `frontend/public/media/staff/`da.
-Boshlang‘ich ma’lumot `packages/contracts/staff.ts`da. «Oliy darajadagi ustoz»
-taqdimot tavsifi; tasdiqlanmagan diplom, malaka toifasi yoki staj qo‘shilmagan.
-Kontaktlar foydalanuvchi iltimosiga ko‘ra hozircha bo‘sh.
+29 ustozning kasbiy ma’lumotlari `packages/contracts/staff-registry.ts`da,
+6 rahbariyat/jamoa vakili tavsiflari `packages/contracts/staff.ts`da.
+Malaka toifasi, staj va sertifikatlar taqdim etilgan xodimlar reyestriga asoslangan;
+sertifikatning ayni paytda amal qilishi tasdiqlanmagan. Tug‘ilgan sana va buyruq
+raqamlari ommaviy fayllarga kiritilmagan. To‘rt ustoz va bir rahbariyat vakiliga
+surat hali taqdim etilmagan.
+
+2026-10-29 importi eski, admin tahrirlamagan umumiy tavsiflarni reyestr bilan
+yangilaydi. Admin tahrirlari va o‘chirilgan profillar saqlanadi. Render’dagi
+ma’lumotlar yangi backend deploy qilinib ishga tushganda yangilanadi.
+
+Maktab kirish qismi, hovli, foye va tahrirlangan kutubxona surati
+`frontend/public/media/school/`da; manbalar shu papkadagi README’da qayd etilgan.
+Telefon va email `frontend/config/contact.ts`da berilgan; `NEXT_PUBLIC_SCHOOL_*`
+sozlamalari ularni almashtirishi mumkin. Rasmiy manzil hali kiritilmagan.
 
 ## Tekshiruv
 

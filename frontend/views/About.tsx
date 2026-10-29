@@ -7,6 +7,8 @@ import { Reveal } from "@/components/site/Reveal";
 import { MEDIA } from "@/config/brand";
 import { SCHOOL_NAME } from "@/config/site";
 import { SCHOOL_LEADERSHIP } from "@school/contracts/staff";
+import { SCHOOL_TEACHERS } from "@school/contracts/staff";
+import { PhotoGallery } from "@/components/site/PhotoGallery";
 import { Portrait } from "@/components/site/Portrait";
 
 export default function About() {
@@ -15,7 +17,7 @@ export default function About() {
       <PageHero
         eyebrow="Maktab haqida"
         title={SCHOOL_NAME}
-        intro="Maktab haqidagi rasmiy ma’lumotlar tasdiqlanganidan so‘ng ushbu bo‘limlarga qo‘shiladi."
+        intro="Bilimga intilish, tajribali ustozlar va mutolaa muhiti — maktabimiz bilan yaqindan tanishing."
         image={MEDIA.campus}
       />
 
@@ -27,24 +29,28 @@ export default function About() {
               Maktabimiz bilan tanishing
             </h2>
             <p className="mt-4 leading-relaxed text-muted-foreground md:text-lg">
-              Maktabning umumiy tavsifi, qadriyatlari va ta’lim muhiti haqidagi matn tez orada
-              qo‘shiladi. Har bir bo‘lim tasdiqlangan ma’lumot asosida to‘ldirib boriladi.
+              Bekobod tumani ixtisoslashtirilgan maktabida aniq va tabiiy fanlar, tillar hamda
+              ijtimoiy fanlar bo‘yicha ustozlar faoliyat yuritadi. Kutubxona, yashil hovli va maktab
+              jamoasi haqidagi ma’lumotlar bilan ushbu sahifada tanishishingiz mumkin.
             </p>
           </Reveal>
           <Reveal
             from="right"
             className="aspect-[4/3] overflow-hidden rounded-2xl border bg-secondary shadow-[var(--shadow-card)]"
           >
-            <PhotoPlaceholder label="Maktab surati tez orada qo‘shiladi" />
+            <PhotoPlaceholder src={MEDIA.hero.src} alt={MEDIA.hero.alt} />
           </Reveal>
         </section>
 
         <section className="grid gap-6 md:grid-cols-2">
-          <PendingBlock title="Tarix">
-            Maktab tarixi haqidagi tasdiqlangan ma’lumot tez orada qo‘shiladi.
+          <PendingBlock title="Ustozlar jamoasi">
+            Xodimlar reyestrida {SCHOOL_TEACHERS.length} nafar fan o‘qituvchisi qayd etilgan.
+            Ularning malaka toifasi, ish staji va sertifikatlari bilan ustozlar sahifasida
+            tanishing.
           </PendingBlock>
-          <PendingBlock title="Ta’lim yo‘nalishlari">
-            Ixtisoslashgan fanlar va o‘quv dasturlari haqidagi ma’lumot tez orada qo‘shiladi.
+          <PendingBlock title="Fanlar va yo‘nalishlar">
+            Matematika, informatika, fizika, kimyo, biologiya, geografiya, tarix, ona tili va
+            adabiyoti, o‘zbek tili, ingliz tili, rus tili hamda jismoniy tarbiya.
           </PendingBlock>
         </section>
 
@@ -82,13 +88,21 @@ export default function About() {
           </div>
         </section>
 
-        <section>
-          <Reveal from="up">
-            <PendingBlock title="Imkoniyatlar va jihozlar">
-              Sinfxonalar, laboratoriyalar va boshqa imkoniyatlar haqidagi ma’lumot tasdiqlangandan
-              so‘ng qo‘shiladi.
-            </PendingBlock>
-          </Reveal>
+        <section className="space-y-6">
+          <Eyebrow>Maktab bo‘ylab</Eyebrow>
+          <h2 className="text-3xl font-medium text-primary">Mutolaa va ta’lim muhiti</h2>
+          <p className="max-w-3xl leading-relaxed text-muted-foreground">
+            Kutubxona javonlarida badiiy asarlar va o‘quv adabiyotlari jamlangan. Mutolaa stollari
+            kitob bilan ishlash uchun joy ajratadi. Kutubxona mudiri — Baboyeva Zumratoy Xakimdjon
+            qizi.
+          </p>
+          <PhotoGallery
+            images={[MEDIA.library.src, MEDIA.campus.src, MEDIA.reading.src]}
+            title="Maktab kutubxonasi, hovlisi va foyesi"
+          />
+          <p className="text-xs text-muted-foreground">
+            Maktab taqdim etgan suratlar. Kutubxona surati yorug‘lik va rang bo‘yicha tahrirlangan.
+          </p>
         </section>
       </div>
     </>

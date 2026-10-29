@@ -109,8 +109,9 @@ export default function Home({ initialData }: { initialData: PageData }) {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
               Maqsadimiz — har bir o‘quvchining qiziqishini izlanishga, izlanishni esa aniq natijaga
-              aylantirish. Maktab hayotimiz haqidagi ma’lumotlar tasdiqlangani sayin to‘ldirilib
-              boriladi.
+              aylantirish. Aniq va tabiiy fanlar, tillar hamda ijtimoiy fanlar ustozlari o‘quvchilar
+              bilan bilim va tajribalarini baham ko‘radi. Kutubxonamiz esa mustaqil mutolaa va
+              izlanishga chorlaydi.
             </p>
             <ul className="mt-6 flex flex-wrap gap-2">
               {NAV.filter((n) => n.to !== "/").map((n) => (
@@ -132,8 +133,8 @@ export default function Home({ initialData }: { initialData: PageData }) {
               />
             </Link>
             <p className="mt-6 border-t pt-4 text-xs leading-relaxed text-muted-foreground">
-              Maktab tarixi, moddiy baza va boshqa tafsilotlar tasdiqlangani sayin shu yerda
-              to‘ldiriladi.
+              Maktab jamoasi, ustozlarning malaka toifalari va ish staji taqdim etilgan xodimlar
+              reyestri asosida yoritilgan.
             </p>
           </Reveal>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { PhotoGallery } from "@/components/site/PhotoGallery";
 import { EmptyState } from "@/components/site/common";
 import { PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
@@ -26,6 +27,20 @@ export default function SchoolLife({ initialData }: { initialData: PageData }) {
         intro="Tadbirlar, to‘garaklar, loyihalar va esda qolarli lahzalar."
         image={MEDIA.collab}
       />
+      <section className="container-site pt-12 space-y-5">
+        <h2 className="text-3xl font-medium text-primary">Maktabimizdan lavhalar</h2>
+        <p className="text-muted-foreground">
+          Bosh kirish qismi, yashil hovli, foye va kutubxona — maktab muhiti bilan suratlar orqali
+          tanishing.
+        </p>
+        <PhotoGallery
+          images={[MEDIA.hero.src, MEDIA.campus.src, MEDIA.reading.src, MEDIA.library.src]}
+          title="Maktabimizdan lavhalar"
+        />
+        <p className="text-xs text-muted-foreground">
+          Kutubxona suratining yorug‘ligi va ranglari tahrirlangan.
+        </p>
+      </section>
       <section className="container-site py-12 md:py-16">
         {items.length ? (
           <div className="grid items-start gap-6 sm:grid-cols-2 lg:grid-cols-3">
