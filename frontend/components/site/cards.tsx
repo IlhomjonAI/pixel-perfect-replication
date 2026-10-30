@@ -135,9 +135,9 @@ export function TeacherCard({ t }: { t: Teacher }) {
   return (
     <Link
       href={`/oqituvchilar/${encodeURIComponent(t.slug)}`}
-      className="card-surface card-interactive group flex h-full flex-col overflow-hidden"
+      className="teacher-profile-card card-surface card-interactive group flex h-full flex-col overflow-hidden"
     >
-      <div className="aspect-[4/5] overflow-hidden bg-sage/40">
+      <div className="teacher-portrait aspect-[4/5] overflow-hidden bg-sage/40">
         <PhotoPlaceholder
           src={t.photo}
           alt={t.name}

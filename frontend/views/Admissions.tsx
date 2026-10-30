@@ -2,8 +2,7 @@
 
 import { ExternalLink, Info } from "lucide-react";
 import { Eyebrow } from "@/components/site/common";
-import { PageHero } from "@/components/site/PageHero";
-import { MEDIA } from "@/config/brand";
+import { EditorialHero, AdmissionsLink } from "@/components/site/EditorialHero";
 import { ARIZA_URL } from "@/config/site";
 
 const FAQ = [
@@ -28,12 +27,15 @@ const FAQ = [
 export default function Admissions() {
   return (
     <>
-      <PageHero
-        eyebrow="Qabul"
-        title="Maktabga qabul"
-        intro="Tasdiqlangan qabul ma’lumotlari tez orada qo‘shiladi."
-        image={MEDIA.notebook}
-      />
+      <EditorialHero
+        theme="admissions"
+        eyebrow="Yangi imkoniyatlar sari"
+        title="Katta kelajak."
+        accent="Birinchi qadam."
+        intro="Qiziqishingizni bilimga, bilimingizni imkoniyatga aylantiring. Maktabga qabul bo‘yicha kerakli yo‘nalishlar shu yerda."
+      >
+        <AdmissionsLink />
+      </EditorialHero>
       <div className="container-site grid gap-10 py-12 lg:grid-cols-[1fr_380px] lg:gap-14">
         <div>
           <div className="flex gap-3 rounded-xl border border-gold bg-gold-soft p-5 text-navy-deep">
@@ -44,6 +46,38 @@ export default function Admissions() {
             </p>
           </div>
 
+          <section className="admission-steps" aria-labelledby="admission-steps-title">
+            <p className="editorial-eyebrow">
+              <span />
+              Qayerdan boshlash kerak?
+            </p>
+            <h2 id="admission-steps-title">Maqsad sari uch qadam.</h2>
+            {[
+              [
+                "01",
+                "Ma’lumot bilan tanishing",
+                "Qabul muddati, sinflar va talablarning rasmiy e’lonini tekshiring.",
+              ],
+              [
+                "02",
+                "Arizangizni tayyorlang",
+                "Rasmiy portalda ko‘rsatilgan hujjatlar va ma’lumotlarni tayyorlang.",
+              ],
+              [
+                "03",
+                "Rasmiy portalga o‘ting",
+                "Qabul ochilganda arizangizni ariza.piima.uz orqali yuboring va holatini kuzating.",
+              ],
+            ].map(([number, heading, copy]) => (
+              <div className="admission-step" key={number}>
+                <span>{number}</span>
+                <div>
+                  <h3>{heading}</h3>
+                  <p>{copy}</p>
+                </div>
+              </div>
+            ))}
+          </section>
           <h2 className="mt-12 font-display text-2xl text-primary md:text-3xl">
             Ko‘p beriladigan savollar
           </h2>

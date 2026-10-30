@@ -38,14 +38,6 @@ export const SCHOOL_TEACHERS: Teacher[] = STAFF_REGISTRY.map(({ sourceRow: _sour
 
 export const SCHOOL_LEADERSHIP = [
   {
-    slug: "raximov-javohir",
-    name: "Raximov Javohir Ilhomovich",
-    role: "Ma’naviy-ma’rifiy ishlar bo‘yicha direktor o‘rinbosari",
-    description:
-      "Maktabdagi ma’naviy-ma’rifiy ishlar va tarbiyaviy faoliyatni muvofiqlashtiradi. O‘quvchilarning tashabbuslari, mas’uliyati va jamoaviy hamkorligini qo‘llab-quvvatlashga e’tibor qaratadi.",
-  },
-
-  {
     slug: "dusmatova-nodira",
     name: "Dusmatova Nadira Zoirkulovna",
     role: "Direktor",
@@ -59,6 +51,14 @@ export const SCHOOL_LEADERSHIP = [
     description:
       "O‘quv jarayonining izchil va samarali tashkil etilishini muvofiqlashtiradi. Darslar sifati, o‘quv rejalari va ustozlar o‘rtasidagi uslubiy hamkorlikka e’tibor qaratadi.",
   },
+  {
+    slug: "raximov-javohir",
+    name: "Raximov Javohir Ilhomovich",
+    role: "Ma’naviy-ma’rifiy ishlar bo‘yicha direktor o‘rinbosari",
+    description:
+      "Maktabdagi ma’naviy-ma’rifiy ishlar va tarbiyaviy faoliyatni muvofiqlashtiradi. O‘quvchilarning tashabbuslari, mas’uliyati va jamoaviy hamkorligini qo‘llab-quvvatlashga e’tibor qaratadi.",
+  },
+
   {
     slug: "risbayev-odiljon",
     name: "Risbayev Odiljon Abdumanopovich",

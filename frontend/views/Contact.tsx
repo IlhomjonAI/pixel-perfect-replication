@@ -3,8 +3,7 @@
 import { CheckCircle2, Send } from "lucide-react";
 import { useRef, useState, type FormEvent } from "react";
 import { Eyebrow } from "@/components/site/common";
-import { PageHero } from "@/components/site/PageHero";
-import { MEDIA } from "@/config/brand";
+import { EditorialHero } from "@/components/site/EditorialHero";
 import { validateContact, type ContactErrors, type ContactForm } from "@school/contracts/contact";
 import { TELEGRAM_URL } from "@/config/site";
 import { SCHOOL_CONTACTS } from "@/config/contact";
@@ -97,18 +96,23 @@ export default function Contact() {
 
   return (
     <>
-      <PageHero
-        eyebrow="Aloqa"
-        title="Aloqa va murojaat"
-        intro="Savol, taklif yoki hamkorlik bo‘yicha murojaat qoldiring."
-        image={MEDIA.reading}
-      />
+      <EditorialHero
+        theme="contact"
+        eyebrow="Doim aloqadamiz"
+        title="Sizni tinglaymiz."
+        accent="Birga hal qilamiz."
+        intro="Savolingiz, taklifingiz yoki hamkorlik g‘oyangiz bormi? Maktab jamoasi bilan suhbatni shu yerdan boshlang."
+      >
+        <a href="#murojaat" className="btn btn-gold">
+          Murojaat yozish <Send size={17} aria-hidden />
+        </a>
+      </EditorialHero>
       <div className="container-site grid gap-10 py-12 lg:grid-cols-[1fr_340px] lg:gap-14">
         <form
           noValidate
           onSubmit={submit}
           id="murojaat"
-          className="card-surface space-y-5 p-6 md:p-8"
+          className="card-surface space-y-5 p-6 md:p-8 scroll-mt-24"
         >
           <h2 className="text-2xl font-semibold text-primary">Murojaat yuborish</h2>
           <p className="text-sm text-muted-foreground">

@@ -18,7 +18,7 @@ import { MEDIA } from "@/config/brand";
 import { getPostsPage } from "@/api/news";
 import { getSchoolLifePage } from "@/api/school-life";
 import { getTeachersPage } from "@/api/teacher";
-import { NAV, SCHOOL_NAME, TELEGRAM_URL } from "@/config/site";
+import { SCHOOL_NAME, TELEGRAM_URL } from "@/config/site";
 
 export default function Home({ initialData }: { initialData: PageData }) {
   const { posts, achievements, life, teachers } = initialData;
@@ -84,10 +84,17 @@ export default function Home({ initialData }: { initialData: PageData }) {
           {posts.length ? (
             <NewsFeed posts={posts} />
           ) : (
-            <EmptyState
-              title="Yangiliklar tez orada"
-              description="Maktabimizning yangi xabarlari shu yerda e’lon qilinadi."
-            />
+            <div className="home-news-note">
+              <div>
+                <strong>Maktab bilan birga bo‘ling.</strong>
+                <p>
+                  Yangi e’lonlar tayyorlanmoqda. Kundalik xabarlarni Telegram kanalimizda kuzating.
+                </p>
+              </div>
+              <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer">
+                Kanalga o‘tish ↗
+              </a>
+            </div>
           )}
         </div>
       </section>
@@ -97,7 +104,7 @@ export default function Home({ initialData }: { initialData: PageData }) {
         <div className="container-site grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
           <Reveal from="left" className="lg:col-span-7">
             <SampleImage
-              name="library"
+              name="hero"
               className="aspect-[4/3] rounded-2xl shadow-[var(--shadow-lift)] md:aspect-[3/2]"
             />
           </Reveal>
@@ -113,15 +120,6 @@ export default function Home({ initialData }: { initialData: PageData }) {
               bilan bilim va tajribalarini baham ko‘radi. Kutubxonamiz esa mustaqil mutolaa va
               izlanishga chorlaydi.
             </p>
-            <ul className="mt-6 flex flex-wrap gap-2">
-              {NAV.filter((n) => n.to !== "/").map((n) => (
-                <li key={n.to}>
-                  <Link href={n.to} className="btn btn-outline min-h-10 px-4 py-2 text-sm">
-                    {n.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
             <Link
               href="/maktab"
               className="group mt-6 inline-flex min-h-11 items-center gap-2 font-semibold text-primary hover:text-gold-ink"
@@ -132,10 +130,6 @@ export default function Home({ initialData }: { initialData: PageData }) {
                 aria-hidden
               />
             </Link>
-            <p className="mt-6 border-t pt-4 text-xs leading-relaxed text-muted-foreground">
-              Maktab jamoasi, ustozlarning malaka toifalari va ish staji taqdim etilgan xodimlar
-              reyestri asosida yoritilgan.
-            </p>
           </Reveal>
         </div>
       </section>
@@ -176,10 +170,21 @@ export default function Home({ initialData }: { initialData: PageData }) {
                 ))}
               </div>
             ) : (
-              <EmptyState
-                title="Har bir yutuq — yangi ilhom"
-                description="O‘quvchilarimizning tasdiqlangan natijalari shu yerda e’lon qilinadi."
-              />
+              <div className="result-path">
+                {[
+                  ["01", "Qiziqish", "Har bir izlanish savoldan boshlanadi."],
+                  ["02", "Tayyorgarlik", "Bilim, muntazam mehnat va ustoz ko‘magi."],
+                  ["03", "Natija", "Tasdiqlangan yutuqlar shu yerda e’lon qilinadi."],
+                ].map(([n, title, copy]) => (
+                  <div key={n}>
+                    <span>{n}</span>
+                    <div>
+                      <h3>{title}</h3>
+                      <p>{copy}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
@@ -254,9 +259,14 @@ export default function Home({ initialData }: { initialData: PageData }) {
               )}
             </div>
           ) : (
-            <p className="rounded-xl border border-on-navy/15 px-6 py-10 text-on-navy-muted">
-              Tadbirlar va faoliyatlar tez orada shu yerda e’lon qilinadi.
-            </p>
+            <div className="school-scenes">
+              {[MEDIA.garden, MEDIA.library, MEDIA.collab].map((photo) => (
+                <Link className="school-scene" href="/maktab-hayoti" key={photo.src}>
+                  <img src={photo.src} alt={photo.alt} loading="lazy" />
+                  <span>{photo.caption} ↗</span>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
       </section>
