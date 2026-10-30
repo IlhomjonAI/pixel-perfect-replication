@@ -10,7 +10,7 @@ it("shows the homepage actions without slideshow buttons", () => {
     "/maktab",
   );
   expect(screen.getByRole("link", { name: /Murojaat yuborish/ })).toHaveAttribute("href", "/aloqa");
-  expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Keyingi surat" })).toBeInTheDocument();
 });
 it("falls back when a photograph fails and keeps content visible if all fail", () => {
   const { container } = render(<Hero />);

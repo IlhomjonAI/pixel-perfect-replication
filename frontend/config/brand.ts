@@ -127,11 +127,10 @@ export const MEDIA = {
 
 export type MediaKey = keyof typeof MEDIA;
 
-/** Four distinct views from the supplied school photographs. */
+/** Three main views of the school building and grounds. */
 export const HERO_SLIDES = [
   { photo: MEDIA.hero, label: "Yangi marralar sari" },
-  { photo: MEDIA.library, label: "Bilim va izlanish" },
-  { photo: MEDIA.notebook, label: "Raqamli bilimlar sari" },
+  { photo: MEDIA.campus, label: "Maktabimiz muhiti" },
   { photo: MEDIA.garden, label: "Ilhom beruvchi muhit" },
 ] as const;
 
