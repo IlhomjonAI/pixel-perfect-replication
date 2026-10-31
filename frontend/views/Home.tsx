@@ -69,6 +69,18 @@ export default function Home({ initialData }: { initialData: PageData }) {
         </div>
       </section>
 
+      <div className="identity-strip" aria-label="Maktab qadriyatlari">
+        <div className="container-site identity-strip-inner">
+          <span>Bekobod tumani</span>
+          <i aria-hidden="true" />
+          <span>Ilm</span>
+          <i aria-hidden="true" />
+          <span>Imkoniyat</span>
+          <i aria-hidden="true" />
+          <span>Natija</span>
+        </div>
+      </div>
+
       {/* B. Latest real published news */}
       <section
         id="yangiliklar"

@@ -881,6 +881,47 @@ textarea.field {
   border: 1px solid #dee5f3;
   border-radius: 50%;
 }
+.identity-strip {
+  overflow: hidden;
+  background: var(--forest-deep);
+  color: var(--gold);
+  border-block: 1px solid rgb(255 255 255 / 0.1);
+}
+.identity-strip-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 3.5rem);
+  min-height: 3.25rem;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.identity-strip-inner i {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: var(--gold);
+  opacity: 0.7;
+}
+@media (max-width: 639px) {
+  .identity-strip-inner {
+    justify-content: flex-start;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding-block: 0.95rem;
+    scrollbar-width: none;
+  }
+  .identity-strip-inner::-webkit-scrollbar {
+    display: none;
+  }
+  .identity-strip-inner span:nth-of-type(1) {
+    color: #fff;
+  }
+}
 .page-hero {
   border-radius: 0 0 36px 36px;
 }
