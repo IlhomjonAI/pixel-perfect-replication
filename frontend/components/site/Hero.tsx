@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { HERO_SLIDES } from "@/config/brand";
 import { SCHOOL_NAME } from "@/config/site";
 import { Logo } from "./Logo";
@@ -13,8 +13,8 @@ export function Hero() {
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
   const [visible, setVisible] = useState(true);
-  const [reducedMotion, setReducedMotion] = useState(false);
   const [ready, setReady] = useState<string[]>([]);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const slides = useMemo(
     () => HERO_SLIDES.filter((item) => !failed.includes(item.photo.src)),
     [failed],
@@ -22,11 +22,12 @@ export function Hero() {
   const current = active % Math.max(1, slides.length);
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReducedMotion(media.matches);
-    update();
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
+    const updateMotion = () => setReducedMotion(media.matches);
+    updateMotion();
+    media.addEventListener("change", updateMotion);
+    return () => media.removeEventListener("change", updateMotion);
   }, []);
+
   useEffect(() => {
     const visibility = () => setVisible(!document.hidden);
     visibility();
@@ -35,7 +36,7 @@ export function Hero() {
   }, []);
   useEffect(() => {
     setProgress(0);
-    if (!visible || reducedMotion || slides.length < 2) return;
+    if (reducedMotion || !visible || slides.length < 2) return;
     let started = performance.now();
     let index = current;
     const timer = setInterval(() => {
@@ -54,7 +55,12 @@ export function Hero() {
       }
     }, 50);
     return () => clearInterval(timer);
-  }, [visible, reducedMotion, slides, ready, current]);
+  }, [reducedMotion, visible, slides, ready, current]);
+
+  const selectSlide = (index: number) => {
+    setActive((index + slides.length) % Math.max(1, slides.length));
+    setProgress(0);
+  };
 
   return (
     <section className="hero-stage" aria-label="Maktab bilan tanishing">
@@ -110,13 +116,38 @@ export function Hero() {
             </Link>
           </div>
         </div>
-        <div className="hero-progress" aria-hidden="true">
-          {slides.map((item, index) => (
-            <span className="hero-progress-track" key={item.photo.src}>
-              <span style={{ transform: `scaleX(${index === current ? progress : 0})` }} />
-            </span>
-          ))}
-        </div>
+        {slides.length > 1 && (
+          <div className="hero-progress" role="group" aria-label="Maktab suratlari">
+            <button
+              type="button"
+              className="hero-slide-control"
+              aria-label="Oldingi surat"
+              onClick={() => selectSlide(current - 1)}
+            >
+              <ChevronLeft size={18} aria-hidden />
+            </button>
+            {slides.map((item, index) => (
+              <button
+                type="button"
+                className="hero-progress-track"
+                key={item.photo.src}
+                aria-label={`${index + 1}-surat: ${item.label}`}
+                aria-pressed={index === current}
+                onClick={() => selectSlide(index)}
+              >
+                <span style={{ transform: `scaleX(${index === current ? progress : 0})` }} />
+              </button>
+            ))}
+            <button
+              type="button"
+              className="hero-slide-control"
+              aria-label="Keyingi surat"
+              onClick={() => selectSlide(current + 1)}
+            >
+              <ChevronRight size={18} aria-hidden />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

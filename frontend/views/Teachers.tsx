@@ -4,8 +4,7 @@ import { useMemo, useState } from "react";
 import { TeacherCard } from "@/components/site/cards";
 import { EmptyState } from "@/components/site/common";
 import { ChipGroup, FilterBar, ResultsCount, SearchField } from "@/components/site/filters";
-import { PageHero } from "@/components/site/PageHero";
-import { MEDIA } from "@/config/brand";
+import { TeachersIntro } from "@/components/site/TeachersIntro";
 import { useLoadMore } from "@/hooks/use-load-more";
 import { getTeachersPage } from "@/api/teacher";
 import { matchesSearch } from "@/lib/search";
@@ -46,13 +45,16 @@ export default function Teachers({ initialData }: { initialData: PageData }) {
 
   return (
     <>
-      <PageHero
-        eyebrow="Jamoa"
-        title="O‘qituvchilar"
-        intro="Maktabimiz ustozlari, ularning tajribasi va malakasi."
-        image={MEDIA.classroom}
-      />
-      <div className="container-site py-12 md:py-16">
+      <TeachersIntro teachers={teachers} />
+      <div id="ustozlar" className="container-site py-12 md:py-20 scroll-mt-24">
+        <div className="directory-heading">
+          <p className="editorial-eyebrow">
+            <span />
+            Ustozlar katalogi
+          </p>
+          <h2>O‘z ustozingizni toping.</h2>
+          <p>Ism yoki fan bo‘yicha izlang, profil orqali ustoz bilan yaqindan tanishing.</p>
+        </div>
         <FilterBar>
           <SearchField
             id="teacher-search"

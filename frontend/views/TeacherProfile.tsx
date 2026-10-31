@@ -14,7 +14,7 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
   const t = initialData;
   const rows: [string, string][] = [
     ["Fan", t.subject],
-    ["Kasbiy tavsif", t.qualification],
+    ["Malaka toifasi", t.qualification],
     ["Ma’lumoti", t.education],
     ["Ish tajribasi", t.experience],
   ];
@@ -42,12 +42,14 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
           </Reveal>
           <Reveal from="right" className="min-w-0">
             <dl className="card-surface divide-y divide-border overflow-hidden">
-              {rows.map(([k, v]) => (
-                <div key={k} className="grid gap-1 px-5 py-4 sm:grid-cols-[180px_1fr]">
-                  <dt className="text-sm font-semibold text-muted-foreground">{k}</dt>
-                  <dd className="text-foreground">{v}</dd>
-                </div>
-              ))}
+              {rows
+                .filter(([, v]) => v && v !== PENDING)
+                .map(([k, v]) => (
+                  <div key={k} className="grid gap-1 px-5 py-4 sm:grid-cols-[180px_1fr]">
+                    <dt className="text-sm font-semibold text-muted-foreground">{k}</dt>
+                    <dd className="text-foreground">{v}</dd>
+                  </div>
+                ))}
             </dl>
 
             <h2 className="mt-10 font-display text-2xl text-primary">Ustoz haqida</h2>
@@ -55,7 +57,7 @@ export default function TeacherProfile({ initialData }: { initialData: PageData 
               {t.biography}
             </p>
 
-            <h2 className="mt-10 font-display text-2xl text-primary">Sertifikatlar</h2>
+            <h2 className="mt-10 font-display text-2xl text-primary">Reyestrdagi sertifikatlar</h2>
             {t.certificates.length ? (
               <ul className="mt-3 space-y-2">
                 {t.certificates.map((c) => (

@@ -3,9 +3,8 @@
 import { useMemo, useState } from "react";
 import { PostCard } from "@/components/site/cards";
 import { EmptyState } from "@/components/site/common";
-import { PageHero } from "@/components/site/PageHero";
+import { EditorialHero, NewsChannelLink } from "@/components/site/EditorialHero";
 import { ChipGroup, FilterBar, ResultsCount, SearchField } from "@/components/site/filters";
-import { MEDIA } from "@/config/brand";
 import { getPostsPage } from "@/api/news";
 import { useLoadMore } from "@/hooks/use-load-more";
 import { matchesSearch } from "@/lib/search";
@@ -44,12 +43,15 @@ export default function News({ initialData }: { initialData: PageData }) {
 
   return (
     <>
-      <PageHero
-        eyebrow="Yangiliklar"
-        title="Yangiliklar, tadbirlar va e’lonlar"
-        intro="Maktabimiz hayotidan yangi xabarlar, tadbirlar va e’lonlar."
-        image={MEDIA.shelves}
-      />
+      <EditorialHero
+        theme="news"
+        eyebrow="Maktab kundaligi"
+        title="Bugun maktabda."
+        accent="Ertaga xotiralarda."
+        intro="Yangi tashabbuslar, uchrashuvlar va muhim e’lonlar. Maktab hayotidan xabardor bo‘ling."
+      >
+        <NewsChannelLink />
+      </EditorialHero>
       <div className="container-site py-12 md:py-16">
         <FilterBar>
           <SearchField

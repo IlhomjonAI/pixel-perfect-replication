@@ -29,5 +29,5 @@ it("searches names and subjects in any order and returns focus after clearing", 
   fireEvent.click(clear);
   expect(search).toHaveFocus();
   expect(search).toHaveValue("");
-  expect(container.querySelector('[aria-live="polite"]')).toHaveTextContent("25 ta ustoz");
+  expect(container.querySelector('[aria-live="polite"]')).toHaveTextContent("29 ta ustoz");
 });

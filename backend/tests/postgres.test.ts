@@ -107,7 +107,7 @@ it("migrates twice, seeds once and supports public content and admin login", asy
   await seedSchoolStaff(db);
   expect(
     (await db.prepare("SELECT COUNT(*) AS count FROM teachers").first<{ count: number }>())?.count,
-  ).toBe(25);
+  ).toBe(29);
   expect((await call("health")).status).toBe(200);
   expect((await call("teachers")).status).toBe(200);
   const response = await call("admin/login", "POST", { password });

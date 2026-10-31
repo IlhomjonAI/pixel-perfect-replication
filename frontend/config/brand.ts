@@ -6,13 +6,8 @@
  * everywhere (header, hero, footer, admin) with the built-in SVG mark as an
  * automatic fallback.
  *
- * `MEDIA` centralizes every replaceable illustrative photograph: local public
- * path, subject description, discreet caption, focal position and attribution.
- * These are temporary stock images (see `public/media/manifest.json`) and are
- * always labelled "Namunaviy tasvir" on the page — they must never be implied
- * to show this school, its building or its people. Replace `src` with a real
- * school photograph to make a slot authentic; the caption/credit can then be
- * cleared.
+ * `MEDIA` contains supplied school photographs; provenance and editing notes
+ * are recorded in `public/media/school/README.md`.
  */
 export interface HeroFocalPoint {
   /** Horizontal focal position, percentage from the left (0–100). */
@@ -36,7 +31,7 @@ export interface HeroMedia {
 export interface SamplePhoto {
   /** Public path, e.g. "/media/hero-campus.jpg". */
   src: string;
-  /** Describes the visible subject; must not claim the photo is of this school. */
+  /** Describes the visible subject. */
   alt: string;
   /** Discreet on-page caption; empty string hides the caption. */
   caption: string;
@@ -49,100 +44,94 @@ export interface SamplePhoto {
 /** Label shown on every illustrative photograph. */
 export const SAMPLE_LABEL = "Namunaviy tasvir";
 
-const sampleCaption = (subject: string) => `${SAMPLE_LABEL} — ${subject}`;
-
 export const MEDIA = {
-  /** Homepage hero: school-like architecture with sky and columns. */
   hero: {
-    src: "/media/hero-campus.jpg",
-    alt: "Sayt namunasi uchun ta’lim binosi tasviri",
-    caption: sampleCaption("ta’lim binosi"),
+    src: "/media/school/school-facade.webp",
+    alt: "Maktabimizga xush kelibsiz",
+    caption: "Maktabimizga xush kelibsiz",
     focal: { x: 50, y: 58 },
-    credit: { source: "https://images.unsplash.com/photo-1562774053-701939374585" },
   },
-  /** About / introduction split section and maktab page hero. */
   campus: {
-    src: "/media/campus-dusk.jpg",
-    alt: "Sayt namunasi uchun kampus binosi tasviri",
-    caption: sampleCaption("kampus binosi"),
-    focal: { x: 50, y: 45 },
-    credit: { source: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f" },
+    src: "/media/school/campus-wide.webp",
+    alt: "Bekobod tumani ixtisoslashtirilgan maktabi",
+    caption: "Bekobod tumani ixtisoslashtirilgan maktabi",
+    focal: { x: 50, y: 50 },
   },
-  /** Homepage introduction image (library). */
   library: {
-    src: "/media/intro-library.jpg",
-    alt: "Sayt namunasi uchun kutubxona tasviri",
-    caption: sampleCaption("kutubxona"),
-    focal: { x: 50, y: 50 },
-    credit: {
-      photographer: "Alfons Morales",
-      source: "https://images.unsplash.com/photo-1507842217343-583bb7270b66",
-    },
-  },
-  /** News page hero: library shelves. */
-  shelves: {
-    src: "/media/library-shelves.jpg",
-    alt: "Sayt namunasi uchun kitob javonlari tasviri",
-    caption: sampleCaption("kitob javonlari"),
-    focal: { x: 50, y: 45 },
-    credit: {
-      photographer: "Iñaki del Olmo",
-      source: "https://images.unsplash.com/photo-1521587760476-6c12a4b040da",
-    },
-  },
-  /** Achievements page hero: science glassware. */
-  science: {
-    src: "/media/science-lab.jpg",
-    alt: "Sayt namunasi uchun laboratoriya texnikasi tasviri",
-    caption: sampleCaption("laboratoriya"),
+    src: "/media/school/library.webp",
+    alt: "Kutubxona — bilim va mutolaa maskani",
+    caption: "Kutubxona — bilim va mutolaa maskani",
     focal: { x: 50, y: 55 },
-    credit: {
-      photographer: "Hans Reniers",
-      source: "https://images.unsplash.com/photo-1532094349884-543bc11b234d",
-    },
   },
-  /** Teachers page hero: empty classroom. */
+  shelves: {
+    src: "/media/school/library-wide.webp",
+    alt: "Kitoblar olami",
+    caption: "Kitoblar olami",
+    focal: { x: 50, y: 52 },
+  },
+  science: {
+    src: "/media/school/physics-room.webp",
+    alt: "Fizika xonasi",
+    caption: "Fizika xonasi",
+    focal: { x: 50, y: 60 },
+  },
   classroom: {
-    src: "/media/classroom.jpg",
-    alt: "Sayt namunasi uchun sinfxona tasviri",
-    caption: sampleCaption("sinfxona"),
-    focal: { x: 50, y: 50 },
-    credit: { source: "https://images.unsplash.com/photo-1509062522246-3755977927d7" },
+    src: "/media/school/mathematics-room.webp",
+    alt: "Matematika xonasi",
+    caption: "Matematika xonasi",
+    focal: { x: 50, y: 60 },
   },
-  /** School life page hero: collaborative study. */
   collab: {
-    src: "/media/study-collab.jpg",
-    alt: "Sayt namunasi uchun birga o‘qish tasviri",
-    caption: sampleCaption("birga o‘qish"),
-    focal: { x: 50, y: 40 },
-    credit: { source: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f" },
+    src: "/media/school/sports-court.webp",
+    alt: "Sport va faol hayot",
+    caption: "Sport va faol hayot",
+    focal: { x: 50, y: 55 },
   },
-  /** Admissions page hero: notebook and study desk. */
   notebook: {
-    src: "/media/notebook.jpg",
-    alt: "Sayt namunasi uchun daftar bilan o‘qish tasviri",
-    caption: sampleCaption("o‘quv stoli"),
-    focal: { x: 50, y: 50 },
-    credit: { source: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8" },
+    src: "/media/school/computer-lab.webp",
+    alt: "Informatika xonasi",
+    caption: "Informatika xonasi",
+    focal: { x: 50, y: 65 },
   },
-  /** Contact page hero: reading in a library. */
   reading: {
-    src: "/media/reading.jpg",
-    alt: "Sayt namunasi uchun kutubxonada o‘qish tasviri",
-    caption: sampleCaption("o‘quv muhiti"),
-    focal: { x: 50, y: 40 },
-    credit: { source: "https://images.unsplash.com/photo-1588072432836-e10032774350" },
+    src: "/media/school/foyer-wide.webp",
+    alt: "Maktab foyesi",
+    caption: "Maktab foyesi",
+    focal: { x: 50, y: 55 },
+  },
+  garden: {
+    src: "/media/school/garden-walk.webp",
+    alt: "Yashil yo‘laklar",
+    caption: "Yashil yo‘laklar",
+    focal: { x: 50, y: 55 },
+  },
+  heritage: {
+    src: "/media/school/national-corner.webp",
+    alt: "Milliy qadriyatlar burchagi",
+    caption: "Milliy qadriyatlar burchagi",
+    focal: { x: 50, y: 55 },
+  },
+  learning: {
+    src: "/media/school/classroom-wide.webp",
+    alt: "Dars va izlanish muhiti",
+    caption: "Dars va izlanish muhiti",
+    focal: { x: 50, y: 60 },
+  },
+  gate: {
+    src: "/media/school/school-gate.webp",
+    alt: "Maktabga kirish",
+    caption: "Maktabga kirish",
+    focal: { x: 50, y: 55 },
   },
 } satisfies Record<string, SamplePhoto>;
 
 export type MediaKey = keyof typeof MEDIA;
 
-/** Replace these images with school photographs when they are available. */
+/** Three main views of the school building and grounds. */
 export const HERO_SLIDES = [
   { photo: MEDIA.hero, label: "Yangi marralar sari" },
-  { photo: MEDIA.library, label: "Bilim va izlanish" },
-  { photo: MEDIA.campus, label: "Kampus muhiti" },
-  { photo: MEDIA.science, label: "Kashfiyotlar boshlanadigan joy" },
+  { photo: MEDIA.campus, label: "Maktabimiz muhiti" },
+  { photo: MEDIA.garden, label: "Ilhom beruvchi muhit" },
 ] as const;
 
 export interface Brand {

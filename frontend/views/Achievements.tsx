@@ -5,7 +5,7 @@ import { AchievementCard } from "@/components/site/cards";
 import { CertificateModal } from "@/components/site/CertificateModal";
 import { EmptyState, LoadingState } from "@/components/site/common";
 import { FilterBar, SelectField } from "@/components/site/filters";
-import { PageHero } from "@/components/site/PageHero";
+import { EditorialHero } from "@/components/site/EditorialHero";
 import type { Achievement } from "@school/contracts/models";
 import { getAchievementsPage, getAchievementFilters } from "@/api/achievement";
 import {
@@ -13,7 +13,6 @@ import {
   achievementStages,
   type AchievementQuery,
 } from "@school/contracts/achievement";
-import { MEDIA } from "@/config/brand";
 
 const ALL = "Barchasi";
 
@@ -84,12 +83,13 @@ export default function Achievements({ initialData }: { initialData: PageData })
 
   return (
     <>
-      <PageHero
-        eyebrow="Yutuqlar"
-        title="O‘quvchilar yutuqlari"
-        intro="Olimpiadalar va sertifikatlar bo‘yicha e’lon qilingan natijalar."
-        image={MEDIA.science}
-      />
+      <EditorialHero
+        theme="achievements"
+        eyebrow="Izlanishdan natijaga"
+        title="Mehnatning mevasi."
+        accent="Maktabimiz faxri."
+        intro="Fan olimpiadalari, sertifikatlar va o‘quvchilarimizning e’lon qilingan natijalari — har bir muvaffaqiyatning o‘z hikoyasi bor."
+      ></EditorialHero>
       <div className="container-site py-12 md:py-16">
         <FilterBar className="mb-8">
           {(Object.keys(labels) as (keyof typeof f)[]).map((key) => (
@@ -123,12 +123,22 @@ export default function Achievements({ initialData }: { initialData: PageData })
           <LoadingState label="Yutuqlar yuklanmoqda…" />
         ) : !items.length && !error ? (
           <EmptyState
-            title="Mos yutuq topilmadi"
-            description="Filtrlarni o‘zgartiring yoki keyinroq qayta tekshiring."
+            title={
+              Object.values(f).some((value) => value !== ALL)
+                ? "Mos yutuq topilmadi"
+                : "Yangi natijalar shu yerda jamlanadi"
+            }
+            description={
+              Object.values(f).some((value) => value !== ALL)
+                ? "Boshqa fan, yil yoki bosqichni tanlab ko‘ring."
+                : "Tasdiqlangan olimpiada natijalari va sertifikatlar e’lon qilingach, ularni shu sahifada ko‘rishingiz mumkin."
+            }
           >
-            <button className="btn btn-outline" onClick={clear}>
-              Filtrlarni tozalash
-            </button>
+            {Object.values(f).some((value) => value !== ALL) && (
+              <button className="btn btn-outline" onClick={clear}>
+                Filtrlarni tozalash
+              </button>
+            )}
           </EmptyState>
         ) : items.length > 0 ? (
           <div aria-busy={loading}>
