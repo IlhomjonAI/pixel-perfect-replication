@@ -292,7 +292,7 @@
 }
 
 @theme inline {
-  --font-display: "Manrope", system-ui, sans-serif;
+  --font-display: "DM Serif Display", Georgia, serif;
   --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
