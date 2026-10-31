@@ -13,7 +13,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-it("rotates photographs even when reduced motion is requested", () => {
+it("keeps reduced-motion photographs still while allowing manual navigation", () => {
   vi.useFakeTimers();
   const matchMedia = window.matchMedia;
   vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
@@ -23,10 +23,14 @@ it("rotates photographs even when reduced motion is requested", () => {
   const { container } = render(<Hero />);
   container.querySelectorAll(".hero-slide img").forEach((image) => fireEvent.load(image));
   act(() => vi.advanceTimersByTime(6000));
-  expect(container.querySelectorAll(".hero-slide")[1]).toHaveAttribute("data-active", "true");
+  expect(container.querySelectorAll(".hero-slide")[0]).toHaveAttribute("data-active", "true");
   expect(container.querySelector(".hero-progress-track > span")).toHaveStyle({
     transform: "scaleX(0)",
   });
+  fireEvent.click(screen.getByRole("button", { name: "Keyingi surat" }));
+  expect(container.querySelectorAll(".hero-slide")[1]).toHaveAttribute("data-active", "true");
+  act(() => vi.advanceTimersByTime(6000));
+  expect(container.querySelectorAll(".hero-slide")[1]).toHaveAttribute("data-active", "true");
 });
 it("fills each line over six seconds and rotates three photos", () => {
   vi.useFakeTimers();
